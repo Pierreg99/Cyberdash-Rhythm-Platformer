@@ -221,6 +221,12 @@ ctx.fillStyle = this.primaryColor;
 ctx.fillRect(-this.s * 0.22, -this.s * 0.22, this.s * 0.44, this.s * 0.44);
 ctx.fillStyle = this.accentColor;
 ctx.fillRect(-this.s * 0.08, -this.s * 0.08, this.s * 0.16, this.s * 0.16);
+if (this.characterId === 'classic' || !this.characterId) {
+ctx.fillStyle = '#ffffff';
+ctx.fillRect(-this.s * 0.22, -this.s * 0.15, 3.5, 3.5);
+ctx.fillRect(this.s * 0.22 - 3.5, -this.s * 0.15, 3.5, 3.5);
+ctx.fillRect(-this.s * 0.12, this.s * 0.15, this.s * 0.24, 2.5);
+}
 if (this.characterId === 'emperor') {
 ctx.fillStyle = '#ffd700';
 ctx.shadowColor = '#ffd700';

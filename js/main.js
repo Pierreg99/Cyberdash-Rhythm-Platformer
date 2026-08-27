@@ -375,6 +375,18 @@ export class CyberDashGame {
         const hudLayer = document.getElementById('hud-layer');
         if (hudLayer) hudLayer.classList.remove('hidden');
 
+        const lvlNameEl = document.getElementById('hud-level-name');
+        if (lvlNameEl) lvlNameEl.innerText = level.name;
+
+        const lvlSubEl = document.getElementById('hud-level-subtitle');
+        if (lvlSubEl) {
+            const lvlNum = typeof level.id === 'number' ? (level.id < 10 ? '0' + level.id : level.id) : '01';
+            lvlSubEl.innerText = `LEVEL ${lvlNum} - ${level.tier || 'SECTOR'} TIER`;
+        }
+
+        const tierLblEl = document.getElementById('hud-tier-label');
+        if (tierLblEl) tierLblEl.innerText = `${level.tier || 'SECTOR'} TIER`;
+
         document.getElementById('btn-editor-return-hud')?.classList.add('hidden');
         const attemptEl = document.getElementById('attempt-counter');
         if (attemptEl) attemptEl.innerText = `ATTEMPT 1`;
@@ -604,6 +616,16 @@ export class CyberDashGame {
                         this.player.x + this.player.s / 2,
                         this.player.y + this.player.s / 2
                     );
+                }
+
+                // Dynamic In-Game Score & Combo (Screenshot 2)
+                const scoreEl = document.getElementById('hud-score-val');
+                if (scoreEl) scoreEl.innerText = Math.floor(this.player.x * 2.5);
+
+                const comboEl = document.getElementById('hud-combo-val');
+                if (comboEl) {
+                    const comboCount = Math.min(32, Math.max(1, Math.floor(this.player.x / 350) + 1));
+                    comboEl.innerText = `${comboCount}x`;
                 }
 
                 // Progress % Logic

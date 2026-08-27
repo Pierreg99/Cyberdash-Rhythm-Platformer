@@ -870,121 +870,195 @@ export function drawLevelMap(ctx, levelData, camX, groundY, levelColor = '#00f0f
         // ICE & FREEZE ASSETS
         // ═══════════════════════════════════════════════════════════════
 
+        // ═══════════════════════════════════════════════════════════════
+        // ICE & FREEZE ASSETS (MATCHING SCREENSHOT 2)
+        // ═══════════════════════════════════════════════════════════════
+
         // ── ICE BLOCK ─────────────────────────────────────────────────────────
         } else if (type === OBJECT_TYPES.ICE_BLOCK) {
             const iceGrad = ctx.createLinearGradient(ox, oy, ox + TS, oy + TS);
-            iceGrad.addColorStop(0, '#0a1e2e');
-            iceGrad.addColorStop(0.4, '#0e2840');
-            iceGrad.addColorStop(1, '#061525');
+            iceGrad.addColorStop(0, '#103852');
+            iceGrad.addColorStop(0.5, '#0a243a');
+            iceGrad.addColorStop(1, '#051624');
             ctx.fillStyle = iceGrad;
             ctx.fillRect(ox, oy, TS, TS);
-            ctx.strokeStyle = '#60c8e8';
-            ctx.lineWidth = 2;
+
+            // Crystalline luminous frost border
+            ctx.strokeStyle = '#a8eeff';
+            ctx.lineWidth = 1.5;
             ctx.shadowBlur = 14;
             ctx.shadowColor = '#00d4ff';
             ctx.strokeRect(ox + 1, oy + 1, TS - 2, TS - 2);
-            // Frost crack lines
-            ctx.strokeStyle = 'rgba(168, 238, 255, 0.3)';
+
+            // Detailed Frost Crack Lattice (Image 2 crackle look)
+            ctx.strokeStyle = 'rgba(168, 238, 255, 0.45)';
             ctx.lineWidth = 1;
             ctx.shadowBlur = 0;
             ctx.beginPath();
-            ctx.moveTo(ox + TS * 0.2, oy);
-            ctx.lineTo(ox + TS * 0.5, oy + TS * 0.5);
-            ctx.lineTo(ox + TS * 0.8, oy + TS);
+            ctx.moveTo(ox + TS * 0.15, oy);
+            ctx.lineTo(ox + TS * 0.35, oy + TS * 0.35);
+            ctx.lineTo(ox + TS * 0.55, oy + TS * 0.2);
+            ctx.lineTo(ox + TS * 0.85, oy);
+            ctx.moveTo(ox + TS * 0.35, oy + TS * 0.35);
+            ctx.lineTo(ox + TS * 0.5, oy + TS * 0.65);
+            ctx.lineTo(ox + TS * 0.25, oy + TS * 0.85);
+            ctx.lineTo(ox + TS * 0.1, oy + TS);
+            ctx.moveTo(ox + TS * 0.5, oy + TS * 0.65);
+            ctx.lineTo(ox + TS * 0.75, oy + TS * 0.7);
+            ctx.lineTo(ox + TS * 0.9, oy + TS);
+            ctx.moveTo(ox + TS * 0.75, oy + TS * 0.7);
+            ctx.lineTo(ox + TS, oy + TS * 0.45);
             ctx.stroke();
+
+            // Top Snow-Cap Glaze
+            ctx.fillStyle = 'rgba(230, 250, 255, 0.35)';
+            ctx.fillRect(ox + 2, oy + 2, TS - 4, 4);
+
+            // Hanging icicles on lower edge for aerial blocks
+            ctx.fillStyle = 'rgba(168, 238, 255, 0.5)';
             ctx.beginPath();
-            ctx.moveTo(ox, oy + TS * 0.35);
-            ctx.lineTo(ox + TS * 0.5, oy + TS * 0.6);
-            ctx.lineTo(ox + TS, oy + TS * 0.25);
-            ctx.stroke();
-            // Top shine
-            ctx.fillStyle = 'rgba(200, 248, 255, 0.18)';
-            ctx.fillRect(ox + 4, oy + 4, TS - 8, 5);
-            // Corner cross crystals
-            ctx.strokeStyle = 'rgba(168, 238, 255, 0.5)';
-            ctx.lineWidth = 1;
-            [[ox+4,oy+4],[ox+TS-4,oy+4]].forEach(([ix, iy]) => {
-                ctx.beginPath();
-                ctx.moveTo(ix, iy - 4); ctx.lineTo(ix, iy + 4);
-                ctx.moveTo(ix - 4, iy); ctx.lineTo(ix + 4, iy);
-                ctx.stroke();
-            });
+            ctx.moveTo(ox + 6, oy + TS);
+            ctx.lineTo(ox + 10, oy + TS + 7);
+            ctx.lineTo(ox + 14, oy + TS);
+            ctx.moveTo(ox + 22, oy + TS);
+            ctx.lineTo(ox + 26, oy + TS + 9);
+            ctx.lineTo(ox + 30, oy + TS);
+            ctx.fill();
 
         // ── ICE SPIKE ─────────────────────────────────────────────────────────
         } else if (type === OBJECT_TYPES.ICE_SPIKE) {
-            ctx.shadowBlur = 20;
+            ctx.shadowBlur = 22;
             ctx.shadowColor = '#00d4ff';
-            const iceSpGrad = ctx.createLinearGradient(ox + TS/2, oy, ox + TS/2, oy + TS);
-            iceSpGrad.addColorStop(0, '#c8f8ff');
-            iceSpGrad.addColorStop(0.4, '#60c8e8');
-            iceSpGrad.addColorStop(1, '#0e3a54');
+
+            // Multi-faceted 3D crystal spike body (Image 2)
+            const sx = ox + TS / 2;
+            const sy = oy;
+
+            // Main Gradient Fill
+            const iceSpGrad = ctx.createLinearGradient(sx, sy, sx, sy + TS);
+            iceSpGrad.addColorStop(0, '#ffffff');
+            iceSpGrad.addColorStop(0.2, '#c8f8ff');
+            iceSpGrad.addColorStop(0.6, '#40b8e8');
+            iceSpGrad.addColorStop(1, '#0c3048');
             ctx.fillStyle = iceSpGrad;
+
             ctx.beginPath();
             ctx.moveTo(ox, oy + TS);
-            ctx.lineTo(ox + TS / 2, oy);
+            ctx.lineTo(sx, sy);
             ctx.lineTo(ox + TS, oy + TS);
             ctx.closePath();
             ctx.fill();
-            ctx.strokeStyle = 'rgba(200, 250, 255, 0.8)';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-            // Interior facet
-            ctx.strokeStyle = 'rgba(168, 238, 255, 0.4)';
-            ctx.lineWidth = 1;
+
+            // Left Shaded Facet
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
             ctx.beginPath();
-            ctx.moveTo(ox + TS/2, oy + 6);
-            ctx.lineTo(ox + TS*0.3, oy + TS*0.7);
-            ctx.lineTo(ox + TS*0.7, oy + TS*0.7);
-            ctx.stroke();
-            // Tip sparkle
-            ctx.fillStyle = '#ffffff';
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = '#a8eeff';
-            ctx.beginPath();
-            ctx.arc(ox + TS/2, oy + 2, 2.5, 0, Math.PI*2);
+            ctx.moveTo(ox, oy + TS);
+            ctx.lineTo(sx, sy);
+            ctx.lineTo(sx, oy + TS);
+            ctx.closePath();
             ctx.fill();
 
-        // ── ORB FREEZE ────────────────────────────────────────────────────────
-        } else if (type === OBJECT_TYPES.ORB_FREEZE) {
-            const fpulse = Math.sin(now * 2) * 2.5;
-            const forbR = 14 + fpulse;
-            const fcx = ox + TS/2;
-            const fcy = oy + TS/2;
-            ctx.translate(fcx, fcy);
-            ctx.rotate(now * 0.8);
-            ctx.shadowBlur = 28;
-            ctx.shadowColor = '#00d4ff';
-            ctx.strokeStyle = '#60c8e8';
+            // Right Shadow Facet
+            ctx.fillStyle = 'rgba(0, 40, 80, 0.3)';
+            ctx.beginPath();
+            ctx.moveTo(sx, sy);
+            ctx.lineTo(ox + TS, oy + TS);
+            ctx.lineTo(sx, oy + TS);
+            ctx.closePath();
+            ctx.fill();
+
+            // Outer Neon Border
+            ctx.strokeStyle = 'rgba(220, 250, 255, 0.9)';
             ctx.lineWidth = 1.5;
-            ctx.globalAlpha = 0.35 + Math.sin(now * 3) * 0.2;
-            ctx.beginPath(); ctx.arc(0, 0, forbR + 9, 0, Math.PI * 2); ctx.stroke();
+            ctx.stroke();
+
+            // Center Facet Ridge Line
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(sx, sy);
+            ctx.lineTo(sx, oy + TS);
+            ctx.stroke();
+
+            // Tip Star Glint Sparkle (4-point cross)
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(sx, sy + 2, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(sx - 5, sy + 2); ctx.lineTo(sx + 5, sy + 2);
+            ctx.moveTo(sx, sy - 3); ctx.lineTo(sx, sy + 7);
+            ctx.stroke();
+
+        // ── ORB FREEZE (MATCHING SCREENSHOT 2) ────────────────────────────────
+        } else if (type === OBJECT_TYPES.ORB_FREEZE) {
+            const fpulse = Math.sin(now * 2) * 2;
+            const forbR = 15 + fpulse;
+            const fcx = ox + TS / 2;
+            const fcy = oy + TS / 2;
+            ctx.translate(fcx, fcy);
+
+            // Radiant Outer Glow Rings & Pulsing Aura
+            ctx.shadowBlur = 32;
+            ctx.shadowColor = '#00f0ff';
+            ctx.strokeStyle = '#00f0ff';
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = 0.5 + Math.sin(now * 3) * 0.25;
+            ctx.beginPath(); ctx.arc(0, 0, forbR + 8, 0, Math.PI * 2); ctx.stroke();
             ctx.globalAlpha = 1;
-            const freezeGrad = ctx.createRadialGradient(-4, -4, 2, 0, 0, forbR);
-            freezeGrad.addColorStop(0, '#e8faff');
+
+            // Core Radiant Sphere
+            const freezeGrad = ctx.createRadialGradient(-3, -3, 2, 0, 0, forbR);
+            freezeGrad.addColorStop(0, '#ffffff');
             freezeGrad.addColorStop(0.35, '#a8eeff');
-            freezeGrad.addColorStop(1, '#0088cc88');
+            freezeGrad.addColorStop(0.8, '#00b4e6');
+            freezeGrad.addColorStop(1, '#005588cc');
             ctx.fillStyle = freezeGrad;
             ctx.beginPath(); ctx.arc(0, 0, forbR, 0, Math.PI * 2); ctx.fill();
-            // Snowflake arms
-            ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-            ctx.lineWidth = 1.5;
-            ctx.shadowBlur = 6;
+
+            // Rotating 6-Branched Vector Snowflake Inside Orb
+            ctx.rotate(now * 0.6);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.8;
+            ctx.shadowBlur = 10;
             ctx.shadowColor = '#ffffff';
             for (let arm = 0; arm < 6; arm++) {
                 const a = (arm / 6) * Math.PI * 2;
+                const c = Math.cos(a), s = Math.sin(a);
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
-                ctx.lineTo(Math.cos(a) * (forbR - 3), Math.sin(a) * (forbR - 3));
+                ctx.lineTo(c * (forbR - 3), s * (forbR - 3));
                 ctx.stroke();
-                const bx = Math.cos(a) * (forbR * 0.55), by = Math.sin(a) * (forbR * 0.55);
-                const ba = a + Math.PI / 2;
+
+                // Branch Spurs
+                const bx = c * (forbR * 0.55), by = s * (forbR * 0.55);
+                const pa = a + Math.PI / 2;
+                const sw = 3.5;
                 ctx.beginPath();
-                ctx.moveTo(bx - Math.cos(ba)*4, by - Math.sin(ba)*4);
-                ctx.lineTo(bx + Math.cos(ba)*4, by + Math.sin(ba)*4);
+                ctx.moveTo(bx - Math.cos(pa) * sw, by - Math.sin(pa) * sw);
+                ctx.lineTo(bx + Math.cos(pa) * sw, by + Math.sin(pa) * sw);
                 ctx.stroke();
             }
             ctx.fillStyle = '#ffffff';
-            ctx.beginPath(); ctx.arc(0, 0, 3.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill();
+
+            // 4 Orbiting Crystal Spark Particles with Trail Arcs (Image 2)
+            ctx.rotate(-now * 1.8);
+            for (let p = 0; p < 4; p++) {
+                const pa = (p / 4) * Math.PI * 2;
+                const px = Math.cos(pa) * (forbR + 13);
+                const py = Math.sin(pa) * (forbR + 13);
+                ctx.fillStyle = p % 2 === 0 ? '#00f0ff' : '#ff77ff';
+                ctx.shadowColor = ctx.fillStyle;
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+                ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
 
         // ── PAD ICE ───────────────────────────────────────────────────────────
         } else if (type === OBJECT_TYPES.PAD_ICE) {
@@ -1010,7 +1084,7 @@ export function drawLevelMap(ctx, levelData, camX, groundY, levelColor = '#00f0f
 
         // ── FREEZE ZONE ───────────────────────────────────────────────────────
         } else if (type === OBJECT_TYPES.FREEZE_ZONE) {
-            const fzAlpha = 0.15 + Math.sin(now * 1.5) * 0.08;
+            const fzAlpha = 0.16 + Math.sin(now * 1.5) * 0.08;
             const fzH = TS * 3;
             ctx.fillStyle = '#00d4ff';
             ctx.globalAlpha = fzAlpha;
@@ -1062,22 +1136,68 @@ export function drawLevelMap(ctx, levelData, camX, groundY, levelColor = '#00f0f
             drawZoneSnowflake(ox + TS / 2, oy - TS * 0.6, 0.75, -now * 0.8);
             ctx.globalAlpha = 1;
 
-        // ── ICE CRYSTAL (collectible) ─────────────────────────────────────────
+        // ── ICE CRYSTAL (MATCHING SCREENSHOT 2) ───────────────────────────────
         } else if (type === OBJECT_TYPES.ICE_CRYSTAL) {
             ctx.translate(ox + TS / 2, oy + TS / 2);
-            ctx.rotate(now * 1.8);
+            ctx.rotate(now * 1.2);
             ctx.shadowBlur = 28;
             ctx.shadowColor = '#00d4ff';
+
+            // Outer Orbit Glow Ring
             ctx.strokeStyle = '#60c8e8';
             ctx.lineWidth = 1.5;
-            ctx.globalAlpha = 0.4 + Math.sin(now * 2) * 0.25;
-            ctx.beginPath(); ctx.arc(0, 0, 19, 0, Math.PI * 2); ctx.stroke();
+            ctx.globalAlpha = 0.45 + Math.sin(now * 2) * 0.25;
+            ctx.beginPath(); ctx.arc(0, 0, 20, 0, Math.PI * 2); ctx.stroke();
             ctx.globalAlpha = 1;
-            // Crystal hexagon body
-            const crystalGrad = ctx.createRadialGradient(-4, -4, 2, 0, 0, 15);
-            crystalGrad.addColorStop(0, '#eafaff');
-            crystalGrad.addColorStop(0.5, '#a8eeff');
-            crystalGrad.addColorStop(1, '#0088cc88');
+
+            // 3D Faceted Isometric Hexagonal Body (Image 2)
+            const r = 14;
+            const crystalGrad = ctx.createRadialGradient(-3, -3, 2, 0, 0, r);
+            crystalGrad.addColorStop(0, '#ffffff');
+            crystalGrad.addColorStop(0.4, '#a8eeff');
+            crystalGrad.addColorStop(0.85, '#0099dd');
+            crystalGrad.addColorStop(1, '#004477');
+            ctx.fillStyle = crystalGrad;
+
+            ctx.beginPath();
+            for (let a = 0; a < 6; a++) {
+                const ang = (a / 6) * Math.PI * 2 - Math.PI / 6;
+                const x = Math.cos(ang) * r;
+                const y = Math.sin(ang) * r;
+                if (a === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            // Inner Crystal Facet Ridge Lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.lineWidth = 1.2;
+            for (let a = 0; a < 6; a++) {
+                const ang = (a / 6) * Math.PI * 2 - Math.PI / 6;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(Math.cos(ang) * r, Math.sin(ang) * r);
+                ctx.stroke();
+            }
+
+            // Outer Glint Border
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Orbiting Mini Sparkles
+            for (let s = 0; s < 2; s++) {
+                const sa = -now * 3 + (s * Math.PI);
+                const sx = Math.cos(sa) * (r + 7);
+                const sy = Math.sin(sa) * (r + 7);
+                ctx.fillStyle = s === 0 ? '#00f0ff' : '#ff77ff';
+                ctx.shadowColor = ctx.fillStyle;
+                ctx.shadowBlur = 6;
+                ctx.beginPath();
+                ctx.arc(sx, sy, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
             ctx.fillStyle = crystalGrad;
             ctx.beginPath();
             for (let h = 0; h < 6; h++) {

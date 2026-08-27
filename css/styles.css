@@ -474,3 +474,93 @@ canvas {
     display: inline-block;
 }
 
+/* ===================================================================
+   SECTOR MATRIX 16-TRACK GRID & CARD STYLES (MATCHING SCREENSHOT 1)
+   =================================================================== */
+.matrix-card {
+    background: rgba(8, 12, 20, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 14px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    min-height: 82px;
+}
+
+.matrix-card:hover {
+    transform: translateY(-2px) scale(1.01);
+}
+
+.matrix-card.card-easy {
+    border: 1.5px solid rgba(57, 255, 20, 0.45);
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.12), inset 0 0 12px rgba(57, 255, 20, 0.04);
+}
+.matrix-card.card-easy:hover {
+    border-color: rgba(57, 255, 20, 0.8);
+    box-shadow: 0 0 25px rgba(57, 255, 20, 0.35);
+}
+
+.matrix-card.card-hard {
+    border: 1.5px solid rgba(176, 38, 255, 0.5);
+    box-shadow: 0 0 15px rgba(176, 38, 255, 0.14), inset 0 0 12px rgba(176, 38, 255, 0.04);
+}
+.matrix-card.card-hard:hover {
+    border-color: rgba(176, 38, 255, 0.85);
+    box-shadow: 0 0 25px rgba(176, 38, 255, 0.4);
+}
+
+.matrix-card.card-omega {
+    border: 1.5px solid rgba(255, 0, 60, 0.5);
+    box-shadow: 0 0 15px rgba(255, 0, 60, 0.15), inset 0 0 12px rgba(255, 0, 60, 0.04);
+}
+.matrix-card.card-omega:hover {
+    border-color: rgba(255, 0, 60, 0.85);
+    box-shadow: 0 0 25px rgba(255, 0, 60, 0.4);
+}
+
+.matrix-card.card-cryo {
+    background: linear-gradient(135deg, rgba(14, 45, 70, 0.82) 0%, rgba(6, 24, 42, 0.9) 100%);
+    border: 1.5px solid rgba(96, 200, 240, 0.65);
+    box-shadow: 0 0 18px rgba(0, 212, 255, 0.28), inset 0 0 16px rgba(168, 238, 255, 0.12);
+}
+.matrix-card.card-cryo:hover {
+    border-color: rgba(168, 238, 255, 0.95);
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.55), inset 0 0 20px rgba(168, 238, 255, 0.2);
+}
+
+.matrix-card.card-selected {
+    border: 2px solid #00f0ff !important;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.25) !important;
+    transform: scale(1.02);
+    z-index: 10;
+}
+
+/* In-Game HUD Elements (Matching Screenshot 2) */
+.hud-glass-panel {
+    background: rgba(6, 18, 32, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1.5px solid rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
+}
+
+.hud-track-progress-rail {
+    position: relative;
+    height: 4px;
+    background: rgba(0, 240, 255, 0.2);
+    border-radius: 2px;
+}
+.hud-track-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00f0ff, #39ff14);
+    border-radius: 2px;
+    box-shadow: 0 0 10px #00f0ff;
+}
+
+

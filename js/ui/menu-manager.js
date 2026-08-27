@@ -274,141 +274,102 @@ export class MenuManager {
             const originalIndex = allLevels.findIndex(l => l.id === lvl.id);
             const isSelected = originalIndex === this.selectedLevelIndex;
             const bestPct = StorageManager.getBestScore(lvl.id);
-            const coins = StorageManager.getCoins(lvl.id);
             const isCompleted = bestPct >= 100;
             const isCryo = lvl.tier === 'CRYO';
+            const tierLower = (lvl.tier || 'easy').toLowerCase();
 
-            // Tier-specific styling with crisp SVG vector icons
+            // Tier-specific icons & styles matching Image 1
             const tierConfig = {
                 EASY: {
-                    iconSvg: `<svg class="w-3 h-3 inline-block text-bio mr-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg>`,
-                    borderCls: 'border-bio/30',
-                    glowCls: 'shadow-[0_0_20px_rgba(57,255,20,0.15)]',
-                    accentCls: 'text-bio',
-                    badgeBg: 'bg-bio/10 border-bio/30 text-bio'
+                    iconSvg: `<svg class="w-3 h-3 text-[#39ff14]" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+                    pillCls: 'bg-[#39ff14]/15 border-[#39ff14]/50 text-[#39ff14]',
+                    cardClass: 'card-easy',
+                    barColor: '#39ff14'
                 },
                 HARD: {
-                    iconSvg: `<svg class="w-3 h-3 inline-block text-purple mr-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/><polygon points="12 7 17 12 12 17 7 12" fill="currentColor"/></svg>`,
-                    borderCls: 'border-purple/30',
-                    glowCls: 'shadow-[0_0_20px_rgba(176,38,255,0.15)]',
-                    accentCls: 'text-purple',
-                    badgeBg: 'bg-purple/10 border-purple/30 text-purple'
+                    iconSvg: `<svg class="w-3 h-3 text-[#b026ff]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8c0 3.2 1.8 5.9 4.5 7.2V19a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-1.8c2.7-1.3 4.5-4 4.5-7.2a8 8 0 0 0-8-8zm-3 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>`,
+                    pillCls: 'bg-[#b026ff]/15 border-[#b026ff]/50 text-[#b026ff]',
+                    cardClass: 'card-hard',
+                    barColor: '#00f0ff'
                 },
                 OMEGA: {
-                    iconSvg: `<svg class="w-3 h-3 inline-block text-magenta mr-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="12 2 22 22 2 22"/><circle cx="12" cy="15" r="3" fill="currentColor"/></svg>`,
-                    borderCls: 'border-magenta/30',
-                    glowCls: 'shadow-[0_0_20px_rgba(255,0,60,0.15)]',
-                    accentCls: 'text-magenta',
-                    badgeBg: 'bg-magenta/10 border-magenta/30 text-magenta'
+                    iconSvg: `<svg class="w-3 h-3 text-[#ff003c]" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 22 22 2 22"/><circle cx="12" cy="15" r="3" fill="#ffffff"/></svg>`,
+                    pillCls: 'bg-[#ff003c]/15 border-[#ff003c]/50 text-[#ff003c]',
+                    cardClass: 'card-omega',
+                    barColor: '#00f0ff'
                 },
                 CRYO: {
-                    iconSvg: `<svg class="w-3 h-3 inline-block text-[#a8eeff] mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14M9 3l3 3 3-3M9 21l3-3 3 3M3 9l3 3-3 3M21 9l-3 3 3 3"/></svg>`,
-                    borderCls: 'border-[#60c8e8]/40',
-                    glowCls: 'shadow-[0_0_20px_rgba(0,212,255,0.2)]',
-                    accentCls: 'text-[#a8eeff]',
-                    badgeBg: 'bg-[#a8eeff]/10 border-[#60c8e8]/40 text-[#a8eeff]'
+                    iconSvg: `<svg class="w-3 h-3 text-[#a8eeff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14M9 3l3 3 3-3M9 21l3-3 3 3M3 9l3 3-3 3M21 9l-3 3 3 3"/></svg>`,
+                    pillCls: 'bg-[#00d4ff]/15 border-[#00d4ff]/50 text-[#a8eeff]',
+                    cardClass: 'card-cryo',
+                    barColor: '#00f0ff'
                 },
                 CUSTOM: {
-                    iconSvg: `<svg class="w-3 h-3 inline-block text-gold mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
-                    borderCls: 'border-gold/30',
-                    glowCls: 'shadow-[0_0_20px_rgba(255,215,0,0.15)]',
-                    accentCls: 'text-gold',
-                    badgeBg: 'bg-gold/10 border-gold/30 text-gold'
-                },
+                    iconSvg: `<svg class="w-3 h-3 text-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
+                    pillCls: 'bg-gold/15 border-gold/50 text-gold',
+                    cardClass: 'card-easy',
+                    barColor: '#ffd700'
+                }
             };
             const tc = tierConfig[lvl.tier] || tierConfig.EASY;
 
-            // Selected state overrides border/glow
-            const selBorderCls = isSelected
-                ? `border-cyan shadow-[0_0_28px_rgba(0,240,255,0.4)] scale-[1.02]`
-                : `${tc.borderCls} ${tc.glowCls} hover:border-cyan/50`;
-
-            const card = document.createElement('div');
-            card.className = `kinetic-glass p-3.5 rounded-2xl flex flex-col justify-between border transition-all duration-200 cursor-pointer relative overflow-hidden ${selBorderCls}`;
-
-            // Star rating vector SVG string
-            const starsMax = lvl.stars || 1;
-            const starsEarned = isCompleted ? starsMax : (bestPct > 0 ? Math.min(starsMax - 1, Math.ceil((bestPct / 100) * starsMax)) : 0);
+            // 5 golden stars vector
+            const starsMax = 5;
+            const starsCount = Math.min(5, Math.max(1, lvl.stars || 1));
             let starStr = '';
             for (let s = 0; s < starsMax; s++) {
-                starStr += s < starsEarned
-                    ? `<svg class="w-3.5 h-3.5 inline text-gold drop-shadow-[0_0_6px_#ffd700]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
-                    : `<svg class="w-3.5 h-3.5 inline text-gray-700 opacity-40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+                starStr += s < starsCount
+                    ? `<svg class="w-3 h-3 inline text-[#ffd700] drop-shadow-[0_0_6px_#ffd700]" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+                    : `<svg class="w-3 h-3 inline text-gray-700 opacity-40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
             }
 
-            // Coin vector SVGs
-            let coinIcons = '';
-            const isCryoLevel = lvl.tier === 'CRYO';
-            for (let i = 0; i < 3; i++) {
-                const has = coins[i];
-                if (isCryoLevel) {
-                    coinIcons += has
-                        ? `<svg class="w-3.5 h-3.5 inline text-[#a8eeff] drop-shadow-[0_0_8px_#00d4ff]" fill="currentColor" stroke="#a8eeff" stroke-width="1" viewBox="0 0 24 24"><polygon points="12 2 20.66 7 20.66 17 12 22 3.34 17 3.34 7"/></svg>`
-                        : `<svg class="w-3.5 h-3.5 inline text-gray-700 opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="12 2 20.66 7 20.66 17 12 22 3.34 17 3.34 7"/></svg>`;
-                } else {
-                    coinIcons += has
-                        ? `<svg class="w-3.5 h-3.5 inline text-gold drop-shadow-[0_0_6px_#ffd700]" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg>`
-                        : `<svg class="w-3.5 h-3.5 inline text-gray-700 opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg>`;
-                }
-            }
+            const card = document.createElement('div');
+            card.className = `matrix-card ${tc.cardClass} ${isSelected ? 'card-selected' : ''}`;
 
-            // Form badges
-            const formBadges = (lvl.forms || ['CUBE'])
-                .map(f => `<span class="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold bg-white/5 border border-white/10 text-gray-400">${f}</span>`)
-                .join('');
+            const lvlIdFormatted = typeof lvl.id === 'number' ? (lvl.id < 10 ? '0' + lvl.id : lvl.id) : '01';
 
-            // Completion badge with checkmark SVG
-            const compBadge = isCompleted
-                ? `<span class="absolute top-2 right-2 text-[9px] font-mono font-black px-2 py-0.5 rounded-full bg-bio/20 text-bio border border-bio/40 flex items-center gap-1"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> CLEAR</span>`
+            // Selected action row with PLAY pill button
+            const actionRow = isSelected
+                ? `<div class="flex items-center justify-between mt-1 mb-0.5">
+                    <span class="text-[9px] font-mono text-cyan uppercase font-bold tracking-wider">${lvl.subtitle || 'CONQUER THE CORE'}</span>
+                    <button class="btn-cyber px-3 py-1 rounded-full text-[10px] font-black bg-cyan text-black shadow-[0_0_12px_#00f0ff] hover:bg-white btn-card-play" data-idx="${originalIndex}">
+                        PLAY
+                    </button>
+                   </div>`
                 : '';
 
-            // CRYO background frost tint
-            const cryoBg = isCryo ? 'background: linear-gradient(135deg, rgba(0,25,40,0.6) 0%, rgba(0,15,30,0.4) 100%);' : '';
-
             card.innerHTML = `
-                ${compBadge}
-                <div style="${cryoBg}">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <span class="text-[9px] font-mono text-gray-500 font-bold tracking-wider flex items-center">${tc.iconSvg} ${typeof lvl.id === 'number' ? `TARGET ${lvl.id < 10 ? '0' + lvl.id : lvl.id}` : 'CUSTOM'}</span>
-                            <div class="text-[9px] font-mono ${tc.accentCls} font-bold tracking-widest">${lvl.tier || 'SECTOR'} TIER</div>
-                        </div>
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black border ${tc.badgeBg}">${lvl.diff}</span>
+                <div>
+                    <!-- Top Title -->
+                    <div class="text-[11px] md:text-xs font-mono font-bold tracking-wider text-gray-200 truncate uppercase">
+                        LEVEL ${lvlIdFormatted} | ${lvl.name}
                     </div>
 
-                    <h4 class="text-base font-black tracking-wide uppercase leading-tight mb-0.5" style="color: ${lvl.color || '#fff'}; text-shadow: 0 0 12px ${lvl.color || '#00f0ff'}55;">
-                        ${lvl.name}
-                    </h4>
-                    <p class="text-[10px] font-mono text-gray-500 line-clamp-1">${lvl.subtitle || lvl.desc || ''}</p>
+                    <!-- Middle Tier Pill & Star Rating -->
+                    <div class="flex items-center justify-between my-1">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-black border flex items-center gap-1 ${tc.pillCls}">
+                            ${tc.iconSvg} ${lvl.tier}
+                        </span>
+                        <div class="flex items-center gap-1">
+                            <div class="flex items-center gap-0.5">${starStr}</div>
+                            <span class="text-[10px] font-mono font-bold text-gray-400 ml-0.5">${starsCount}/5</span>
+                        </div>
+                    </div>
 
-                    <div class="flex items-center gap-1 mt-1.5 text-sm">${starStr}</div>
-
-                    <div class="flex items-center gap-1 mt-1.5 flex-wrap">${formBadges}</div>
+                    ${actionRow}
                 </div>
 
-                <div class="mt-3 pt-2.5 border-t border-white/10">
-                    <div class="flex justify-between items-center mb-1 text-xs font-mono">
-                        <div class="flex items-center gap-1">${coinIcons}</div>
-                        <span class="font-bold ${tc.accentCls}">${bestPct}%</span>
+                <!-- Bottom Neon Progress Bar -->
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="flex-1 rounded-full h-1.5 bg-black/60 overflow-hidden border border-white/10">
+                        <div class="h-full rounded-full transition-all duration-300 shadow-[0_0_8px_#00f0ff]" style="width: ${bestPct}%; background: #00f0ff;"></div>
                     </div>
-
-                    <div class="rounded-full h-1.5 overflow-hidden border border-gray-800 mb-2.5" style="background:#0a0a14;">
-                        <div class="h-full rounded-full transition-all duration-300" style="width: ${bestPct}%; background: linear-gradient(90deg, ${lvl.color || '#00f0ff'}, ${lvl.color || '#00f0ff'}88);${isCompleted ? ' box-shadow: 0 0 8px ' + lvl.color + ';' : ''}"></div>
-                    </div>
-
-                    <div class="flex gap-1.5">
-                        <button class="btn-cyber flex-1 py-1.5 rounded-lg text-[10px] font-black btn-card-play text-cyan flex items-center justify-center gap-1" data-idx="${originalIndex}">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> PLAY
-                        </button>
-                        <button class="btn-cyber btn-gold flex-1 py-1.5 rounded-lg text-[10px] font-black btn-card-prac flex items-center justify-center gap-1" data-idx="${originalIndex}">
-                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg> SIM
-                        </button>
-                    </div>
+                    <span class="text-[10px] font-mono font-bold text-cyan">${bestPct}%</span>
                 </div>
             `;
 
             card.onclick = (e) => {
-                if (e.target.closest('button')) return;
+                if (e.target.closest('.btn-card-play')) return;
                 this.selectedLevelIndex = originalIndex;
                 this.updateLevelSelectUI();
                 this.game.soundEngine.playSFX('jump');
@@ -420,15 +381,6 @@ export class MenuManager {
                     e.stopPropagation();
                     this.selectedLevelIndex = originalIndex;
                     this.game.startLevel(lvl, false);
-                };
-            }
-
-            const pracBtn = card.querySelector('.btn-card-prac');
-            if (pracBtn) {
-                pracBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    this.selectedLevelIndex = originalIndex;
-                    this.game.startLevel(lvl, true);
                 };
             }
 
