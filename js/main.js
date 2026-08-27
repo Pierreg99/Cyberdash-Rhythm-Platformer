@@ -394,13 +394,16 @@ export class CyberDashGame {
 
         StorageManager.incrementStat('totalAttempts', 1);
 
-        // Hide menus immediately and show HUD
+        // Hide all modals & menu immediately and show HUD
         const menuLayer = document.getElementById('menu-layer');
         if (menuLayer) {
             menuLayer.classList.add('hidden');
             menuLayer.style.opacity = '0';
             menuLayer.style.pointerEvents = 'none';
         }
+
+        document.getElementById('victory-modal')?.classList.add('hidden');
+        document.getElementById('pause-layer')?.classList.add('hidden');
 
         const hudLayer = document.getElementById('hud-layer');
         if (hudLayer) hudLayer.classList.remove('hidden');
@@ -595,12 +598,20 @@ export class CyberDashGame {
     }
 
     handleLevelComplete() {
+        if (this.mode === 'VICTORY') return;
+        this.mode = 'VICTORY';
+
         this.soundEngine.stop();
         this.soundEngine.playSFX('victory');
 
         if (!this.isPractice && typeof this.activeLevel.id === 'number') {
             StorageManager.setBestScore(this.activeLevel.id, 100);
         }
+
+        // Hide in-game HUD layers
+        document.getElementById('hud-layer')?.classList.add('hidden');
+        document.getElementById('practice-hud')?.classList.add('hidden');
+        document.getElementById('pause-layer')?.classList.add('hidden');
 
         if (this.mode === 'EDITOR_PLAY') {
             alert('TEST RUN COMPLETE!');
@@ -641,8 +652,8 @@ export class CyberDashGame {
             this.editor.render(this.ctx, this.groundY);
         }
 
-        // 2. PLAYING / PAUSED MODE
-        else if (this.mode === 'PLAYING' || this.mode === 'PAUSED' || this.mode === 'EDITOR_PLAY') {
+        // 2. PLAYING / PAUSED / VICTORY MODE
+        else if (this.mode === 'PLAYING' || this.mode === 'PAUSED' || this.mode === 'EDITOR_PLAY' || this.mode === 'VICTORY') {
             if (this.mode === 'PLAYING' || this.mode === 'EDITOR_PLAY') {
                 if (!this.player.dead) {
                     this.camera.update(this.player.x, deltaMs);
