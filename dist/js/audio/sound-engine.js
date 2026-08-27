@@ -1,0 +1,303 @@
+const SCALES = {
+AEOLIAN: [0, 2, 3, 5, 7, 8, 10],          
+PHRYGIAN: [0, 1, 3, 5, 7, 8, 10],         
+DORIAN: [0, 2, 3, 5, 7, 9, 10],           
+PENTATONIC: [0, 3, 5, 7, 10],             
+HARMONIC_MIN: [0, 2, 3, 5, 7, 8, 11]      
+};
+export class CryoAudioEngine {
+constructor() {
+this.ctx = null;
+this.masterGain = null;
+this.musicGain = null;
+this.sfxGain = null;
+this.analyser = null;
+this.isPlaying = false;
+this.bpm = 140;
+this.rootFreq = 32.70; 
+this.scale = SCALES.AEOLIAN;
+this.beatIndex = 0;
+this.nextNoteTime = 0;
+this.timerID = null;
+this.lookahead = 25.0; 
+this.scheduleAheadTime = 0.12; 
+this.visualPulse = 0;
+this.freqData = new Uint8Array(32);
+this.masterVol = 0.7;
+this.musicVol = 0.8;
+this.sfxVol = 0.9;
+this.noiseBuffer = null;
+}
+init() {
+if (!this.ctx) {
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+this.ctx = new AudioContext();
+this.masterGain = this.ctx.createGain();
+this.masterGain.gain.value = this.masterVol;
+this.masterGain.connect(this.ctx.destination);
+this.musicGain = this.ctx.createGain();
+this.musicGain.gain.value = this.musicVol;
+this.musicGain.connect(this.masterGain);
+this.sfxGain = this.ctx.createGain();
+this.sfxGain.gain.value = this.sfxVol;
+this.sfxGain.connect(this.masterGain);
+this.analyser = this.ctx.createAnalyser();
+this.analyser.fftSize = 64;
+this.masterGain.connect(this.analyser);
+this.createNoiseBuffer();
+}
+if (this.ctx.state === 'suspended') {
+this.ctx.resume();
+}
+}
+createNoiseBuffer() {
+if (!this.ctx) return;
+const bufferSize = this.ctx.sampleRate * 1.0;
+this.noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+const output = this.noiseBuffer.getChannelData(0);
+for (let i = 0; i < bufferSize; i++) {
+output[i] = Math.random() * 2 - 1;
+}
+}
+setVolumes(master, music, sfx) {
+this.masterVol = master;
+this.musicVol = music;
+this.sfxVol = sfx;
+if (this.masterGain) this.masterGain.gain.setValueAtTime(master, this.ctx.currentTime);
+if (this.musicGain) this.musicGain.gain.setValueAtTime(music, this.ctx.currentTime);
+if (this.sfxGain) this.sfxGain.gain.setValueAtTime(sfx, this.ctx.currentTime);
+}
+getFreq(scaleDegree, octaveOffset = 0) {
+const octave = Math.floor(scaleDegree / this.scale.length) + octaveOffset;
+const semitoneIndex = (scaleDegree % this.scale.length + this.scale.length) % this.scale.length;
+const semitones = this.scale[semitoneIndex] + octave * 12;
+return this.rootFreq * Math.pow(2, semitones / 12);
+}
+setTrack(config) {
+if (!config) return;
+this.bpm = config.bpm || 140;
+this.rootFreq = config.rootFreq || 32.70; 
+this.scale = SCALES[config.scale] || SCALES.AEOLIAN;
+}
+scheduleNote() {
+const t = this.nextNoteTime;
+const beat = this.beatIndex % 16;
+const bar = Math.floor(this.beatIndex / 16) % 8;
+if (beat % 4 === 0) {
+const osc = this.ctx.createOscillator();
+const gain = this.ctx.createGain();
+osc.frequency.setValueAtTime(140, t);
+osc.frequency.exponentialRampToValueAtTime(25, t + 0.18);
+gain.gain.setValueAtTime(0.85, t);
+gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+osc.connect(gain);
+gain.connect(this.musicGain);
+osc.start(t);
+osc.stop(t + 0.2);
+this.visualPulse = 1.0;
+}
+if (beat === 4 || beat === 12) {
+if (this.noiseBuffer) {
+const noise = this.ctx.createBufferSource();
+noise.buffer = this.noiseBuffer;
+const filter = this.ctx.createBiquadFilter();
+filter.type = 'highpass';
+filter.frequency.setValueAtTime(1200, t);
+const gain = this.ctx.createGain();
+gain.gain.setValueAtTime(0.35, t);
+gain.gain.exponentialRampToValueAtTime(0.01, t + 0.16);
+noise.connect(filter);
+filter.connect(gain);
+gain.connect(this.musicGain);
+noise.start(t);
+noise.stop(t + 0.16);
+}
+}
+if (beat % 2 !== 0) {
+const osc = this.ctx.createOscillator();
+const gain = this.ctx.createGain();
+osc.type = 'square';
+osc.frequency.setValueAtTime(9000, t);
+gain.gain.setValueAtTime(beat % 4 === 2 ? 0.12 : 0.06, t);
+gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+osc.connect(gain);
+gain.connect(this.musicGain);
+osc.start(t);
+osc.stop(t + 0.04);
+}
+const bassDegreePattern = [0, 0, 2, 0, 3, 0, 4, 2];
+const baseDegree = bassDegreePattern[beat % 8] + (bar >= 4 ? 1 : 0);
+const bassFreq = this.getFreq(baseDegree, 0);
+const bOsc = this.ctx.createOscillator();
+const bGain = this.ctx.createGain();
+const bFilter = this.ctx.createBiquadFilter();
+bOsc.type = (bar % 2 === 0) ? 'sawtooth' : 'triangle';
+bOsc.frequency.setValueAtTime(bassFreq, t);
+bFilter.type = 'lowpass';
+bFilter.frequency.setValueAtTime(500 + (beat % 4) * 220, t);
+bFilter.frequency.exponentialRampToValueAtTime(90, t + 0.11);
+bGain.gain.setValueAtTime(0.35, t);
+bGain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+bOsc.connect(bFilter);
+bFilter.connect(bGain);
+bGain.connect(this.musicGain);
+bOsc.start(t);
+bOsc.stop(t + 0.12);
+if (beat % 2 === 0) {
+const arpStep = Math.floor(beat / 2);
+const arpNotes = [0, 2, 4, 7, 9, 7, 4, 2];
+const arpDegree = arpNotes[arpStep % arpNotes.length] + (bar % 4);
+const leadFreq = this.getFreq(arpDegree, 3); 
+const lOsc = this.ctx.createOscillator();
+const lGain = this.ctx.createGain();
+lOsc.type = 'square';
+lOsc.frequency.setValueAtTime(leadFreq, t);
+lGain.gain.setValueAtTime(0.08, t);
+lGain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+lOsc.connect(lGain);
+lGain.connect(this.musicGain);
+lOsc.start(t);
+lOsc.stop(t + 0.14);
+}
+}
+nextNote() {
+const secondsPerBeat = 60.0 / (this.bpm * 4); 
+this.nextNoteTime += secondsPerBeat;
+this.beatIndex++;
+}
+scheduler() {
+while (this.nextNoteTime < this.ctx.currentTime + this.scheduleAheadTime) {
+this.scheduleNote();
+this.nextNote();
+}
+this.timerID = setTimeout(() => this.scheduler(), this.lookahead);
+}
+start(trackConfig) {
+this.init();
+if (trackConfig) this.setTrack(trackConfig);
+if (this.isPlaying) return;
+this.isPlaying = true;
+this.beatIndex = 0;
+this.nextNoteTime = this.ctx.currentTime + 0.05;
+this.scheduler();
+}
+stop() {
+this.isPlaying = false;
+clearTimeout(this.timerID);
+}
+playSFX(type) {
+if (!this.ctx) return;
+this.init();
+const t = this.ctx.currentTime;
+const osc = this.ctx.createOscillator();
+const gain = this.ctx.createGain();
+osc.connect(gain);
+gain.connect(this.sfxGain);
+switch (type) {
+case 'jump':
+osc.type = 'square';
+osc.frequency.setValueAtTime(180, t);
+osc.frequency.exponentialRampToValueAtTime(360, t + 0.09);
+gain.gain.setValueAtTime(0.25, t);
+gain.gain.exponentialRampToValueAtTime(0.01, t + 0.09);
+osc.start(t);
+osc.stop(t + 0.09);
+break;
+case 'crash':
+osc.type = 'sawtooth';
+osc.frequency.setValueAtTime(120, t);
+osc.frequency.exponentialRampToValueAtTime(15, t + 0.35);
+gain.gain.setValueAtTime(0.6, t);
+gain.gain.exponentialRampToValueAtTime(0.01, t + 0.35);
+if (this.noiseBuffer) {
+const noise = this.ctx.createBufferSource();
+noise.buffer = this.noiseBuffer;
+const nGain = this.ctx.createGain();
+nGain.gain.setValueAtTime(0.4, t);
+nGain.gain.exponentialRampToValueAtTime(0.01, t + 0.35);
+noise.connect(nGain);
+nGain.connect(this.sfxGain);
+noise.start(t);
+noise.stop(t + 0.35);
+}
+osc.start(t);
+osc.stop(t + 0.35);
+break;
+case 'orb':
+osc.type = 'sine';
+osc.frequency.setValueAtTime(523.25, t);
+osc.frequency.exponentialRampToValueAtTime(1046.5, t + 0.12);
+gain.gain.setValueAtTime(0.35, t);
+gain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+osc.start(t);
+osc.stop(t + 0.12);
+break;
+case 'pad':
+osc.type = 'triangle';
+osc.frequency.setValueAtTime(261.6, t);
+osc.frequency.exponentialRampToValueAtTime(880, t + 0.18);
+gain.gain.setValueAtTime(0.4, t);
+gain.gain.exponentialRampToValueAtTime(0.01, t + 0.18);
+osc.start(t);
+osc.stop(t + 0.18);
+break;
+case 'gravity':
+osc.type = 'sawtooth';
+osc.frequency.setValueAtTime(800, t);
+osc.frequency.exponentialRampToValueAtTime(200, t + 0.15);
+gain.gain.setValueAtTime(0.3, t);
+gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+osc.start(t);
+osc.stop(t + 0.15);
+break;
+case 'coin':
+osc.type = 'sine';
+osc.frequency.setValueAtTime(987.77, t); 
+osc.frequency.setValueAtTime(1318.51, t + 0.08); 
+gain.gain.setValueAtTime(0.4, t);
+gain.gain.exponentialRampToValueAtTime(0.01, t + 0.28);
+osc.start(t);
+osc.stop(t + 0.28);
+break;
+case 'speed':
+osc.type = 'sawtooth';
+osc.frequency.setValueAtTime(300, t);
+osc.frequency.exponentialRampToValueAtTime(1200, t + 0.2);
+gain.gain.setValueAtTime(0.35, t);
+gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+osc.start(t);
+osc.stop(t + 0.2);
+break;
+case 'portal':
+osc.type = 'triangle';
+osc.frequency.setValueAtTime(200, t);
+osc.frequency.exponentialRampToValueAtTime(600, t + 0.2);
+gain.gain.setValueAtTime(0.3, t);
+gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+osc.start(t);
+osc.stop(t + 0.2);
+break;
+case 'victory':
+const notes = [523.25, 659.25, 783.99, 1046.50];
+notes.forEach((freq, i) => {
+const o = this.ctx.createOscillator();
+const g = this.ctx.createGain();
+o.type = 'sine';
+o.frequency.value = freq;
+g.gain.setValueAtTime(0.25, t + i * 0.08);
+g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.4);
+o.connect(g);
+g.connect(this.sfxGain);
+o.start(t + i * 0.08);
+o.stop(t + i * 0.08 + 0.4);
+});
+break;
+}
+}
+getVisualizerData() {
+if (!this.analyser) return [];
+this.analyser.getByteFrequencyData(this.freqData);
+return Array.from(this.freqData.slice(0, 16));
+}
+}
+export const EngineAudio = new CryoAudioEngine();

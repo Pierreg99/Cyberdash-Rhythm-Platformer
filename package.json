@@ -1,0 +1,22 @@
+{
+  "name": "cyber-dash",
+  "version": "10.0.0",
+  "description": "Cyber Dash // Kinetic Engine Omega V10 - Cyberpunk Rhythm Platformer",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "node build.js",
+    "serve": "node server.js",
+    "push:gdrive": "node gdrive_upload.js"
+  },
+  "keywords": [
+    "cyberpunk",
+    "geometry-dash",
+    "canvas",
+    "web-audio-api",
+    "rhythm-game"
+  ],
+  "author": "Antigravity // DeepMind",
+  "license": "MIT"
+}

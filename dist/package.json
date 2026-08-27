@@ -1,0 +1,8 @@
+{
+  "name": "cyber-dash-dist",
+  "version": "10.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  }
+}

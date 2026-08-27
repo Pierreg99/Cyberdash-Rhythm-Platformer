@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CYBER DASH // KINETIC ENGINE OMEGA V10</title>
+    <!-- Tailwind CSS for rapid responsive utility layouts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#050508',
+                        panel: '#0a0a14',
+                        cyan: '#00f0ff',
+                        gold: '#ffd700',
+                        magenta: '#ff003c',
+                        bio: '#39ff14',
+                        purple: '#b026ff',
+                        orange: '#ff7700'
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Consolas', 'monospace'],
+                        sans: ['Segoe UI', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="w-screen h-screen bg-obsidian text-white overflow-hidden select-none">
+    <!-- CRT Scanline Filter -->
+    <div class="crt-overlay"></div>
+
+    <!-- Toast Container for Real-Time Achievements -->
+    <div id="achievement-toast-container"></div>
+
+    <!-- Main Game & Engine Container -->
+    <div id="engine-container" class="relative w-full h-full flex items-center justify-center bg-obsidian">
+        <!-- 2D Canvas Engine -->
+        <canvas id="render-core" class="w-full h-full"></canvas>
+
+        <!-- ===================================================================
+             IN-GAME HUD LAYER
+        =================================================================== -->
+        <div id="hud-layer" class="absolute top-0 left-0 w-full p-4 flex justify-between items-start pointer-events-none hidden z-10">
+            <!-- Progress & Stats Tracker -->
+            <div class="w-1/2 max-w-md">
+                <div class="kinetic-glass h-4 rounded-full overflow-hidden p-0.5 border-cyan/40 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+                    <div id="progress-fill" class="h-full bg-gradient-to-r from-cyan via-gold to-bio rounded-full w-0 transition-all duration-75 ease-linear shadow-[0_0_12px_#00f0ff]"></div>
+                </div>
+                <div class="flex justify-between items-center mt-1.5 px-2">
+                    <span id="progress-pct" class="text-sm font-mono font-black text-cyan neon-text">0%</span>
+                    <div class="flex items-center gap-1.5 h-3">
+                        <div class="eq-bar h-2"></div>
+                        <div class="eq-bar h-4"></div>
+                        <div class="eq-bar h-1"></div>
+                        <div class="eq-bar h-3"></div>
+                    </div>
+                    <span id="attempt-counter" class="text-xs font-mono font-bold text-gray-400">ATTEMPT 1</span>
+                </div>
+            </div>
+
+            <!-- Controls (Pause & Editor Return) -->
+            <div class="flex gap-3 pointer-events-auto">
+                <button id="btn-editor-return-hud" class="kinetic-glass btn-cyber px-4 py-2 rounded-lg text-xs font-bold font-mono text-gold border-gold/40 hover:text-white hidden">
+                    <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"></path></svg>
+                    RETURN TO LAB
+                </button>
+                <button id="btn-in-game-pause" class="kinetic-glass btn-cyber px-4 py-2 rounded-lg text-xs font-bold font-mono text-cyan hover:text-white transition-colors">
+                    <svg class="w-4 h-4 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> PAUSE
+                </button>
+            </div>
+        </div>
+
+        <!-- ===================================================================
+             PRACTICE MODE HUD OVERLAY
+        =================================================================== -->
+        <div id="practice-hud" class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 pointer-events-auto hidden z-10">
+            <button id="btn-cp-add" class="kinetic-glass btn-cyber btn-bio px-6 py-3 rounded-xl flex items-center gap-2 text-sm font-black shadow-[0_0_20px_rgba(57,255,20,0.3)]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                CHECKPOINT [Z]
+            </button>
+            <button id="btn-cp-del" class="kinetic-glass btn-cyber btn-danger px-6 py-3 rounded-xl flex items-center gap-2 text-sm font-black shadow-[0_0_20px_rgba(255,0,60,0.3)]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                REMOVE [X]
+            </button>
+        </div>
+
+        <!-- ===================================================================
+             MAIN MENU & NAVIGATION LAYER
+        =================================================================== -->
+        <div id="menu-layer" class="absolute inset-0 flex flex-col items-center justify-between p-6 md:p-10 bg-obsidian/90 backdrop-blur-md z-20 transition-opacity duration-300">
+            <!-- Top App Bar (Android / Cyberpunk HUD) -->
+            <div class="w-full flex justify-between items-center px-4 md:px-8 py-3 kinetic-glass border-b border-cyan/20 z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 rounded-full bg-cyan animate-pulse shadow-[0_0_10px_#00f0ff]"></div>
+                    <span class="text-xs font-mono tracking-[0.25em] text-cyan uppercase font-bold">CYBER DASH // APP SUITE</span>
+                </div>
+                <div class="flex items-center gap-3 md:gap-5 text-sm font-mono font-bold">
+                    <button id="btn-daily-faucet" class="btn-cyber px-2.5 py-1 rounded-lg text-[11px] font-mono font-black text-gold border-gold/40 hover:border-gold flex items-center gap-1">
+                        🎁 <span id="faucet-label">FREE CLAIM</span>
+                    </button>
+                    <!-- In-Game Currency -->
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-gold/30 text-gold shadow-[0_0_10px_rgba(255,215,0,0.2)]">
+                        <span>🪙</span> <span id="header-bits-count">2,500</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 border border-cyan/30 text-cyan shadow-[0_0_10px_rgba(0,240,255,0.2)]">
+                        <span>💎</span> <span id="header-orbs-count">25</span>
+                    </div>
+                    <button id="btn-oauth-profile" class="btn-cyber px-3 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-2 border-cyan/40 hover:border-cyan">
+                        <div id="header-oauth-badge" class="w-2 h-2 rounded-full bg-gray-600"></div>
+                        <span id="header-oauth-name">GUEST PILOT</span>
+                    </button>
+                    <span id="fps-counter" class="text-xs text-gray-500 font-mono">60 FPS</span>
+                </div>
+            </div>
+
+            <!-- Main Title & Cyber Navigation Bar -->
+            <div class="text-center my-auto flex flex-col items-center w-full max-w-5xl">
+                <h1 class="text-4xl md:text-7xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-cyan via-white to-bio neon-text mt-2">
+                    CYBER DASH
+                </h1>
+                <h2 class="text-xs font-mono tracking-[0.3em] text-gold neon-text-gold mb-5">
+                    CYBER CORE PROTOCOL // ANDROID APP SUITE
+                </h2>
+
+                <!-- Navigation Tabs (App Navigation Bar) -->
+                <div class="flex flex-wrap justify-center gap-1.5 md:gap-3 kinetic-glass rounded-2xl p-1.5 mb-5 border-cyan/30">
+                    <button class="nav-tab active" data-tab="levels">🎯 SECTORS</button>
+                    <button class="nav-tab" data-tab="store">🛒 BLACK MARKET</button>
+                    <button class="nav-tab" data-tab="garage">🦸 CHARACTERS</button>
+                    <button class="nav-tab" data-tab="pass">📜 CYBER PASS</button>
+                    <button class="nav-tab" data-tab="editor">🛠️ LAB</button>
+                    <button class="nav-tab" data-tab="databank">📊 DATA</button>
+                    <button class="nav-tab" data-tab="settings">⚙️ SYSTEM</button>
+                </div>
+
+                <!-- =======================================================
+                     VIEW 1: LEVEL SELECT HUB & SECTOR MATRIX
+                ======================================================= -->
+                <div id="panel-levels" class="menu-view-panel w-full max-w-5xl">
+                    <!-- Difficulty / Tier Filter Pills & Modifiers Toggle -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-cyan/50 text-cyan bg-cyan/15 active" data-filter="ALL">✨ ALL (12)</button>
+                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-bio/40 text-bio bg-bio/10" data-filter="EASY">🟢 EASY TIER (4)</button>
+                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-purple/40 text-purple bg-purple/10" data-filter="HARD">🟣 HARD TIER (4)</button>
+                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-magenta/40 text-magenta bg-magenta/10" data-filter="OMEGA">🔴 OMEGA TIER (4)</button>
+                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-gold/40 text-gold bg-gold/10" data-filter="CUSTOM">🛠️ CUSTOM</button>
+                        </div>
+                        <button id="btn-toggle-modifiers" class="px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-cyan/40 text-cyan bg-panel hover:bg-cyan/20 transition-all flex items-center gap-1.5">
+                            ⚙️ TIER MODIFIERS
+                        </button>
+                    </div>
+
+                    <!-- Configurable Tier Modifiers Drawer -->
+                    <div id="tier-config-drawer" class="kinetic-glass rounded-2xl p-4 mb-4 border-cyan/40 hidden text-left animate-fade-in">
+                        <div class="flex justify-between items-center mb-3 pb-2 border-b border-white/10">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-mono font-black text-cyan uppercase tracking-wider">🎛️ LEVEL SIMULATION MODIFIERS & HITBOX CONFIG</span>
+                            </div>
+                            <span class="text-[10px] font-mono text-gray-400">CONFIG APPLIES LIVE TO ALL SECTORS</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                            <!-- Speed Scaling -->
+                            <div>
+                                <label class="text-gray-400 block mb-1.5 font-bold uppercase">SIMULATION SPEED</label>
+                                <div class="grid grid-cols-4 gap-1">
+                                    <button class="speed-mod-btn px-2 py-1.5 rounded border border-white/10 text-center font-bold" data-speed="0.75">0.75x<br><span class="text-[9px] text-gray-500 font-normal">CHILL</span></button>
+                                    <button class="speed-mod-btn px-2 py-1.5 rounded border border-cyan/40 text-cyan bg-cyan/15 text-center font-bold active" data-speed="1.0">1.0x<br><span class="text-[9px] text-cyan font-normal">RANK</span></button>
+                                    <button class="speed-mod-btn px-2 py-1.5 rounded border border-white/10 text-center font-bold" data-speed="1.25">1.25x<br><span class="text-[9px] text-purple font-normal">HYPER</span></button>
+                                    <button class="speed-mod-btn px-2 py-1.5 rounded border border-white/10 text-center font-bold" data-speed="1.5">1.5x<br><span class="text-[9px] text-magenta font-normal">OMEGA</span></button>
+                                </div>
+                            </div>
+
+                            <!-- Hitbox Forgiveness -->
+                            <div>
+                                <label class="text-gray-400 block mb-1.5 font-bold uppercase">COLLISION HITBOXES</label>
+                                <div class="grid grid-cols-3 gap-1">
+                                    <button class="hitbox-mod-btn px-2 py-2 rounded border border-white/10 text-center font-bold" data-hitbox="CASUAL">CASUAL<br><span class="text-[9px] text-bio font-normal">+4px Safe</span></button>
+                                    <button class="hitbox-mod-btn px-2 py-2 rounded border border-cyan/40 text-cyan bg-cyan/15 text-center font-bold active" data-hitbox="NORMAL">NORMAL<br><span class="text-[9px] text-cyan font-normal">Standard</span></button>
+                                    <button class="hitbox-mod-btn px-2 py-2 rounded border border-white/10 text-center font-bold" data-hitbox="OMEGA">OMEGA<br><span class="text-[9px] text-magenta font-normal">Pixel-Exact</span></button>
+                                </div>
+                            </div>
+
+                            <!-- Practice Auto-Checkpoints & Audio Pulse -->
+                            <div>
+                                <label class="text-gray-400 block mb-1.5 font-bold uppercase">TRAIL ECHOES & HUD</label>
+                                <div class="flex flex-col gap-1.5">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="chk-auto-checkpoints" class="accent-cyan w-4 h-4">
+                                        <span>Auto-Drop Practice Checkpoints</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="chk-ghost-trails" checked class="accent-cyan w-4 h-4">
+                                        <span>Kinetic Ghost Particles</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Featured Level Spotlight Card -->
+                    <div class="kinetic-glass rounded-2xl p-5 mb-5 border-cyan/30 relative">
+                        <div class="flex items-center justify-between mb-3">
+                            <button id="btn-prev-lvl" class="btn-cyber p-2.5 rounded-xl text-cyan">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            </button>
+                            <div class="text-center flex-1 px-4">
+                                <span id="lvl-id-label" class="text-[10px] font-mono text-gray-400 tracking-widest block font-bold">TARGET 01</span>
+                                <h3 id="lvl-name-label" class="text-2xl md:text-3xl font-black tracking-wide uppercase">INITIATION</h3>
+                                <p id="lvl-subtitle-label" class="text-xs font-mono text-cyan/70 mt-0.5">The Genesis Matrix</p>
+                                <div class="flex justify-center items-center gap-3 mt-1.5">
+                                    <span id="lvl-diff-badge" class="px-3 py-0.5 rounded-full text-[10px] font-black bg-bio/10 text-bio border border-bio/30">EASY (1★)</span>
+                                    <div id="lvl-coins-container" class="flex gap-1.5"></div>
+                                </div>
+                            </div>
+                            <button id="btn-next-lvl" class="btn-cyber p-2.5 rounded-xl text-cyan">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </button>
+                        </div>
+                        <!-- Best Completion Progress Bar -->
+                        <div class="bg-panel rounded-full h-2 overflow-hidden border border-gray-800 mt-3">
+                            <div id="lvl-best-bar" class="bg-cyan h-full rounded-full w-0 shadow-[0_0_10px_#00f0ff] transition-all duration-300"></div>
+                        </div>
+                        <p class="text-center text-[10px] font-mono text-gray-400 mt-1.5">
+                            SECTOR INTEGRITY: <span id="lvl-best-txt" class="text-cyan font-black">0%</span>
+                        </p>
+
+                        <!-- Big Play Buttons for Spotlight -->
+                        <div class="flex gap-3 mt-3">
+                            <button id="btn-hub-play" class="flex-1 btn-cyber py-3 rounded-xl text-sm font-black text-cyan flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> ENGAGE TARGET
+                            </button>
+                            <button id="btn-hub-practice" class="flex-1 btn-cyber btn-gold py-3 rounded-xl text-sm font-black flex justify-center items-center gap-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg> SIMULATION
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sector Cards Matrix Grid -->
+                    <div class="text-left mb-2 flex justify-between items-center px-1">
+                        <span class="text-xs font-mono text-cyan uppercase font-bold tracking-widest">SECTOR MATRIX (12 TRACKS)</span>
+                        <span class="text-[10px] font-mono text-gray-400">CLICK CARD TO ENGAGE MISSION</span>
+                    </div>
+                    <div id="level-select-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-80 overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- =======================================================
+                     VIEW 2: BLACK MARKET (CYBER STORE & PURCHASES)
+                ======================================================= -->
+                <div id="panel-store" class="menu-view-panel w-full max-w-5xl hidden">
+                    <!-- Featured Promo Card -->
+                    <div class="kinetic-glass rounded-2xl p-5 mb-5 border-gold/40 flex flex-col md:flex-row justify-between items-center gap-4 bg-gradient-to-r from-gold/10 via-obsidian to-purple/10">
+                        <div class="text-left">
+                            <span class="px-2.5 py-0.5 rounded-full text-[9px] font-mono font-black bg-gold/20 text-gold border border-gold/50">🔥 FEATURED APEX DEAL</span>
+                            <h3 class="text-2xl font-black uppercase text-gold mt-1 neon-text-gold">CYBER EMPEROR (OMEGA CHASSIS)</h3>
+                            <p class="text-xs font-mono text-gray-300 max-w-lg mt-0.5">Includes Golden Crown accessory, Particle Halo, and exclusive Dark Void trail FX.</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button id="btn-buy-featured-deal" class="btn-cyber btn-gold px-6 py-3 rounded-xl text-sm font-black flex items-center gap-2 shadow-[0_0_20px_rgba(255,215,0,0.4)]">
+                                <span>💎 50 ORBS</span> // UNLOCK APEX
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Store Catalog Grid -->
+                    <div class="text-left mb-2 flex justify-between items-center px-1">
+                        <span class="text-xs font-mono text-cyan uppercase font-bold tracking-widest">PILOT CHARACTERS & TRAIL ARMORY</span>
+                        <span class="text-[10px] font-mono text-gray-400">INSTANT INVENTORY UNLOCK</span>
+                    </div>
+                    <div id="store-catalog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-80 overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- =======================================================
+                     VIEW 3: CHARACTERS & ARMORY (GARAGE)
+                ======================================================= -->
+                <div id="panel-garage" class="menu-view-panel w-full max-w-4xl hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <!-- Live Character Preview Box -->
+                        <div class="kinetic-glass rounded-2xl p-5 border-cyan/40 flex flex-col items-center justify-center text-center">
+                            <div id="garage-player-preview" class="w-24 h-24 rounded-2xl bg-panel border-2 border-cyan flex items-center justify-center relative shadow-[0_0_30px_rgba(0,240,255,0.4)] mb-3">
+                                <div id="garage-cube-core" class="w-14 h-14 bg-cyan rounded-lg flex items-center justify-center transition-colors relative">
+                                    <div id="garage-cube-accent" class="w-6 h-6 bg-gold rounded transition-colors"></div>
+                                </div>
+                            </div>
+                            <h4 id="armory-active-name" class="text-base font-black text-cyan uppercase tracking-wider">CYBER CUBE</h4>
+                            <span id="armory-active-type" class="text-[10px] font-mono text-gold font-bold">BALANCED CLASS</span>
+                        </div>
+
+                        <!-- Color & Trail Customizer -->
+                        <div class="md:col-span-2 kinetic-glass rounded-2xl p-4 border-cyan/30 text-left flex flex-col justify-between">
+                            <div>
+                                <label class="text-[10px] font-mono text-gray-400 block mb-1 font-bold uppercase tracking-wider">PRIMARY CHROME</label>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <div class="color-picker-primary w-6 h-6 rounded-full bg-[#00f0ff] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#00f0ff]" data-color="#00f0ff"></div>
+                                    <div class="color-picker-primary w-6 h-6 rounded-full bg-[#39ff14] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#39ff14]" data-color="#39ff14"></div>
+                                    <div class="color-picker-primary w-6 h-6 rounded-full bg-[#ffd700] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#ffd700]" data-color="#ffd700"></div>
+                                    <div class="color-picker-primary w-6 h-6 rounded-full bg-[#ff003c] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#ff003c]" data-color="#ff003c"></div>
+                                    <div class="color-picker-primary w-6 h-6 rounded-full bg-[#b026ff] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#b026ff]" data-color="#b026ff"></div>
+                                    <div class="color-picker-primary w-6 h-6 rounded-full bg-[#ffffff] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#ffffff]" data-color="#ffffff"></div>
+                                </div>
+
+                                <label class="text-[10px] font-mono text-gray-400 block mb-1 font-bold uppercase tracking-wider">ACCENT ENERGY</label>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <div class="color-picker-accent w-6 h-6 rounded-full bg-[#ffd700] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#ffd700]" data-color="#ffd700"></div>
+                                    <div class="color-picker-accent w-6 h-6 rounded-full bg-[#00f0ff] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#00f0ff]" data-color="#00f0ff"></div>
+                                    <div class="color-picker-accent w-6 h-6 rounded-full bg-[#ff00b7] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#ff00b7]" data-color="#ff00b7"></div>
+                                    <div class="color-picker-accent w-6 h-6 rounded-full bg-[#39ff14] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#39ff14]" data-color="#39ff14"></div>
+                                    <div class="color-picker-accent w-6 h-6 rounded-full bg-[#ffffff] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#ffffff]" data-color="#ffffff"></div>
+                                    <div class="color-picker-accent w-6 h-6 rounded-full bg-[#ff7700] cursor-pointer hover:scale-110 transition-transform shadow-[0_0_8px_#ff7700]" data-color="#ff7700"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-[10px] font-mono text-gray-400 block mb-1 font-bold uppercase tracking-wider">EXHAUST TRAIL</label>
+                                <div id="armory-trails-picker" class="flex flex-wrap gap-1.5"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Characters Selection Matrix -->
+                    <div class="text-left mb-2 flex justify-between items-center px-1">
+                        <span class="text-xs font-mono text-cyan uppercase font-bold tracking-widest">PILOT CHASSIS ARMORY (SELECT TO EQUIP)</span>
+                        <span class="text-[10px] font-mono text-gray-400">UNLOCKED IN STORE OR CYBER PASS</span>
+                    </div>
+                    <div id="armory-characters-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 max-h-60 overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- =======================================================
+                     VIEW 4: CYBER PASS & DAILY QUESTS
+                ======================================================= -->
+                <div id="panel-pass" class="menu-view-panel w-full max-w-5xl hidden">
+                    <!-- Season Pass XP Strip -->
+                    <div class="kinetic-glass rounded-2xl p-5 mb-4 border-cyan/40 text-left">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <span class="px-2.5 py-0.5 rounded-full text-[9px] font-mono font-black bg-cyan/20 text-cyan border border-cyan/40">SEASON 01 // KINETIC MATRIX</span>
+                                <h3 class="text-xl font-black uppercase text-white mt-1">CYBER BATTLE PASS</h3>
+                            </div>
+                            <div class="text-right font-mono">
+                                <span class="text-xs text-gray-400">CURRENT XP:</span>
+                                <span id="pass-xp-display" class="text-cyan font-black text-sm ml-1">320 XP</span>
+                            </div>
+                        </div>
+
+                        <!-- Season Pass XP Progress Bar -->
+                        <div class="bg-panel rounded-full h-2.5 overflow-hidden border border-gray-800 my-2">
+                            <div id="pass-xp-bar" class="bg-gradient-to-r from-cyan via-purple to-gold h-full rounded-full w-1/4 shadow-[0_0_12px_#00f0ff] transition-all duration-300"></div>
+                        </div>
+                        <span class="text-[10px] font-mono text-gray-400">EARN XP BY COMPLETING SECTORS, SECRET COINS & DAILY QUESTS</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Daily Quests Column -->
+                        <div class="text-left">
+                            <div class="mb-2 px-1 flex justify-between items-center">
+                                <span class="text-xs font-mono text-gold uppercase font-bold tracking-widest">DAILY MISSION MATRIX</span>
+                                <span class="text-[10px] font-mono text-gray-400">RESETS DAILY</span>
+                            </div>
+                            <div id="daily-quests-container" class="flex flex-col gap-2.5 max-h-72 overflow-y-auto pr-1"></div>
+                        </div>
+
+                        <!-- Season Pass Tiers Column -->
+                        <div class="text-left">
+                            <div class="mb-2 px-1 flex justify-between items-center">
+                                <span class="text-xs font-mono text-cyan uppercase font-bold tracking-widest">PASS REWARD TIERS (1-10)</span>
+                                <span class="text-[10px] font-mono text-gray-400">CLAIM TIERS</span>
+                            </div>
+                            <div id="pass-tiers-container" class="flex flex-col gap-2.5 max-h-72 overflow-y-auto pr-1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =======================================================
+                     VIEW 3: SECTOR LAB (LEVEL EDITOR HUB)
+                ======================================================= -->
+                <div id="panel-editor" class="menu-view-panel w-full max-w-2xl hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <button id="btn-editor-new" class="btn-cyber btn-bio px-5 py-2.5 rounded-xl text-xs font-black">
+                            + CREATE NEW SECTOR
+                        </button>
+                        <button id="btn-editor-import" class="btn-cyber btn-gold px-4 py-2.5 rounded-xl text-xs font-black">
+                            IMPORT SECTOR CODE
+                        </button>
+                    </div>
+                    <div id="custom-levels-container" class="max-h-72 overflow-y-auto flex flex-col gap-3 pr-1"></div>
+                </div>
+
+                <!-- =======================================================
+                     VIEW 4: DATABANK (ACHIEVEMENTS & STATS)
+                ======================================================= -->
+                <div id="panel-databank" class="menu-view-panel w-full max-w-3xl hidden">
+                    <!-- Stats Strip -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                        <div class="kinetic-glass p-3 rounded-xl text-center">
+                            <span class="text-[10px] font-mono text-gray-400 uppercase block">TOTAL JUMPS</span>
+                            <span id="stat-jumps" class="text-xl font-black text-cyan">0</span>
+                        </div>
+                        <div class="kinetic-glass p-3 rounded-xl text-center">
+                            <span class="text-[10px] font-mono text-gray-400 uppercase block">TOTAL ATTEMPTS</span>
+                            <span id="stat-attempts" class="text-xl font-black text-gold">0</span>
+                        </div>
+                        <div class="kinetic-glass p-3 rounded-xl text-center">
+                            <span class="text-[10px] font-mono text-gray-400 uppercase block">SECTORS CLEARED</span>
+                            <span id="stat-clears" class="text-xl font-black text-bio">0</span>
+                        </div>
+                        <div class="kinetic-glass p-3 rounded-xl text-center">
+                            <span class="text-[10px] font-mono text-gray-400 uppercase block">DEMON CLEARS</span>
+                            <span id="stat-demons" class="text-xl font-black text-magenta">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Achievements Matrix -->
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-mono text-cyan uppercase font-bold tracking-widest">CYBER PROTOCOL ACHIEVEMENTS</span>
+                        <button id="btn-oauth-approve-all" class="btn-cyber btn-gold px-3 py-1 rounded-lg text-xs font-bold font-mono shadow-[0_0_12px_rgba(255,215,0,0.3)]">
+                            ⚡ APPROVE ALL (OVERRIDE)
+                        </button>
+                    </div>
+                    <div id="achievements-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- =======================================================
+                     VIEW 5: SYSTEM SETTINGS
+                ======================================================= -->
+                <div id="panel-settings" class="menu-view-panel w-full max-w-xl hidden">
+                    <div class="kinetic-glass rounded-2xl p-6 border-cyan/30 flex flex-col gap-4 text-left">
+                        <div>
+                            <div class="flex justify-between text-xs font-mono text-gray-300 mb-1 font-bold">
+                                <span>MASTER AUDIO</span>
+                            </div>
+                            <input id="setting-master-vol" type="range" min="0" max="100" class="w-full accent-cyan cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-mono text-gray-300 mb-1 font-bold">
+                                <span>SYNTH SOUNDTRACK</span>
+                            </div>
+                            <input id="setting-music-vol" type="range" min="0" max="100" class="w-full accent-gold cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-mono text-gray-300 mb-1 font-bold">
+                                <span>KINETIC SFX</span>
+                            </div>
+                            <input id="setting-sfx-vol" type="range" min="0" max="100" class="w-full accent-bio cursor-pointer">
+                        </div>
+
+                        <hr class="border-gray-800 my-1">
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono text-gray-300 font-bold">CRT SCANLINES</span>
+                            <input id="setting-crt" type="checkbox" class="w-5 h-5 accent-cyan cursor-pointer">
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono text-gray-300 font-bold">SCREEN SHAKE EFFECTS</span>
+                            <input id="setting-shake" type="checkbox" class="w-5 h-5 accent-cyan cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer / Credits -->
+            <div class="text-center text-[10px] font-mono text-gray-600 tracking-widest">
+                CYBER DASH OMEGA // HIGH FREQUENCY PLATFORMER // PRESS [SPACE] OR [TAP]
+            </div>
+        </div>
+
+        <!-- ===================================================================
+             IN-GAME PAUSE MODAL
+        =================================================================== -->
+        <div id="pause-layer" class="absolute inset-0 flex items-center justify-center bg-obsidian/85 backdrop-blur-lg z-30 hidden">
+            <div class="kinetic-glass max-w-md w-full rounded-2xl p-8 text-center border-cyan/40 shadow-[0_0_40px_rgba(0,240,255,0.3)]">
+                <h3 class="text-4xl font-black text-white mb-2 tracking-widest neon-text">PAUSED</h3>
+                <p class="text-xs font-mono text-gray-400 mb-8">OPERATION SUSPENDED</p>
+                <div class="flex flex-col gap-3.5">
+                    <button id="btn-pause-resume" class="btn-cyber py-3.5 rounded-xl font-bold text-cyan">RESUME OPERATION</button>
+                    <button id="btn-pause-restart" class="btn-cyber py-3.5 rounded-xl font-bold text-white">RESTART SEQUENCE</button>
+                    <button id="btn-pause-exit" class="btn-cyber btn-danger py-3.5 rounded-xl font-bold">ABORT TO HUB</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================================================
+             VICTORY SCREEN MODAL
+        =================================================================== -->
+        <div id="victory-modal" class="absolute inset-0 flex items-center justify-center bg-obsidian/90 backdrop-blur-xl z-40 hidden">
+            <div class="kinetic-glass-gold max-w-lg w-full rounded-3xl p-8 text-center border-gold/50 shadow-[0_0_50px_rgba(255,215,0,0.35)]">
+                <div class="text-5xl mb-2 animate-bounce">🏆</div>
+                <h3 class="text-3xl md:text-4xl font-black text-gold neon-text-gold tracking-wide uppercase">SEQUENCE COMPLETED</h3>
+                <h4 id="victory-lvl-name" class="text-xl font-black text-white tracking-widest uppercase mt-1">SECTOR NAME</h4>
+
+                <div class="grid grid-cols-3 gap-3 my-8">
+                    <div class="kinetic-glass p-3 rounded-xl">
+                        <span class="text-[10px] font-mono text-gray-400 uppercase block">ATTEMPTS</span>
+                        <span id="victory-attempts" class="text-2xl font-black text-cyan">1</span>
+                    </div>
+                    <div class="kinetic-glass p-3 rounded-xl">
+                        <span class="text-[10px] font-mono text-gray-400 uppercase block">STARS</span>
+                        <span id="victory-stars" class="text-2xl font-black text-gold">+1 ★</span>
+                    </div>
+                    <div class="kinetic-glass p-3 rounded-xl">
+                        <span class="text-[10px] font-mono text-gray-400 uppercase block">CYBER CORES</span>
+                        <div id="victory-coins-wrap" class="flex justify-center gap-1 mt-1"></div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button id="btn-victory-next" class="flex-1 btn-cyber btn-gold py-4 rounded-xl text-base font-black">
+                        NEXT SECTOR
+                    </button>
+                    <button id="btn-victory-hub" class="flex-1 btn-cyber py-4 rounded-xl text-base font-black text-cyan">
+                        RETURN TO HUB
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================================================
+             CYBER OAUTH PILOT PROFILE MODAL
+        =================================================================== -->
+        <div id="oauth-modal" class="absolute inset-0 flex items-center justify-center bg-obsidian/90 backdrop-blur-xl z-50 hidden">
+            <div class="kinetic-glass max-w-md w-full rounded-3xl p-8 text-center border-cyan/40 shadow-[0_0_50px_rgba(0,240,255,0.3)]">
+                <div class="w-16 h-16 rounded-2xl bg-panel border-2 border-cyan mx-auto flex items-center justify-center text-3xl mb-3 shadow-[0_0_20px_rgba(0,240,255,0.5)]">
+                    ⚡
+                </div>
+                <h3 class="text-2xl font-black text-white uppercase tracking-wider neon-text">CYBER PILOT OAUTH</h3>
+                <p class="text-xs font-mono text-cyan/70 mt-0.5 mb-6">MATRIX IDENTITY & CLEARANCE PROTOCOL</p>
+
+                <!-- Profile Info Box -->
+                <div class="bg-panel/80 rounded-2xl p-4 border border-gray-800 text-left flex flex-col gap-2.5 mb-6">
+                    <div class="flex justify-between items-center text-xs font-mono">
+                        <span class="text-gray-400">CALLSIGN:</span>
+                        <span id="oauth-pilot-display" class="text-cyan font-bold">GUEST_PILOT</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs font-mono">
+                        <span class="text-gray-400">PILOT ID:</span>
+                        <span id="oauth-id-display" class="text-gray-300 font-bold">CYBER-NULL</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs font-mono">
+                        <span class="text-gray-400">CLEARANCE:</span>
+                        <span id="oauth-clearance-display" class="text-gray-500 font-bold">GUEST_ACCESS</span>
+                    </div>
+                </div>
+
+                <!-- Input Name / Connect Form -->
+                <div class="flex flex-col gap-3 mb-6">
+                    <input id="oauth-input-name" type="text" placeholder="ENTER PILOT CALLSIGN..." class="bg-panel border border-cyan/40 px-4 py-2.5 rounded-xl text-sm font-mono text-white text-center focus:border-cyan" value="CYBER_PILOT_01">
+                    <button id="btn-oauth-connect" class="btn-cyber py-3 rounded-xl font-bold text-cyan">
+                        AUTHORIZE CYBER ID (OAUTH 2.0)
+                    </button>
+                    <button id="btn-oauth-disconnect" class="btn-cyber btn-danger py-2.5 rounded-xl font-bold text-xs hidden">
+                        REVOKE AUTH TOKEN
+                    </button>
+                </div>
+
+                <!-- Master Clearance Override / Approve All -->
+                <div class="p-3.5 rounded-2xl bg-gold/10 border border-gold/40 mb-6 flex flex-col gap-2">
+                    <span class="text-[10px] font-mono text-gold font-black tracking-widest uppercase">ADMIN CLEARANCE OVERRIDE</span>
+                    <button id="btn-oauth-approve-all" class="btn-cyber btn-gold py-2.5 rounded-xl text-xs font-black shadow-[0_0_15px_rgba(255,215,0,0.3)]">
+                        👑 APPROVE ALL 6 SECTORS & 12 TROPHIES
+                    </button>
+                </div>
+
+                <!-- Close & Reset -->
+                <div class="flex gap-3">
+                    <button id="btn-oauth-reset" class="flex-1 btn-cyber btn-danger py-2.5 rounded-xl text-xs font-bold">
+                        RESET PROGRESS
+                    </button>
+                    <button id="btn-oauth-close" class="flex-1 btn-cyber py-2.5 rounded-xl text-xs font-bold text-white">
+                        DISMISS
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================================================================
+             VISUAL LEVEL EDITOR OVERLAY (SECTOR LAB)
+        =================================================================== -->
+        <div id="editor-ui-overlay" class="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none z-20 hidden">
+            <!-- Top Controls Bar -->
+            <div class="kinetic-glass p-3 rounded-2xl flex flex-wrap justify-between items-center gap-3 pointer-events-auto border-cyan/40">
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-mono font-bold text-cyan">SECTOR LAB //</span>
+                    <input id="editor-lvl-name" type="text" class="bg-obsidian border border-cyan/40 px-3 py-1.5 rounded text-xs font-mono text-white w-40" value="MY CYBER SECTOR">
+                    <span class="text-xs font-mono text-gray-400">LENGTH:</span>
+                    <input id="editor-lvl-len" type="number" class="bg-obsidian border border-cyan/40 px-2 py-1.5 rounded text-xs font-mono text-white w-20" value="200">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="btn-tool-place" class="btn-cyber px-3 py-1.5 rounded text-xs font-bold selected">PLACE TOOL</button>
+                    <button id="btn-tool-erase" class="btn-cyber btn-danger px-3 py-1.5 rounded text-xs font-bold">ERASE TOOL</button>
+                    <button id="btn-editor-test" class="btn-cyber btn-gold px-4 py-1.5 rounded text-xs font-bold">▶ TEST RUN</button>
+                    <button id="btn-editor-save" class="btn-cyber btn-bio px-3 py-1.5 rounded text-xs font-bold">💾 SAVE</button>
+                    <button id="btn-editor-export" class="btn-cyber px-3 py-1.5 rounded text-xs font-bold">EXPORT</button>
+                    <button id="btn-editor-exit" class="btn-cyber btn-danger px-3 py-1.5 rounded text-xs font-bold">EXIT</button>
+                </div>
+            </div>
+
+            <!-- Bottom Object Palette -->
+            <div class="kinetic-glass p-3 rounded-2xl pointer-events-auto border-cyan/40 max-w-5xl mx-auto w-full">
+                <span class="text-[10px] font-mono text-cyan block mb-2 font-bold uppercase tracking-wider">OBJECT MATRIX PALETTE (CLICK GRID TO PLACE // RIGHT-CLICK TO ERASE)</span>
+                <div id="editor-palette-grid" class="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Module Script -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
