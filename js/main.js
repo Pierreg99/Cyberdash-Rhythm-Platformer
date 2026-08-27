@@ -496,25 +496,37 @@ export class CyberDashGame {
                 this.player.s = cp.isMini ? this.player.baseSize * 0.65 : this.player.baseSize;
                 this.player.setSpeed(cp.speedMult);
                 this.player.dead = false;
+                this.player.frozen = false;
+                this.player.freezeTimer = 0;
                 this.input.tap = false;
+                this.input.hold = false;
             } else {
                 this.attempts++;
                 StorageManager.incrementStat('totalAttempts', 1);
-                document.getElementById('attempt-counter').innerText = `ATTEMPT ${this.attempts}`;
+                const attemptEl = document.getElementById('attempt-counter');
+                if (attemptEl) attemptEl.innerText = `ATTEMPT ${this.attempts}`;
                 this.resetRun();
             }
-        }, 550);
+        }, 500);
     }
 
     resetRun() {
         this.player.reset();
         this.player.setCustomization(this.menu.garageConfig);
         this.player.y = this.groundY - this.player.s;
+        this.player.dead = false;
+        this.player.frozen = false;
+        this.player.freezeTimer = 0;
         this.particles.reset();
         this.camera.x = 0;
+        this.camera.shakeTime = 0;
+        this.input.tap = false;
+        this.input.hold = false;
 
-        document.getElementById('progress-fill').style.width = '0%';
-        document.getElementById('progress-pct').innerText = '0%';
+        const progFill = document.getElementById('progress-fill');
+        if (progFill) progFill.style.width = '0%';
+        const progPct = document.getElementById('progress-pct');
+        if (progPct) progPct.innerText = '0%';
     }
 
     handleCoinCollect(coinIndex, x, y) {
@@ -579,73 +591,80 @@ export class CyberDashGame {
         // 2. PLAYING / PAUSED MODE
         else if (this.mode === 'PLAYING' || this.mode === 'PAUSED' || this.mode === 'EDITOR_PLAY') {
             if (this.mode === 'PLAYING' || this.mode === 'EDITOR_PLAY') {
-                this.camera.update(this.player.x, deltaMs);
-                this.player.update(this.input, this.soundEngine);
+                if (!this.player.dead) {
+                    this.camera.update(this.player.x, deltaMs);
+                    this.player.update(this.input, this.soundEngine);
 
-                // Speed warp particles
-                if (this.player.speedMult > 1.0) {
-                    this.particles.emitSpeedWarp(this.camera.x, this.player.y, this.player.speedMult, this.canvas.width, this.canvas.height);
-                }
+                    // Speed warp particles
+                    if (this.player.speedMult > 1.0) {
+                        this.particles.emitSpeedWarp(this.camera.x, this.player.y, this.player.speedMult, this.canvas.width, this.canvas.height);
+                    }
 
-                // Physics Collision
-                PhysicsEngine.check(
-                    this.player,
-                    this.activeLevel.data,
-                    this.groundY,
-                    this.input,
-                    this.soundEngine,
-                    this.particles,
-                    (coinIdx, cx, cy) => this.handleCoinCollect(coinIdx, cx, cy),
-                    () => this.handleDeath()
-                );
-
-                // ── Freeze HUD Overlay ─────────────────────────────────────────
-                const freezeVignette = document.getElementById('freeze-vignette');
-                const freezeBadge = document.getElementById('freeze-hud-badge');
-                if (this.player.frozen && this.player.freezeTimer > 0) {
-                    if (freezeVignette) freezeVignette.classList.remove('hidden');
-                    if (freezeBadge) freezeBadge.classList.remove('hidden');
-                } else {
-                    if (freezeVignette) freezeVignette.classList.add('hidden');
-                    if (freezeBadge) freezeBadge.classList.add('hidden');
-                }
-
-                // Emit passive frost particles when frozen and running
-                if (this.player.frozen && this.player.freezeTimer % 8 === 0) {
-                    this.particles.emitFrostRing(
-                        this.player.x + this.player.s / 2,
-                        this.player.y + this.player.s / 2
+                    // Physics Collision
+                    PhysicsEngine.check(
+                        this.player,
+                        this.activeLevel.data,
+                        this.groundY,
+                        this.input,
+                        this.soundEngine,
+                        this.particles,
+                        (coinIdx, cx, cy) => this.handleCoinCollect(coinIdx, cx, cy),
+                        () => this.handleDeath()
                     );
-                }
 
-                // Dynamic In-Game Score & Combo (Screenshot 2)
-                const scoreEl = document.getElementById('hud-score-val');
-                if (scoreEl) scoreEl.innerText = Math.floor(this.player.x * 2.5);
+                    // ── Freeze HUD Overlay ─────────────────────────────────────────
+                    const freezeVignette = document.getElementById('freeze-vignette');
+                    const freezeBadge = document.getElementById('freeze-hud-badge');
+                    if (this.player.frozen && this.player.freezeTimer > 0) {
+                        if (freezeVignette) freezeVignette.classList.remove('hidden');
+                        if (freezeBadge) freezeBadge.classList.remove('hidden');
+                    } else {
+                        if (freezeVignette) freezeVignette.classList.add('hidden');
+                        if (freezeBadge) freezeBadge.classList.add('hidden');
+                    }
 
-                const comboEl = document.getElementById('hud-combo-val');
-                if (comboEl) {
-                    const comboCount = Math.min(32, Math.max(1, Math.floor(this.player.x / 350) + 1));
-                    comboEl.innerText = `${comboCount}x`;
-                }
+                    // Emit passive frost particles when frozen and running
+                    if (this.player.frozen && this.player.freezeTimer % 8 === 0) {
+                        this.particles.emitFrostRing(
+                            this.player.x + this.player.s / 2,
+                            this.player.y + this.player.s / 2
+                        );
+                    }
 
-                // Progress % Logic
-                const totalPx = this.activeLevel.length * BASE_TILE_SIZE;
-                let pct = Math.floor((this.player.x / totalPx) * 100);
-                pct = Math.max(0, Math.min(100, pct));
+                    // Dynamic In-Game Score & Combo (Screenshot 2)
+                    const scoreEl = document.getElementById('hud-score-val');
+                    if (scoreEl) scoreEl.innerText = Math.floor(this.player.x * 2.5);
 
-                const progFill = document.getElementById('progress-fill');
-                if (progFill) progFill.style.width = `${pct}%`;
+                    const comboEl = document.getElementById('hud-combo-val');
+                    if (comboEl) {
+                        const comboCount = Math.min(32, Math.max(1, Math.floor(this.player.x / 350) + 1));
+                        comboEl.innerText = `${comboCount}x`;
+                    }
 
-                const progPct = document.getElementById('progress-pct');
-                if (progPct) progPct.innerText = `${pct}%`;
+                    // Progress % Logic
+                    const totalPx = this.activeLevel.length * BASE_TILE_SIZE;
+                    let pct = Math.floor((this.player.x / totalPx) * 100);
+                    pct = Math.max(0, Math.min(100, pct));
 
-                if (!this.isPractice && typeof this.activeLevel.id === 'number') {
-                    StorageManager.setBestScore(this.activeLevel.id, pct);
-                }
+                    const progFill = document.getElementById('progress-fill');
+                    if (progFill) progFill.style.width = `${pct}%`;
 
-                // Victory Trigger
-                if (pct >= 100) {
-                    this.handleLevelComplete();
+                    const progPct = document.getElementById('progress-pct');
+                    if (progPct) progPct.innerText = `${pct}%`;
+
+                    if (!this.isPractice && typeof this.activeLevel.id === 'number') {
+                        StorageManager.setBestScore(this.activeLevel.id, pct);
+                    }
+
+                    // Victory Trigger
+                    if (pct >= 100) {
+                        this.handleLevelComplete();
+                    }
+                } else {
+                    // Update camera screen shake decay while player is exploding
+                    if (this.camera.shakeTime > 0) {
+                        this.camera.shakeTime -= deltaMs;
+                    }
                 }
             }
 

@@ -401,23 +401,35 @@ this.player.isMini = cp.isMini;
 this.player.s = cp.isMini ? this.player.baseSize * 0.65 : this.player.baseSize;
 this.player.setSpeed(cp.speedMult);
 this.player.dead = false;
+this.player.frozen = false;
+this.player.freezeTimer = 0;
 this.input.tap = false;
+this.input.hold = false;
 } else {
 this.attempts++;
 StorageManager.incrementStat('totalAttempts', 1);
-document.getElementById('attempt-counter').innerText = `ATTEMPT ${this.attempts}`;
+const attemptEl = document.getElementById('attempt-counter');
+if (attemptEl) attemptEl.innerText = `ATTEMPT ${this.attempts}`;
 this.resetRun();
 }
-}, 550);
+}, 500);
 }
 resetRun() {
 this.player.reset();
 this.player.setCustomization(this.menu.garageConfig);
 this.player.y = this.groundY - this.player.s;
+this.player.dead = false;
+this.player.frozen = false;
+this.player.freezeTimer = 0;
 this.particles.reset();
 this.camera.x = 0;
-document.getElementById('progress-fill').style.width = '0%';
-document.getElementById('progress-pct').innerText = '0%';
+this.camera.shakeTime = 0;
+this.input.tap = false;
+this.input.hold = false;
+const progFill = document.getElementById('progress-fill');
+if (progFill) progFill.style.width = '0%';
+const progPct = document.getElementById('progress-pct');
+if (progPct) progPct.innerText = '0%';
 }
 handleCoinCollect(coinIndex, x, y) {
 if (!this.coinsFoundInRun[coinIndex]) {
@@ -468,6 +480,7 @@ this.editor.render(this.ctx, this.groundY);
 }
 else if (this.mode === 'PLAYING' || this.mode === 'PAUSED' || this.mode === 'EDITOR_PLAY') {
 if (this.mode === 'PLAYING' || this.mode === 'EDITOR_PLAY') {
+if (!this.player.dead) {
 this.camera.update(this.player.x, deltaMs);
 this.player.update(this.input, this.soundEngine);
 if (this.player.speedMult > 1.0) {
@@ -517,6 +530,11 @@ StorageManager.setBestScore(this.activeLevel.id, pct);
 }
 if (pct >= 100) {
 this.handleLevelComplete();
+}
+} else {
+if (this.camera.shakeTime > 0) {
+this.camera.shakeTime -= deltaMs;
+}
 }
 }
 this.camera.drawBackground(this.ctx, this.activeLevel, this.soundEngine.visualPulse);
