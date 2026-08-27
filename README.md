@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.0.0-00f0ff?style=for-the-badge" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-2.0.1-00f0ff?style=for-the-badge" alt="Version"/>
   <img src="https://img.shields.io/badge/platform-Browser-ff003c?style=for-the-badge" alt="Platform"/>
   <img src="https://img.shields.io/badge/license-MIT-39ff14?style=for-the-badge" alt="License"/>
   <img src="https://img.shields.io/badge/levels-16-b026ff?style=for-the-badge" alt="Levels"/>

@@ -12,6 +12,15 @@ Track current progress and upcoming features. Updated with each major version.
 
 ---
 
+## v2.0.1 — VECTOR ASSETS & STABILITY PATCH ✅ RELEASED
+
+- ✅ Full vector SVG icon integration across UI (zero raw emojis)
+- ✅ Procedural vector snowflake rendering in weather and freeze zones
+- ✅ StorageManager OAuth and progression bugfixes for 16 levels
+- ✅ Instant canvas layer transitions on sector launch
+
+---
+
 ## v2.0.0 — CRYO UPDATE ✅ RELEASED
 
 - ✅ CRYO tier with 4 ice levels

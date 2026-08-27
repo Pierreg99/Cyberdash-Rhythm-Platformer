@@ -5,7 +5,26 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [2.0.1] — 2026-08-27 — VECTOR ASSET & ENGINE STABILITY PATCH
+
+### Fixed
+- **Level Load Reliability**: Resolved missing `getOAuthProfile` helper in `StorageManager`, preventing script interruption on game boot and guaranteeing instantaneous level loading.
+- **Immediate Layer Transition**: Refactored `startLevel` to instantly hide `menu-layer` and release pointer events, eliminating UI lock-up when launching sectors.
+- **Audio Autoplay Safety**: Wrapped audio context activation in a resilient try-catch handler to prevent browser audio policy rejections from blocking gameplay.
+- **Progression Loop Scope**: Updated `approveAllLevelsAndTrophies` and `resetAllProgression` to encompass all 16 sectors.
+
+### Changed
+- **Pure Vector Asset Overhaul**: Replaced all raw unicode emojis with crisp inline SVG vector assets and procedural canvas geometry:
+  - Procedural 6-branched crystalline snowflake vectors with branch spurs in `camera.js`.
+  - Dual-rotating vector snowflakes for `FREEZE_ZONE` in `level-data.js`.
+  - Inline glowing vector SVG icons for all tiers (EASY, HARD, OMEGA, CRYO, CUSTOM) in `menu-manager.js`.
+  - Glowing gold vector stars and diamond/hexagonal crystal SVGs in level matrix and victory screens.
+  - Lucide-style navigation SVGs across the entire top app bar in `index.html`.
+
+---
+
 ## [2.0.0] — 2026-08-27 — THE CRYO UPDATE
+
 
 ### Added
 - **CRYO Tier** — 4 brand-new ice-themed levels:
