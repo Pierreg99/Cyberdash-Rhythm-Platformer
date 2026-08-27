@@ -121,20 +121,61 @@ export class Camera {
         }
         ctx.globalAlpha = 1.0;
 
-        // CRYO: Falling snowflakes
+        // CRYO: Falling vector snowflakes & frost crystals
         if (isCryo) {
-            ctx.fillStyle = 'rgba(200, 240, 255, 0.7)';
-            ctx.font = '10px sans-serif';
-            ctx.textAlign = 'center';
-            const snowCount = 20;
+            const snowCount = 24;
             for (let sn = 0; sn < snowCount; sn++) {
                 const snX = ((sn * 137.5 + this.x * 0.05 + now * 8) % this.width + this.width) % this.width;
                 const snY = ((sn * 73.3 + now * 15 * (0.5 + (sn % 3) * 0.3)) % this.groundY + this.groundY) % this.groundY;
-                const snA = 0.2 + 0.5 * Math.sin(now + sn);
+                const snA = 0.25 + 0.55 * Math.sin(now + sn);
+                const snSize = (sn % 3 === 0) ? 5.5 : ((sn % 3 === 1) ? 3.5 : 2.0);
+                const rot = now * 1.5 + sn;
+
+                ctx.save();
+                ctx.translate(snX, snY);
+                ctx.rotate(rot);
                 ctx.globalAlpha = snA;
-                ctx.fillText(sn % 3 === 0 ? '❄' : '·', snX, snY);
+
+                if (sn % 3 === 0) {
+                    // 6-branched crystalline snowflake vector
+                    ctx.strokeStyle = '#a8eeff';
+                    ctx.lineWidth = 1;
+                    ctx.shadowBlur = 6;
+                    ctx.shadowColor = '#00d4ff';
+                    for (let a = 0; a < 6; a++) {
+                        const ang = (a / 6) * Math.PI * 2;
+                        const cos = Math.cos(ang), sin = Math.sin(ang);
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(cos * snSize, sin * snSize);
+                        ctx.stroke();
+                        // Branch spurs
+                        const bx = cos * (snSize * 0.6), by = sin * (snSize * 0.6);
+                        const pang = ang + Math.PI / 2;
+                        ctx.beginPath();
+                        ctx.moveTo(bx - Math.cos(pang) * 2, by - Math.sin(pang) * 2);
+                        ctx.lineTo(bx + Math.cos(pang) * 2, by + Math.sin(pang) * 2);
+                        ctx.stroke();
+                    }
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 1.2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // Sparkling frost crystal diamond
+                    ctx.fillStyle = '#c8f8ff';
+                    ctx.shadowBlur = 4;
+                    ctx.shadowColor = '#60c8e8';
+                    ctx.beginPath();
+                    ctx.moveTo(0, -snSize);
+                    ctx.lineTo(snSize * 0.6, 0);
+                    ctx.lineTo(0, snSize);
+                    ctx.lineTo(-snSize * 0.6, 0);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                ctx.restore();
             }
-            ctx.globalAlpha = 1.0;
         }
 
         // 3. Cyber Skyline Silhouettes

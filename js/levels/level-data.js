@@ -1023,13 +1023,43 @@ export function drawLevelMap(ctx, levelData, camX, groundY, levelColor = '#00f0f
             ctx.shadowColor = '#00d4ff';
             ctx.strokeRect(ox, oy - TS * 2, TS, fzH);
             ctx.setLineDash([]);
-            ctx.fillStyle = '#a8eeff';
-            ctx.font = '12px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.globalAlpha = 0.5 + Math.sin(now * 2 + 1) * 0.3;
-            ctx.fillText('\u2744', ox + TS/2, oy + TS);
-            ctx.globalAlpha = 0.4 + Math.sin(now * 1.5) * 0.2;
-            ctx.fillText('\u2744', ox + TS/2, oy - TS * 0.5);
+
+            // Draw crisp vector snowflake icons inside freeze zone
+            const drawZoneSnowflake = (cx, cy, scale, rot) => {
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(rot);
+                ctx.strokeStyle = '#a8eeff';
+                ctx.lineWidth = 1.2;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#00d4ff';
+                const rad = 7 * scale;
+                for (let a = 0; a < 6; a++) {
+                    const ang = (a / 6) * Math.PI * 2;
+                    const c = Math.cos(ang), s = Math.sin(ang);
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(c * rad, s * rad);
+                    ctx.stroke();
+                    // Cross branches
+                    const bx = c * (rad * 0.6), by = s * (rad * 0.6);
+                    const pa = ang + Math.PI / 2;
+                    ctx.beginPath();
+                    ctx.moveTo(bx - Math.cos(pa) * 2.5 * scale, by - Math.sin(pa) * 2.5 * scale);
+                    ctx.lineTo(bx + Math.cos(pa) * 2.5 * scale, by + Math.sin(pa) * 2.5 * scale);
+                    ctx.stroke();
+                }
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(0, 0, 1.5 * scale, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            };
+
+            ctx.globalAlpha = 0.6 + Math.sin(now * 2 + 1) * 0.25;
+            drawZoneSnowflake(ox + TS / 2, oy + TS * 0.8, 1.0, now * 0.6);
+            ctx.globalAlpha = 0.45 + Math.sin(now * 1.5) * 0.2;
+            drawZoneSnowflake(ox + TS / 2, oy - TS * 0.6, 0.75, -now * 0.8);
             ctx.globalAlpha = 1;
 
         // ── ICE CRYSTAL (collectible) ─────────────────────────────────────────

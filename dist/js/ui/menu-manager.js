@@ -185,13 +185,20 @@ if (bestTxt) bestTxt.innerText = `${bestPct}%`;
 const coinContainer = document.getElementById('lvl-coins-container');
 if (coinContainer) {
 coinContainer.innerHTML = '';
+const isCryoLvl = lvl.tier === 'CRYO';
 for (let i = 0; i < 3; i++) {
-const coinEl = document.createElement('span');
 const hasCoin = coins[i];
-coinEl.className = `text-base transition-all ${
-hasCoin ? 'text-gold drop-shadow-[0_0_8px_#ffd700]' : 'text-gray-700 opacity-40'
-}`;
-coinEl.innerHTML = hasCoin ? '◆' : '◇';
+const coinEl = document.createElement('span');
+coinEl.className = 'inline-flex items-center';
+if (isCryoLvl) {
+coinEl.innerHTML = hasCoin
+? `<svg class="w-4 h-4 text-[#a8eeff] drop-shadow-[0_0_8px_#00d4ff]" fill="currentColor" stroke="#a8eeff" stroke-width="1" viewBox="0 0 24 24"><polygon points="12 2 20.66 7 20.66 17 12 22 3.34 17 3.34 7"/></svg>`
+: `<svg class="w-4 h-4 text-gray-700 opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="12 2 20.66 7 20.66 17 12 22 3.34 17 3.34 7"/></svg>`;
+} else {
+coinEl.innerHTML = hasCoin
+? `<svg class="w-4 h-4 text-gold drop-shadow-[0_0_8px_#ffd700]" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg>`
+: `<svg class="w-4 h-4 text-gray-700 opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg>`;
+}
 coinContainer.appendChild(coinEl);
 }
 }
@@ -225,11 +232,41 @@ const coins = StorageManager.getCoins(lvl.id);
 const isCompleted = bestPct >= 100;
 const isCryo = lvl.tier === 'CRYO';
 const tierConfig = {
-EASY:   { icon: '🟢', borderCls: 'border-bio/30', glowCls: 'shadow-[0_0_20px_rgba(57,255,20,0.15)]', accentCls: 'text-bio', badgeBg: 'bg-bio/10 border-bio/30 text-bio' },
-HARD:   { icon: '🟣', borderCls: 'border-purple/30', glowCls: 'shadow-[0_0_20px_rgba(176,38,255,0.15)]', accentCls: 'text-purple', badgeBg: 'bg-purple/10 border-purple/30 text-purple' },
-OMEGA:  { icon: '🔴', borderCls: 'border-magenta/30', glowCls: 'shadow-[0_0_20px_rgba(255,0,60,0.15)]', accentCls: 'text-magenta', badgeBg: 'bg-magenta/10 border-magenta/30 text-magenta' },
-CRYO:   { icon: '❄️', borderCls: 'border-[#60c8e8]/40', glowCls: 'shadow-[0_0_20px_rgba(0,212,255,0.2)]', accentCls: 'text-[#a8eeff]', badgeBg: 'bg-[#a8eeff]/10 border-[#60c8e8]/40 text-[#a8eeff]' },
-CUSTOM: { icon: '🛠️', borderCls: 'border-gold/30', glowCls: 'shadow-[0_0_20px_rgba(255,215,0,0.15)]', accentCls: 'text-gold', badgeBg: 'bg-gold/10 border-gold/30 text-gold' },
+EASY: {
+iconSvg: `<svg class="w-3 h-3 inline-block text-bio mr-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg>`,
+borderCls: 'border-bio/30',
+glowCls: 'shadow-[0_0_20px_rgba(57,255,20,0.15)]',
+accentCls: 'text-bio',
+badgeBg: 'bg-bio/10 border-bio/30 text-bio'
+},
+HARD: {
+iconSvg: `<svg class="w-3 h-3 inline-block text-purple mr-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/><polygon points="12 7 17 12 12 17 7 12" fill="currentColor"/></svg>`,
+borderCls: 'border-purple/30',
+glowCls: 'shadow-[0_0_20px_rgba(176,38,255,0.15)]',
+accentCls: 'text-purple',
+badgeBg: 'bg-purple/10 border-purple/30 text-purple'
+},
+OMEGA: {
+iconSvg: `<svg class="w-3 h-3 inline-block text-magenta mr-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="12 2 22 22 2 22"/><circle cx="12" cy="15" r="3" fill="currentColor"/></svg>`,
+borderCls: 'border-magenta/30',
+glowCls: 'shadow-[0_0_20px_rgba(255,0,60,0.15)]',
+accentCls: 'text-magenta',
+badgeBg: 'bg-magenta/10 border-magenta/30 text-magenta'
+},
+CRYO: {
+iconSvg: `<svg class="w-3 h-3 inline-block text-[#a8eeff] mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14M9 3l3 3 3-3M9 21l3-3 3 3M3 9l3 3-3 3M21 9l-3 3 3 3"/></svg>`,
+borderCls: 'border-[#60c8e8]/40',
+glowCls: 'shadow-[0_0_20px_rgba(0,212,255,0.2)]',
+accentCls: 'text-[#a8eeff]',
+badgeBg: 'bg-[#a8eeff]/10 border-[#60c8e8]/40 text-[#a8eeff]'
+},
+CUSTOM: {
+iconSvg: `<svg class="w-3 h-3 inline-block text-gold mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
+borderCls: 'border-gold/30',
+glowCls: 'shadow-[0_0_20px_rgba(255,215,0,0.15)]',
+accentCls: 'text-gold',
+badgeBg: 'bg-gold/10 border-gold/30 text-gold'
+},
 };
 const tc = tierConfig[lvl.tier] || tierConfig.EASY;
 const selBorderCls = isSelected
@@ -242,20 +279,28 @@ const starsEarned = isCompleted ? starsMax : (bestPct > 0 ? Math.min(starsMax - 
 let starStr = '';
 for (let s = 0; s < starsMax; s++) {
 starStr += s < starsEarned
-? `<span class="text-gold drop-shadow-[0_0_6px_#ffd700]">★</span>`
-: `<span class="text-gray-700">☆</span>`;
+? `<svg class="w-3.5 h-3.5 inline text-gold drop-shadow-[0_0_6px_#ffd700]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
+: `<svg class="w-3.5 h-3.5 inline text-gray-700 opacity-40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
 }
 let coinIcons = '';
 const isCryoLevel = lvl.tier === 'CRYO';
 for (let i = 0; i < 3; i++) {
 const has = coins[i];
-coinIcons += `<span class="${has ? (isCryoLevel ? 'text-[#a8eeff] drop-shadow-[0_0_6px_#00d4ff]' : 'text-gold drop-shadow-[0_0_6px_#ffd700]') : 'text-gray-700 opacity-30'}">${has ? (isCryoLevel ? '❄' : '◆') : (isCryoLevel ? '❅' : '◇')}</span>`;
+if (isCryoLevel) {
+coinIcons += has
+? `<svg class="w-3.5 h-3.5 inline text-[#a8eeff] drop-shadow-[0_0_8px_#00d4ff]" fill="currentColor" stroke="#a8eeff" stroke-width="1" viewBox="0 0 24 24"><polygon points="12 2 20.66 7 20.66 17 12 22 3.34 17 3.34 7"/></svg>`
+: `<svg class="w-3.5 h-3.5 inline text-gray-700 opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="12 2 20.66 7 20.66 17 12 22 3.34 17 3.34 7"/></svg>`;
+} else {
+coinIcons += has
+? `<svg class="w-3.5 h-3.5 inline text-gold drop-shadow-[0_0_6px_#ffd700]" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg>`
+: `<svg class="w-3.5 h-3.5 inline text-gray-700 opacity-30" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg>`;
+}
 }
 const formBadges = (lvl.forms || ['CUBE'])
 .map(f => `<span class="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold bg-white/5 border border-white/10 text-gray-400">${f}</span>`)
 .join('');
 const compBadge = isCompleted
-? `<span class="absolute top-2 right-2 text-[9px] font-mono font-black px-2 py-0.5 rounded-full bg-bio/20 text-bio border border-bio/40">✓ CLEAR</span>`
+? `<span class="absolute top-2 right-2 text-[9px] font-mono font-black px-2 py-0.5 rounded-full bg-bio/20 text-bio border border-bio/40 flex items-center gap-1"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> CLEAR</span>`
 : '';
 const cryoBg = isCryo ? 'background: linear-gradient(135deg, rgba(0,25,40,0.6) 0%, rgba(0,15,30,0.4) 100%);' : '';
 card.innerHTML = `
@@ -263,7 +308,7 @@ ${compBadge}
 <div style="${cryoBg}">
 <div class="flex justify-between items-start mb-2">
 <div>
-<span class="text-[9px] font-mono text-gray-500 font-bold tracking-wider">${tc.icon} ${typeof lvl.id === 'number' ? `TARGET ${lvl.id < 10 ? '0' + lvl.id : lvl.id}` : 'CUSTOM'}</span>
+<span class="text-[9px] font-mono text-gray-500 font-bold tracking-wider flex items-center">${tc.iconSvg} ${typeof lvl.id === 'number' ? `TARGET ${lvl.id < 10 ? '0' + lvl.id : lvl.id}` : 'CUSTOM'}</span>
 <div class="text-[9px] font-mono ${tc.accentCls} font-bold tracking-widest">${lvl.tier || 'SECTOR'} TIER</div>
 </div>
 <span class="px-2 py-0.5 rounded-full text-[9px] font-black border ${tc.badgeBg}">${lvl.diff}</span>
@@ -277,18 +322,18 @@ ${lvl.name}
 </div>
 <div class="mt-3 pt-2.5 border-t border-white/10">
 <div class="flex justify-between items-center mb-1 text-xs font-mono">
-<div class="flex items-center gap-1 text-sm">${coinIcons}</div>
+<div class="flex items-center gap-1">${coinIcons}</div>
 <span class="font-bold ${tc.accentCls}">${bestPct}%</span>
 </div>
 <div class="rounded-full h-1.5 overflow-hidden border border-gray-800 mb-2.5" style="background:#0a0a14;">
 <div class="h-full rounded-full transition-all duration-300" style="width: ${bestPct}%; background: linear-gradient(90deg, ${lvl.color || '#00f0ff'}, ${lvl.color || '#00f0ff'}88);${isCompleted ? ' box-shadow: 0 0 8px ' + lvl.color + ';' : ''}"></div>
 </div>
 <div class="flex gap-1.5">
-<button class="btn-cyber flex-1 py-1.5 rounded-lg text-[10px] font-black btn-card-play text-cyan" data-idx="${originalIndex}">
-▶ PLAY
+<button class="btn-cyber flex-1 py-1.5 rounded-lg text-[10px] font-black btn-card-play text-cyan flex items-center justify-center gap-1" data-idx="${originalIndex}">
+<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> PLAY
 </button>
-<button class="btn-cyber btn-gold flex-1 py-1.5 rounded-lg text-[10px] font-black btn-card-prac" data-idx="${originalIndex}">
-SIM
+<button class="btn-cyber btn-gold flex-1 py-1.5 rounded-lg text-[10px] font-black btn-card-prac flex items-center justify-center gap-1" data-idx="${originalIndex}">
+<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg> SIM
 </button>
 </div>
 </div>
@@ -891,15 +936,24 @@ const modal = document.getElementById('victory-modal');
 if (!modal) return;
 document.getElementById('victory-lvl-name').innerText = level.name;
 document.getElementById('victory-attempts').innerText = attempts;
-document.getElementById('victory-stars').innerText = `+${level.stars || 1} ★`;
+document.getElementById('victory-stars').innerHTML = `+${level.stars || 1} <svg class="w-5 h-5 inline-block text-gold drop-shadow-[0_0_8px_#ffd700] ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
 const coinsWrap = document.getElementById('victory-coins-wrap');
 if (coinsWrap) {
 coinsWrap.innerHTML = '';
+const isCryoLvl = level.tier === 'CRYO';
 for (let i = 0; i < 3; i++) {
 const coinEl = document.createElement('span');
 const got = coinsFound[i];
-coinEl.className = `text-2xl ${got ? 'text-gold drop-shadow-[0_0_12px_#ffd700]' : 'text-gray-700'}`;
-coinEl.innerHTML = got ? '◆' : '◇';
+coinEl.className = 'inline-flex items-center mx-1';
+if (isCryoLvl) {
+coinEl.innerHTML = got
+? `<svg class="w-6 h-6 text-[#a8eeff] drop-shadow-[0_0_12px_#00d4ff]" fill="currentColor" stroke="#a8eeff" stroke-width="1" viewBox="0 0 24 24"><polygon points="12 2 20.66 7 20.66 17 12 22 3.34 17 3.34 7"/></svg>`
+: `<svg class="w-6 h-6 text-gray-700 opacity-40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="12 2 20.66 7 20.66 17 12 22 3.34 17 3.34 7"/></svg>`;
+} else {
+coinEl.innerHTML = got
+? `<svg class="w-6 h-6 text-gold drop-shadow-[0_0_12px_#ffd700]" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg>`
+: `<svg class="w-6 h-6 text-gray-700 opacity-40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polygon points="12 2 22 12 12 22 2 12"/></svg>`;
+}
 coinsWrap.appendChild(coinEl);
 }
 }
