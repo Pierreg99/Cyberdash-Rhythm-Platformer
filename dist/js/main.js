@@ -292,33 +292,40 @@ this.mode = 'PLAYING';
 StorageManager.incrementStat('totalAttempts', 1);
 const menuLayer = document.getElementById('menu-layer');
 if (menuLayer) {
+menuLayer.classList.add('hidden');
 menuLayer.style.opacity = '0';
-setTimeout(() => menuLayer.classList.add('hidden'), 300);
+menuLayer.style.pointerEvents = 'none';
 }
-document.getElementById('hud-layer')?.classList.remove('hidden');
+const hudLayer = document.getElementById('hud-layer');
+if (hudLayer) hudLayer.classList.remove('hidden');
 document.getElementById('btn-editor-return-hud')?.classList.add('hidden');
-document.getElementById('attempt-counter').innerText = `ATTEMPT 1`;
+const attemptEl = document.getElementById('attempt-counter');
+if (attemptEl) attemptEl.innerText = `ATTEMPT 1`;
 if (this.isPractice) {
 document.getElementById('practice-hud')?.classList.remove('hidden');
 } else {
 document.getElementById('practice-hud')?.classList.add('hidden');
 }
+try {
 this.soundEngine.start(level.audioTrack);
+} catch (e) {
+console.warn('Audio start delayed until user interaction:', e);
+}
 this.resetRun();
 }
 togglePause() {
 if (this.mode === 'PLAYING') {
 this.mode = 'PAUSED';
 document.getElementById('pause-layer')?.classList.remove('hidden');
-if (this.soundEngine.ctx) this.soundEngine.ctx.suspend();
+if (this.soundEngine && this.soundEngine.ctx) this.soundEngine.ctx.suspend();
 } else if (this.mode === 'PAUSED') {
 this.mode = 'PLAYING';
 document.getElementById('pause-layer')?.classList.add('hidden');
-if (this.soundEngine.ctx) this.soundEngine.ctx.resume();
+if (this.soundEngine && this.soundEngine.ctx) this.soundEngine.ctx.resume();
 }
 }
 returnToMenu() {
-this.soundEngine.stop();
+if (this.soundEngine) this.soundEngine.stop();
 this.mode = 'MENU';
 document.getElementById('pause-layer')?.classList.add('hidden');
 document.getElementById('hud-layer')?.classList.add('hidden');
@@ -328,6 +335,7 @@ const menuLayer = document.getElementById('menu-layer');
 if (menuLayer) {
 menuLayer.classList.remove('hidden');
 menuLayer.style.opacity = '1';
+menuLayer.style.pointerEvents = 'auto';
 }
 this.menu.updateLevelSelectUI();
 }

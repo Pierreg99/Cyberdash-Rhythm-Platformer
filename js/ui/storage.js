@@ -516,9 +516,47 @@ export class StorageManager {
         }
     }
 
+    static getOAuthProfile() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEYS.OAUTH_PROFILE);
+            if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return {
+            connected: false,
+            pilotName: 'GUEST PILOT',
+            pilotId: 'CYBER-NULL',
+            clearanceLevel: 'GUEST_ACCESS'
+        };
+    }
+
+    static connectOAuth(pilotName = 'CYBER_PILOT_01') {
+        try {
+            const profile = {
+                connected: true,
+                pilotName: pilotName.toUpperCase(),
+                pilotId: 'CYBER-' + Math.floor(1000 + Math.random() * 9000),
+                clearanceLevel: 'CYBER_CLEARANCE_LVL_4'
+            };
+            localStorage.setItem(STORAGE_KEYS.OAUTH_PROFILE, JSON.stringify(profile));
+            this.unlockAchievement('cyber_identity');
+            return profile;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    static disconnectOAuth() {
+        try {
+            localStorage.removeItem(STORAGE_KEYS.OAUTH_PROFILE);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     static approveAllLevelsAndTrophies() {
         try {
-            for (let i = 1; i <= 12; i++) {
+            for (let i = 1; i <= 16; i++) {
                 localStorage.setItem(`${STORAGE_KEYS.BEST_SCORES}_${i}`, '100');
                 localStorage.setItem(`${STORAGE_KEYS.LEVEL_COINS}_${i}`, JSON.stringify([true, true, true]));
             }
@@ -527,10 +565,10 @@ export class StorageManager {
             localStorage.setItem(STORAGE_KEYS.ACHIEVEMENTS, JSON.stringify(allIds));
 
             const stats = this.getStats();
-            stats.levelsCompleted = 12;
-            stats.demonClears = Math.max(3, stats.demonClears);
-            stats.coinsCollected = 36;
-            stats.starsEarned = 45;
+            stats.levelsCompleted = 16;
+            stats.demonClears = Math.max(4, stats.demonClears);
+            stats.coinsCollected = 48;
+            stats.starsEarned = 60;
             stats.totalJumps = Math.max(1200, stats.totalJumps);
             localStorage.setItem(STORAGE_KEYS.STATS, JSON.stringify(stats));
 
@@ -553,7 +591,7 @@ export class StorageManager {
 
     static resetAllProgression() {
         try {
-            for (let i = 1; i <= 12; i++) {
+            for (let i = 1; i <= 16; i++) {
                 localStorage.removeItem(`${STORAGE_KEYS.BEST_SCORES}_${i}`);
                 localStorage.removeItem(`${STORAGE_KEYS.LEVEL_COINS}_${i}`);
             }
@@ -570,3 +608,4 @@ export class StorageManager {
         }
     }
 }
+
