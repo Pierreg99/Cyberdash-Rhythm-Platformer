@@ -292,6 +292,70 @@ o.start(t + i * 0.08);
 o.stop(t + i * 0.08 + 0.4);
 });
 break;
+case 'menu_hover':
+osc.type = 'sine';
+osc.frequency.setValueAtTime(1600, t);
+osc.frequency.exponentialRampToValueAtTime(2100, t + 0.035);
+gain.gain.setValueAtTime(0.06, t);
+gain.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
+osc.start(t);
+osc.stop(t + 0.035);
+break;
+case 'menu_click':
+osc.type = 'triangle';
+osc.frequency.setValueAtTime(520, t);
+osc.frequency.exponentialRampToValueAtTime(180, t + 0.06);
+gain.gain.setValueAtTime(0.22, t);
+gain.gain.exponentialRampToValueAtTime(0.005, t + 0.06);
+osc.start(t);
+osc.stop(t + 0.06);
+try {
+const clickOsc = this.ctx.createOscillator();
+const clickGain = this.ctx.createGain();
+clickOsc.type = 'square';
+clickOsc.frequency.setValueAtTime(2400, t);
+clickOsc.frequency.exponentialRampToValueAtTime(600, t + 0.02);
+clickGain.gain.setValueAtTime(0.08, t);
+clickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
+clickOsc.connect(clickGain);
+clickGain.connect(this.sfxGain);
+clickOsc.start(t);
+clickOsc.stop(t + 0.02);
+} catch (e) {}
+break;
+case 'menu_switch':
+osc.type = 'sine';
+osc.frequency.setValueAtTime(750, t);
+osc.frequency.exponentialRampToValueAtTime(1200, t + 0.05);
+gain.gain.setValueAtTime(0.12, t);
+gain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+osc.start(t);
+osc.stop(t + 0.05);
+break;
+case 'menu_back':
+osc.type = 'sawtooth';
+osc.frequency.setValueAtTime(450, t);
+osc.frequency.exponentialRampToValueAtTime(150, t + 0.07);
+gain.gain.setValueAtTime(0.14, t);
+gain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+osc.start(t);
+osc.stop(t + 0.07);
+break;
+case 'card_select':
+[880, 1320, 1760].forEach((freq, idx) => {
+const o = this.ctx.createOscillator();
+const g = this.ctx.createGain();
+o.type = 'sine';
+o.frequency.setValueAtTime(freq, t + idx * 0.015);
+o.frequency.exponentialRampToValueAtTime(freq * 1.25, t + idx * 0.015 + 0.08);
+g.gain.setValueAtTime(0.1, t + idx * 0.015);
+g.gain.exponentialRampToValueAtTime(0.001, t + idx * 0.015 + 0.08);
+o.connect(g);
+g.connect(this.sfxGain);
+o.start(t + idx * 0.015);
+o.stop(t + idx * 0.015 + 0.08);
+});
+break;
 }
 }
 getVisualizerData() {

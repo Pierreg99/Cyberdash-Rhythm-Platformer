@@ -77,10 +77,10 @@ canvas {
 
 /* Cyber Buttons */
 .btn-cyber {
-    background: rgba(0, 240, 255, 0.06);
-    border: 1px solid rgba(0, 240, 255, 0.4);
+    background: rgba(0, 240, 255, 0.08);
+    border: 1px solid rgba(0, 240, 255, 0.45);
     color: #00f0ff;
-    transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
     text-transform: uppercase;
     letter-spacing: 1.5px;
     cursor: pointer;
@@ -88,60 +88,149 @@ canvas {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-weight: 700;
+    font-weight: 800;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(0, 240, 255, 0.05);
 }
+
+/* Light sheen reflection sweep */
+.btn-cyber::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -100%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.25),
+        rgba(0, 240, 255, 0.4),
+        transparent
+    );
+    transform: rotate(25deg);
+    pointer-events: none;
+    transition: all 0.6s ease;
+    opacity: 0;
+}
+
+.btn-cyber:hover::before {
+    left: 140%;
+    opacity: 1;
+}
+
 .btn-cyber:hover {
-    background: rgba(0, 240, 255, 0.2);
-    box-shadow: 0 0 25px rgba(0, 240, 255, 0.55), inset 0 0 15px rgba(0, 240, 255, 0.3);
+    background: rgba(0, 240, 255, 0.22);
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.6), inset 0 0 18px rgba(0, 240, 255, 0.4), 0 0 2px #ffffff;
     color: #ffffff;
-    transform: translateY(-2px) scale(1.02);
+    border-color: #00f0ff;
+    transform: translateY(-3px) scale(1.03);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 2px 0 2px rgba(255, 0, 60, 0.5), -2px 0 2px rgba(0, 240, 255, 0.5);
 }
+
 .btn-cyber:active {
-    transform: translateY(1px) scale(0.98);
+    transform: translateY(1px) scale(0.96);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.8), inset 0 0 25px rgba(0, 240, 255, 0.6);
+    filter: brightness(1.2);
 }
 
 .btn-gold {
-    background: rgba(255, 215, 0, 0.06);
-    border-color: rgba(255, 215, 0, 0.4);
+    background: rgba(255, 215, 0, 0.08);
+    border-color: rgba(255, 215, 0, 0.45);
     color: #ffd700;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.05);
 }
 .btn-gold:hover {
-    background: rgba(255, 215, 0, 0.2);
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.55), inset 0 0 15px rgba(255, 215, 0, 0.3);
+    background: rgba(255, 215, 0, 0.25);
+    border-color: #ffd700;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.65), inset 0 0 18px rgba(255, 215, 0, 0.4), 0 0 2px #ffffff;
     color: #ffffff;
 }
 
 .btn-bio {
-    background: rgba(57, 255, 20, 0.06);
-    border-color: rgba(57, 255, 20, 0.4);
+    background: rgba(57, 255, 20, 0.08);
+    border-color: rgba(57, 255, 20, 0.45);
     color: #39ff14;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(57, 255, 20, 0.05);
 }
 .btn-bio:hover {
-    background: rgba(57, 255, 20, 0.2);
-    box-shadow: 0 0 25px rgba(57, 255, 20, 0.55), inset 0 0 15px rgba(57, 255, 20, 0.3);
+    background: rgba(57, 255, 20, 0.25);
+    border-color: #39ff14;
+    box-shadow: 0 0 30px rgba(57, 255, 20, 0.65), inset 0 0 18px rgba(57, 255, 20, 0.4), 0 0 2px #ffffff;
     color: #ffffff;
 }
 
 .btn-danger {
-    background: rgba(255, 0, 60, 0.06);
-    border-color: rgba(255, 0, 60, 0.4);
+    background: rgba(255, 0, 60, 0.08);
+    border-color: rgba(255, 0, 60, 0.45);
     color: #ff003c;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 0, 60, 0.05);
 }
 .btn-danger:hover {
-    background: rgba(255, 0, 60, 0.25);
-    box-shadow: 0 0 25px rgba(255, 0, 60, 0.6);
+    background: rgba(255, 0, 60, 0.3);
+    border-color: #ff003c;
+    box-shadow: 0 0 30px rgba(255, 0, 60, 0.7), inset 0 0 18px rgba(255, 0, 60, 0.4), 0 0 2px #ffffff;
     color: #ffffff;
 }
 
 .btn-purple {
-    background: rgba(176, 38, 255, 0.06);
-    border-color: rgba(176, 38, 255, 0.4);
+    background: rgba(176, 38, 255, 0.08);
+    border-color: rgba(176, 38, 255, 0.45);
     color: #b026ff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(176, 38, 255, 0.05);
 }
 .btn-purple:hover {
-    background: rgba(176, 38, 255, 0.25);
-    box-shadow: 0 0 25px rgba(176, 38, 255, 0.6);
+    background: rgba(176, 38, 255, 0.3);
+    border-color: #b026ff;
+    box-shadow: 0 0 30px rgba(176, 38, 255, 0.7), inset 0 0 18px rgba(176, 38, 255, 0.4), 0 0 2px #ffffff;
     color: #ffffff;
+}
+
+/* Kinetic Ripple Shockwave on Button Click */
+.cyber-ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: rippleEffect 0.55s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(0, 240, 255, 0.6) 40%, transparent 70%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes rippleEffect {
+    0% {
+        transform: scale(0);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(3.5);
+        opacity: 0;
+    }
+}
+
+/* Floating Interactive Spark Particle */
+.cyber-spark-particle {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 8px currentColor;
+    animation: sparkFly 0.6s ease-out forwards;
+}
+
+@keyframes sparkFly {
+    0% {
+        transform: translate(0, 0) scale(1.5);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(0);
+        opacity: 0;
+    }
 }
 
 /* Neon Text */
@@ -176,9 +265,9 @@ canvas {
     transition: opacity 0.3s ease;
 }
 
-/* Tab Navigation */
+/* Tab Navigation (Immersive Cyber Tabs) */
 .nav-tab {
-    padding: 10px 20px;
+    padding: 10px 22px;
     font-size: 0.85rem;
     font-weight: 800;
     letter-spacing: 2px;
@@ -186,28 +275,57 @@ canvas {
     color: rgba(255, 255, 255, 0.6);
     border-bottom: 2px solid transparent;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
+    position: relative;
+    border-radius: 8px 8px 0 0;
+}
+.nav-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 0;
+    height: 2.5px;
+    background: #00f0ff;
+    box-shadow: 0 0 10px #00f0ff;
+    transition: all 0.25s ease;
+    transform: translateX(-50%);
 }
 .nav-tab:hover {
-    color: #00f0ff;
+    color: #ffffff;
+    background: rgba(0, 240, 255, 0.08);
+}
+.nav-tab:hover::after {
+    width: 60%;
 }
 .nav-tab.active {
     color: #00f0ff;
-    border-bottom-color: #00f0ff;
-    text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+    background: rgba(0, 240, 255, 0.12);
+    text-shadow: 0 0 12px rgba(0, 240, 255, 0.9);
+}
+.nav-tab.active::after {
+    width: 100%;
+    background: #00f0ff;
+    box-shadow: 0 0 15px #00f0ff, 0 0 5px #ffffff;
 }
 
-/* Level Filter Buttons */
+/* Level Filter Buttons (Immersive Pill Style) */
 .lvl-filter-btn {
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
 }
 .lvl-filter-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 12px currentColor;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 0 18px currentColor;
+    filter: brightness(1.2);
+}
+.lvl-filter-btn:active {
+    transform: scale(0.95);
 }
 .lvl-filter-btn.active {
-    box-shadow: 0 0 18px currentColor;
+    box-shadow: 0 0 22px currentColor, inset 0 0 8px currentColor;
     font-weight: 900;
 }
 
@@ -215,23 +333,25 @@ canvas {
 #btn-toggle-modifiers.active {
     background: rgba(0, 240, 255, 0.25);
     border-color: #00f0ff;
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+    box-shadow: 0 0 18px rgba(0, 240, 255, 0.5);
 }
 
 .speed-mod-btn, .hitbox-mod-btn {
     background: rgba(10, 10, 20, 0.6);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
+    position: relative;
 }
 .speed-mod-btn:hover, .hitbox-mod-btn:hover {
-    background: rgba(0, 240, 255, 0.1);
-    border-color: rgba(0, 240, 255, 0.3);
+    background: rgba(0, 240, 255, 0.15);
+    border-color: rgba(0, 240, 255, 0.4);
+    transform: scale(1.04);
 }
 .speed-mod-btn.active, .hitbox-mod-btn.active {
     border-color: #00f0ff !important;
-    background: rgba(0, 240, 255, 0.2) !important;
+    background: rgba(0, 240, 255, 0.25) !important;
     color: #ffffff !important;
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.4), inset 0 0 6px rgba(0, 240, 255, 0.2);
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.5), inset 0 0 8px rgba(0, 240, 255, 0.3);
 }
 
 /* Cyber Garage & Editor Palettes */
@@ -478,7 +598,7 @@ canvas {
    SECTOR MATRIX 16-TRACK GRID & CARD STYLES (MATCHING SCREENSHOT 1)
    =================================================================== */
 .matrix-card {
-    background: rgba(8, 12, 20, 0.85);
+    background: rgba(8, 12, 20, 0.88);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-radius: 14px;
@@ -486,15 +606,37 @@ canvas {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
     position: relative;
     overflow: hidden;
     cursor: pointer;
     min-height: 82px;
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transform-style: preserve-3d;
+}
+
+/* Dynamic Specular Sheen Layer */
+.matrix-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle 110px at var(--mx, 50%) var(--my, 50%),
+        rgba(255, 255, 255, 0.16),
+        transparent 75%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+}
+
+.matrix-card:hover::after {
+    opacity: 1;
 }
 
 .matrix-card:hover {
-    transform: translateY(-2px) scale(1.01);
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-3px) scale(1.02);
 }
 
 .matrix-card.card-easy {
@@ -502,8 +644,8 @@ canvas {
     box-shadow: 0 0 15px rgba(57, 255, 20, 0.12), inset 0 0 12px rgba(57, 255, 20, 0.04);
 }
 .matrix-card.card-easy:hover {
-    border-color: rgba(57, 255, 20, 0.8);
-    box-shadow: 0 0 25px rgba(57, 255, 20, 0.35);
+    border-color: rgba(57, 255, 20, 0.85);
+    box-shadow: 0 0 25px rgba(57, 255, 20, 0.4), inset 0 0 16px rgba(57, 255, 20, 0.1);
 }
 
 .matrix-card.card-hard {
@@ -511,8 +653,8 @@ canvas {
     box-shadow: 0 0 15px rgba(176, 38, 255, 0.14), inset 0 0 12px rgba(176, 38, 255, 0.04);
 }
 .matrix-card.card-hard:hover {
-    border-color: rgba(176, 38, 255, 0.85);
-    box-shadow: 0 0 25px rgba(176, 38, 255, 0.4);
+    border-color: rgba(176, 38, 255, 0.9);
+    box-shadow: 0 0 25px rgba(176, 38, 255, 0.45), inset 0 0 16px rgba(176, 38, 255, 0.1);
 }
 
 .matrix-card.card-omega {
@@ -520,24 +662,24 @@ canvas {
     box-shadow: 0 0 15px rgba(255, 0, 60, 0.15), inset 0 0 12px rgba(255, 0, 60, 0.04);
 }
 .matrix-card.card-omega:hover {
-    border-color: rgba(255, 0, 60, 0.85);
-    box-shadow: 0 0 25px rgba(255, 0, 60, 0.4);
+    border-color: rgba(255, 0, 60, 0.9);
+    box-shadow: 0 0 25px rgba(255, 0, 60, 0.45), inset 0 0 16px rgba(255, 0, 60, 0.1);
 }
 
 .matrix-card.card-cryo {
-    background: linear-gradient(135deg, rgba(14, 45, 70, 0.82) 0%, rgba(6, 24, 42, 0.9) 100%);
+    background: linear-gradient(135deg, rgba(14, 45, 70, 0.85) 0%, rgba(6, 24, 42, 0.92) 100%);
     border: 1.5px solid rgba(96, 200, 240, 0.65);
     box-shadow: 0 0 18px rgba(0, 212, 255, 0.28), inset 0 0 16px rgba(168, 238, 255, 0.12);
 }
 .matrix-card.card-cryo:hover {
     border-color: rgba(168, 238, 255, 0.95);
-    box-shadow: 0 0 30px rgba(0, 212, 255, 0.55), inset 0 0 20px rgba(168, 238, 255, 0.2);
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.6), inset 0 0 22px rgba(168, 238, 255, 0.25);
 }
 
 .matrix-card.card-selected {
     border: 2px solid #00f0ff !important;
-    box-shadow: 0 0 30px rgba(0, 240, 255, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.25) !important;
-    transform: scale(1.02);
+    box-shadow: 0 0 35px rgba(0, 240, 255, 0.7), inset 0 0 20px rgba(0, 240, 255, 0.3) !important;
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.03);
     z-index: 10;
 }
 

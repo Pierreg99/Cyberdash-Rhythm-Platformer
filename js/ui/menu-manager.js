@@ -24,6 +24,7 @@ export class MenuManager {
         this.bindSettingsUI();
         this.bindEditorHubUI();
         this.bindOAuthUI();
+        this.bindImmersiveButtonFX();
         this.updateCurrencyUI();
         this.updateLevelSelectUI();
         this.updateOAuthUI();
@@ -1212,6 +1213,151 @@ export class MenuManager {
                 btnConnect.classList.remove('hidden');
                 btnDisconnect.classList.add('hidden');
             }
+        }
+    }
+
+    // =========================================================================
+    // IMMERSIVE BUTTON AUDIO, 3D TILT & KINETIC PARTICLE FX
+    // =========================================================================
+    bindImmersiveButtonFX() {
+        let lastHoverSoundTime = 0;
+
+        // 1. Mouse Over / Hover SFX
+        document.addEventListener('mouseover', (e) => {
+            const btn = e.target.closest('.btn-cyber, .nav-tab, .lvl-filter-btn, .matrix-card, .speed-mod-btn, .hitbox-mod-btn, .grid-item-card, button');
+            if (btn) {
+                const now = Date.now();
+                if (now - lastHoverSoundTime > 60) {
+                    lastHoverSoundTime = now;
+                    try {
+                        this.game.soundEngine.playSFX('menu_hover');
+                    } catch (err) {}
+                }
+            }
+        });
+
+        // 2. Dynamic 3D Perspective Tilt & Specular Light Reflection
+        document.addEventListener('mousemove', (e) => {
+            const target = e.target.closest('.matrix-card, .btn-cyber');
+            if (target) {
+                const rect = target.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -9;
+                const rotateY = ((x - centerX) / centerX) * 9;
+
+                target.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`);
+                target.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`);
+                target.style.setProperty('--mx', `${((x / rect.width) * 100).toFixed(1)}%`);
+                target.style.setProperty('--my', `${((y / rect.height) * 100).toFixed(1)}%`);
+            }
+        });
+
+        // Clear tilt when leaving element
+        document.addEventListener('mouseout', (e) => {
+            const target = e.target.closest('.matrix-card, .btn-cyber');
+            if (target && !target.contains(e.relatedTarget)) {
+                target.style.setProperty('--rx', '0deg');
+                target.style.setProperty('--ry', '0deg');
+                target.style.setProperty('--mx', '50%');
+                target.style.setProperty('--my', '50%');
+            }
+        });
+
+        // 3. Kinetic Click Ripple & Cyber Spark Bursts
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.btn-cyber, .nav-tab, .lvl-filter-btn, .matrix-card, .speed-mod-btn, .hitbox-mod-btn, .grid-item-card, button');
+            if (!btn) return;
+
+            // SFX selection
+            try {
+                if (btn.classList.contains('matrix-card')) {
+                    this.game.soundEngine.playSFX('card_select');
+                } else if (btn.classList.contains('nav-tab') || btn.classList.contains('lvl-filter-btn')) {
+                    this.game.soundEngine.playSFX('menu_switch');
+                } else {
+                    this.game.soundEngine.playSFX('menu_click');
+                }
+            } catch (err) {}
+
+            // Kinetic Ripple inside the button
+            const rect = btn.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            ripple.className = 'cyber-ripple';
+            const size = Math.max(rect.width, rect.height) * 1.6;
+            ripple.style.width = `${size}px`;
+            ripple.style.height = `${size}px`;
+            ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+            ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+            btn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 550);
+
+            // Floating Cyber Sparks
+            this.spawnButtonSparks(e.clientX, e.clientY, btn);
+        });
+
+        // 4. Keyboard / Controller Shortcut Navigation
+        window.addEventListener('keydown', (e) => {
+            const menuLayer = document.getElementById('menu-layer');
+            if (!menuLayer || menuLayer.classList.contains('hidden')) return;
+
+            // Filter switching via Q / E / [ / ]
+            if (e.key === 'q' || e.key === 'Q' || e.key === '[') {
+                this.cycleFilters(-1);
+            } else if (e.key === 'e' || e.key === 'E' || e.key === ']') {
+                this.cycleFilters(1);
+            }
+        });
+    }
+
+    cycleFilters(direction) {
+        const filters = ['ALL', 'EASY', 'HARD', 'OMEGA', 'CRYO'];
+        const currentIdx = filters.indexOf(this.activeFilter || 'ALL');
+        let nextIdx = (currentIdx + direction + filters.length) % filters.length;
+        const nextFilter = filters[nextIdx];
+
+        const filterBtns = document.querySelectorAll('.lvl-filter-btn');
+        filterBtns.forEach(btn => {
+            const matches = btn.dataset.filter === nextFilter;
+            btn.classList.toggle('active', matches);
+        });
+
+        this.activeFilter = nextFilter;
+        try {
+            this.game.soundEngine.playSFX('menu_switch');
+        } catch (err) {}
+        this.renderLevelCardsGrid();
+    }
+
+    spawnButtonSparks(x, y, btn) {
+        const sparkCount = 8;
+        let color = '#00f0ff';
+        if (btn.classList.contains('btn-gold')) color = '#ffd700';
+        else if (btn.classList.contains('btn-bio') || btn.classList.contains('card-easy')) color = '#39ff14';
+        else if (btn.classList.contains('btn-danger') || btn.classList.contains('card-omega')) color = '#ff003c';
+        else if (btn.classList.contains('btn-purple') || btn.classList.contains('card-hard')) color = '#b026ff';
+        else if (btn.classList.contains('card-cryo')) color = '#a8eeff';
+
+        for (let i = 0; i < sparkCount; i++) {
+            const spark = document.createElement('div');
+            spark.className = 'cyber-spark-particle';
+            spark.style.color = color;
+            spark.style.left = `${x}px`;
+            spark.style.top = `${y}px`;
+
+            const angle = (Math.PI * 2 * i) / sparkCount + (Math.random() * 0.4 - 0.2);
+            const dist = 30 + Math.random() * 35;
+            const dx = Math.cos(angle) * dist;
+            const dy = Math.sin(angle) * dist;
+
+            spark.style.setProperty('--dx', `${dx.toFixed(1)}px`);
+            spark.style.setProperty('--dy', `${dy.toFixed(1)}px`);
+
+            document.body.appendChild(spark);
+            setTimeout(() => spark.remove(), 600);
         }
     }
 }
