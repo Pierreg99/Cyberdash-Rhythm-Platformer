@@ -127,6 +127,21 @@ export class CyberDashGame {
                 else if (this.mode === 'PAUSED') this.togglePause();
                 else if (this.mode === 'EDITOR_PLAY') this.returnToEditorFromPlay();
             }
+
+            // Pause Modal Hotkeys
+            if (this.mode === 'PAUSED') {
+                if (e.code === 'KeyR') {
+                    this.togglePause();
+                    this.attempts++;
+                    StorageManager.incrementStat('totalAttempts', 1);
+                    this.resetRun();
+                } else if (e.code === 'KeyP') {
+                    document.getElementById('btn-pause-practice')?.click();
+                } else if (e.code === 'KeyH' || e.code === 'KeyB') {
+                    this.returnToMenu();
+                }
+            }
+
             if (e.code === 'KeyZ' && this.isPractice && this.mode === 'PLAYING') {
                 this.setCheckpoint();
             }
@@ -192,6 +207,21 @@ export class CyberDashGame {
                 this.attempts++;
                 StorageManager.incrementStat('totalAttempts', 1);
                 this.resetRun();
+            };
+        }
+
+        const pracToggleBtn = document.getElementById('btn-pause-practice');
+        if (pracToggleBtn) {
+            pracToggleBtn.onclick = () => {
+                this.isPractice = !this.isPractice;
+                const pracHud = document.getElementById('practice-hud');
+                if (pracHud) {
+                    if (this.isPractice) pracHud.classList.remove('hidden');
+                    else pracHud.classList.add('hidden');
+                }
+                const txt = document.getElementById('pause-practice-txt');
+                if (txt) txt.innerText = this.isPractice ? 'DISABLE PRACTICE MODE' : 'ENABLE PRACTICE MODE';
+                this.soundEngine.playSFX('menu_switch');
             };
         }
 
@@ -408,7 +438,30 @@ export class CyberDashGame {
     togglePause() {
         if (this.mode === 'PLAYING') {
             this.mode = 'PAUSED';
-            document.getElementById('pause-layer')?.classList.remove('hidden');
+            const pauseLayer = document.getElementById('pause-layer');
+            if (pauseLayer) {
+                pauseLayer.classList.remove('hidden');
+
+                // Populate Level Information
+                const lvlNameEl = document.getElementById('pause-lvl-name');
+                if (lvlNameEl && this.activeLevel) lvlNameEl.innerText = this.activeLevel.name;
+
+                const lvlTierEl = document.getElementById('pause-lvl-tier');
+                if (lvlTierEl && this.activeLevel) lvlTierEl.innerText = `${this.activeLevel.tier || 'SECTOR'} TIER`;
+
+                const attemptEl = document.getElementById('pause-attempt-val');
+                if (attemptEl) attemptEl.innerText = `ATTEMPT ${this.attempts}`;
+
+                const progressEl = document.getElementById('pause-progress-val');
+                if (progressEl && this.activeLevel) {
+                    const totalPx = this.activeLevel.length * BASE_TILE_SIZE;
+                    const pct = Math.floor((this.player.x / totalPx) * 100);
+                    progressEl.innerText = `${Math.max(0, Math.min(100, pct))}%`;
+                }
+
+                const pracTxt = document.getElementById('pause-practice-txt');
+                if (pracTxt) pracTxt.innerText = this.isPractice ? 'DISABLE PRACTICE MODE' : 'ENABLE PRACTICE MODE';
+            }
             if (this.soundEngine && this.soundEngine.ctx) this.soundEngine.ctx.suspend();
         } else if (this.mode === 'PAUSED') {
             this.mode = 'PLAYING';
