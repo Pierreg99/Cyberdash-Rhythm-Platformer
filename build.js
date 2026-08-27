@@ -1,10 +1,9 @@
-/**
- * CYBER DASH // PRODUCTION BUILD & OPTIMIZATION PIPELINE
- * Bundles, minifies, and packages Cyber Dash into dist/ directory with zero external dependencies.
- */
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const fs = require('fs');
-const path = require('path');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const ROOT_DIR = path.resolve(__dirname);
 const DIST_DIR = path.join(ROOT_DIR, 'dist');

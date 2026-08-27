@@ -37,6 +37,9 @@
     <!-- Toast Container for Real-Time Achievements -->
     <div id="achievement-toast-container"></div>
 
+    <!-- Freeze Vignette Overlay (shown when player is frozen) -->
+    <div id="freeze-vignette" class="freeze-vignette hidden"></div>
+
     <!-- Main Game & Engine Container -->
     <div id="engine-container" class="relative w-full h-full flex items-center justify-center bg-obsidian">
         <!-- 2D Canvas Engine -->
@@ -64,7 +67,10 @@
             </div>
 
             <!-- Controls (Pause & Editor Return) -->
-            <div class="flex gap-3 pointer-events-auto">
+            <div class="flex gap-3 items-center pointer-events-auto">
+                <div id="freeze-hud-badge" class="hud-freeze-badge hidden">
+                    ❄ FROZEN
+                </div>
                 <button id="btn-editor-return-hud" class="kinetic-glass btn-cyber px-4 py-2 rounded-lg text-xs font-bold font-mono text-gold border-gold/40 hover:text-white hidden">
                     <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"></path></svg>
                     RETURN TO LAB
@@ -145,10 +151,11 @@
                     <!-- Difficulty / Tier Filter Pills & Modifiers Toggle -->
                     <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
                         <div class="flex flex-wrap items-center gap-2">
-                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-cyan/50 text-cyan bg-cyan/15 active" data-filter="ALL">✨ ALL (12)</button>
-                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-bio/40 text-bio bg-bio/10" data-filter="EASY">🟢 EASY TIER (4)</button>
-                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-purple/40 text-purple bg-purple/10" data-filter="HARD">🟣 HARD TIER (4)</button>
-                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-magenta/40 text-magenta bg-magenta/10" data-filter="OMEGA">🔴 OMEGA TIER (4)</button>
+                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-cyan/50 text-cyan bg-cyan/15 active" data-filter="ALL">✨ ALL (16)</button>
+                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-bio/40 text-bio bg-bio/10" data-filter="EASY">🟢 EASY (4)</button>
+                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-purple/40 text-purple bg-purple/10" data-filter="HARD">🟣 HARD (4)</button>
+                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-magenta/40 text-magenta bg-magenta/10" data-filter="OMEGA">🔴 OMEGA (4)</button>
+                            <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-[#60c8e8]/50 text-[#a8eeff] bg-[#a8eeff]/10" data-filter="CRYO">❄️ CRYO (4)</button>
                             <button class="lvl-filter-btn px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-gold/40 text-gold bg-gold/10" data-filter="CUSTOM">🛠️ CUSTOM</button>
                         </div>
                         <button id="btn-toggle-modifiers" class="px-3.5 py-1.5 rounded-full text-xs font-mono font-black border border-cyan/40 text-cyan bg-panel hover:bg-cyan/20 transition-all flex items-center gap-1.5">
@@ -244,10 +251,10 @@
 
                     <!-- Sector Cards Matrix Grid -->
                     <div class="text-left mb-2 flex justify-between items-center px-1">
-                        <span class="text-xs font-mono text-cyan uppercase font-bold tracking-widest">SECTOR MATRIX (12 TRACKS)</span>
+                        <span class="text-xs font-mono text-cyan uppercase font-bold tracking-widest">SECTOR MATRIX (16 TRACKS)</span>
                         <span class="text-[10px] font-mono text-gray-400">CLICK CARD TO ENGAGE MISSION</span>
                     </div>
-                    <div id="level-select-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-80 overflow-y-auto pr-1"></div>
+                    <div id="level-select-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 max-h-[360px] overflow-y-auto pr-1"></div>
                 </div>
 
                 <!-- =======================================================

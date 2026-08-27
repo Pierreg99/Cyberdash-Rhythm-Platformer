@@ -358,7 +358,18 @@ handleDeath() {
 if (this.player.dead) return;
 this.player.dead = true;
 this.soundEngine.playSFX('crash');
-this.particles.emitExplosion(this.player.x + this.player.s / 2, this.player.y + this.player.s / 2, '#ff003c');
+if (this.activeLevel && this.activeLevel.tier === 'CRYO') {
+this.particles.emitDeathIce(
+this.player.x + this.player.s / 2,
+this.player.y + this.player.s / 2
+);
+} else {
+this.particles.emitExplosion(
+this.player.x + this.player.s / 2,
+this.player.y + this.player.s / 2,
+'#ff003c'
+);
+}
 this.camera.shake(20, 300);
 StorageManager.incrementStat('totalCrashes', 1);
 setTimeout(() => {
@@ -455,6 +466,21 @@ this.particles,
 (coinIdx, cx, cy) => this.handleCoinCollect(coinIdx, cx, cy),
 () => this.handleDeath()
 );
+const freezeVignette = document.getElementById('freeze-vignette');
+const freezeBadge = document.getElementById('freeze-hud-badge');
+if (this.player.frozen && this.player.freezeTimer > 0) {
+if (freezeVignette) freezeVignette.classList.remove('hidden');
+if (freezeBadge) freezeBadge.classList.remove('hidden');
+} else {
+if (freezeVignette) freezeVignette.classList.add('hidden');
+if (freezeBadge) freezeBadge.classList.add('hidden');
+}
+if (this.player.frozen && this.player.freezeTimer % 8 === 0) {
+this.particles.emitFrostRing(
+this.player.x + this.player.s / 2,
+this.player.y + this.player.s / 2
+);
+}
 const totalPx = this.activeLevel.length * BASE_TILE_SIZE;
 let pct = Math.floor((this.player.x / totalPx) * 100);
 pct = Math.max(0, Math.min(100, pct));

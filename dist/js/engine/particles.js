@@ -115,6 +115,100 @@ color: speedMult >= 3 ? '#ff003c' : speedMult >= 2 ? '#39ff14' : '#00f0ff'
 });
 }
 }
+emitFreezeShatter(x, y) {
+const shardColors = ['#a8eeff', '#c8f8ff', '#60c8e8', '#ffffff', '#00d4ff'];
+for (let i = 0; i < 22; i++) {
+const angle = Math.random() * Math.PI * 2;
+const speed = Math.random() * 9 + 2;
+const color = shardColors[Math.floor(Math.random() * shardColors.length)];
+this.particles.push({
+x, y,
+vx: Math.cos(angle) * speed,
+vy: Math.sin(angle) * speed,
+life: 1.0,
+decay: Math.random() * 0.025 + 0.018,
+color,
+size: Math.random() * 6 + 2,
+type: 'shard'
+});
+}
+this.rings.push({
+x, y,
+radius: 4,
+maxRadius: 80,
+growth: 5,
+life: 1.0,
+decay: 0.045,
+color: '#00d4ff'
+});
+this.floatingTexts.push({
+x, y: y - 20,
+text: '❄ FROZEN',
+color: '#88ddff',
+life: 1.0,
+decay: 0.022
+});
+}
+emitFrostRing(x, y) {
+this.rings.push({
+x, y,
+radius: 6,
+maxRadius: 55,
+growth: 4,
+life: 1.0,
+decay: 0.06,
+color: '#88eeff'
+});
+for (let i = 0; i < 8; i++) {
+const angle = Math.random() * Math.PI * 2;
+const speed = Math.random() * 4 + 1;
+this.particles.push({
+x, y,
+vx: Math.cos(angle) * speed,
+vy: Math.sin(angle) * speed - 1.5,
+life: 0.9,
+decay: 0.03,
+color: '#a8eeff',
+size: 3,
+type: 'spark'
+});
+}
+}
+emitDeathIce(x, y) {
+for (let i = 0; i < 35; i++) {
+const angle = Math.random() * Math.PI * 2;
+const speed = Math.random() * 12 + 3;
+this.particles.push({
+x, y,
+vx: Math.cos(angle) * speed,
+vy: Math.sin(angle) * speed,
+life: 1.0,
+decay: Math.random() * 0.02 + 0.012,
+color: Math.random() < 0.5 ? '#a8eeff' : '#ffffff',
+size: Math.random() * 9 + 4,
+type: 'shard'
+});
+}
+this.rings.push({
+x, y,
+radius: 5,
+maxRadius: 130,
+growth: 8,
+life: 1.0,
+decay: 0.035,
+color: '#00d4ff'
+});
+}
+emitIceCrystalCollect(x, y) {
+this.floatingTexts.push({
+x, y: y - 20,
+text: '❄ +ICE CORE',
+color: '#a8eeff',
+life: 1.0,
+decay: 0.02
+});
+this.emitFreezeShatter(x, y);
+}
 updateAndDraw(ctx, cx, screenWidth, screenHeight) {
 ctx.save();
 for (let i = this.speedLines.length - 1; i >= 0; i--) {
@@ -167,6 +261,19 @@ if (p.type === 'spark') {
 ctx.beginPath();
 ctx.arc(p.x - cx, p.y, p.size * p.life, 0, Math.PI * 2);
 ctx.fill();
+} else if (p.type === 'shard') {
+const sz = p.size * p.life;
+ctx.save();
+ctx.translate(p.x - cx, p.y);
+ctx.rotate(Math.atan2(p.vy, p.vx));
+ctx.beginPath();
+ctx.moveTo(0, -sz);
+ctx.lineTo(sz * 0.4, 0);
+ctx.lineTo(0, sz);
+ctx.lineTo(-sz * 0.4, 0);
+ctx.closePath();
+ctx.fill();
+ctx.restore();
 } else {
 ctx.fillRect(p.x - cx - p.size / 2, p.y - p.size / 2, p.size, p.size);
 }

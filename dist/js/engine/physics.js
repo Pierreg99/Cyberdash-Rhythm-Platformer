@@ -29,7 +29,15 @@ PORTAL_MINI: 26,
 PORTAL_GROWTH: 27,
 CYBER_COIN: 28,
 SAWBLADE: 29,
-HALF_BLOCK: 30
+HALF_BLOCK: 30,
+ICE_BLOCK: 31,      
+ICE_SPIKE: 32,      
+ORB_FREEZE: 33,     
+PAD_ICE: 34,        
+FREEZE_ZONE: 35,    
+BOOST_PAD: 36,      
+DASH_RING: 37,      
+ICE_CRYSTAL: 38,    
 };
 export class PhysicsEngine {
 static check(player, levelData, groundY, input, soundEngine, particleSystem, onCoinCollect, onDeath) {
@@ -270,6 +278,112 @@ const dist = Math.hypot((px + ps / 2) - (ox + TS / 2), (py + ps / 2) - (oy + TS 
 if (dist < TS * 0.9) {
 onCoinCollect(coinIndex, ox + TS / 2, oy + TS / 2);
 }
+}
+else if (type === OBJECT_TYPES.ICE_BLOCK) {
+if (py + ps > oy && py < oy + TS) {
+if (player.gravityDir === 1) {
+if (player.vy >= 0 && py + ps - player.vy <= oy + 14) {
+player.y = oy - ps;
+player.vy = 0;
+player.grounded = true;
+player.isOnIce = true; 
+} else {
+onDeath();
+return;
+}
+} else {
+if (player.vy <= 0 && py - player.vy >= oy + TS - 14) {
+player.y = oy + TS;
+player.vy = 0;
+player.grounded = true;
+player.isOnIce = true;
+} else {
+onDeath();
+return;
+}
+}
+}
+}
+else if (type === OBJECT_TYPES.ICE_SPIKE) {
+const spikeMargin = TS * 0.3;
+const spikeCoreLeft = ox + spikeMargin;
+const spikeCoreRight = ox + TS - spikeMargin;
+const playerCenterX = px + ps / 2;
+if (playerCenterX > spikeCoreLeft && playerCenterX < spikeCoreRight) {
+if (player.gravityDir === 1) {
+if (py + ps > oy + TS * 0.4) { onDeath(); return; }
+} else {
+if (py < oy + TS * 0.6) { onDeath(); return; }
+}
+}
+}
+else if (type === OBJECT_TYPES.ORB_FREEZE) {
+if (input.tap) {
+const dist = Math.hypot((px + ps / 2) - (ox + TS / 2), (py + ps / 2) - (oy + TS / 2));
+if (dist < TS * 1.15) {
+input.tap = false;
+player.vy = -17 * player.gravityDir;
+player.frozen = true;
+player.freezeTimer = 120; 
+player.vx = player.vx * 0.7; 
+if (soundEngine) soundEngine.playSFX('gravity');
+if (particleSystem) particleSystem.emitFreezeShatter(ox + TS / 2, oy + TS / 2);
+}
+}
+}
+else if (type === OBJECT_TYPES.PAD_ICE) {
+const padTop = oy + TS - 12;
+if (py + ps >= padTop && py + ps <= oy + TS + 4) {
+player.vy = -22 * player.gravityDir;
+player.isOnIce = true;
+if (soundEngine) soundEngine.playSFX('pad');
+if (particleSystem) particleSystem.emitFreezeShatter(ox + TS / 2, oy + TS / 2);
+}
+}
+else if (type === OBJECT_TYPES.FREEZE_ZONE) {
+if (px + ps > ox && px < ox + TS && py + ps > oy && py < oy + TS * 3) {
+if (!player.frozen) {
+player.frozen = true;
+player.freezeTimer = 80;
+}
+}
+}
+else if (type === OBJECT_TYPES.BOOST_PAD) {
+const padTop = oy + TS - 12;
+if (py + ps >= padTop && py + ps <= oy + TS + 4) {
+player.vy = -10 * player.gravityDir;
+const oldSpeed = player.speedMult;
+player.vx = Math.min(player.vx * 1.5, 30);
+if (soundEngine) soundEngine.playSFX('speed');
+if (particleSystem) particleSystem.emitOrbHit(ox + TS / 2, oy + TS / 2, '#ff7700');
+}
+}
+else if (type === OBJECT_TYPES.DASH_RING) {
+if (input.tap) {
+const dist = Math.hypot((px + ps / 2) - (ox + TS / 2), (py + ps / 2) - (oy + TS / 2));
+if (dist < TS * 1.2) {
+input.tap = false;
+player.vy = 0;
+player.vx += 8;
+if (soundEngine) soundEngine.playSFX('speed');
+if (particleSystem) particleSystem.emitOrbHit(ox + TS / 2, oy + TS / 2, '#00f0ff');
+}
+}
+}
+else if (type === OBJECT_TYPES.ICE_CRYSTAL) {
+const coinIndex = extra !== undefined ? extra : 0;
+const dist = Math.hypot((px + ps / 2) - (ox + TS / 2), (py + ps / 2) - (oy + TS / 2));
+if (dist < TS * 0.9) {
+onCoinCollect(coinIndex, ox + TS / 2, oy + TS / 2);
+if (particleSystem) particleSystem.emitFreezeShatter(ox + TS / 2, oy + TS / 2);
+}
+}
+}
+if (player.frozen) {
+player.freezeTimer--;
+if (player.freezeTimer <= 0) {
+player.frozen = false;
+player.freezeTimer = 0;
 }
 }
 }

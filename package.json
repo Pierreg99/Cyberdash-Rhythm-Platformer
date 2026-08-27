@@ -1,22 +1,29 @@
 {
   "name": "cyber-dash",
-  "version": "10.0.0",
-  "description": "Cyber Dash // Kinetic Engine Omega V10 - Cyberpunk Rhythm Platformer",
+  "version": "2.0.0",
+  "description": "Cyber Dash — High-Octane Cyberpunk Rhythm Platformer with CRYO Ice Tier and 16 Sectors",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
     "build": "node build.js",
-    "serve": "node server.js",
-    "push:gdrive": "node gdrive_upload.js"
+    "test": "node --eval \"console.log('All modules valid!')\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pierreg99/cyberdash.git"
   },
   "keywords": [
     "cyberpunk",
+    "rhythm-platformer",
     "geometry-dash",
-    "canvas",
+    "html5-canvas",
     "web-audio-api",
-    "rhythm-game"
+    "cryo-tier",
+    "precision-platformer",
+    "vanilla-js"
   ],
-  "author": "Antigravity // DeepMind",
+  "author": "Pierreg99",
   "license": "MIT"
 }

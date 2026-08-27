@@ -17,6 +17,19 @@
   Dash through 16 neon-drenched levels across 4 tiers — including the all-new CRYO sector.
 </p>
 
+## 📑 Table of Contents
+- [Screenshots](#screenshots)
+- [Features](#features)
+- [Object Types Catalog](#object-types-38-total)
+- [CRYO Ice Tier](#cryo-tier-new-in-v20)
+- [Level Tiers Matrix](#level-tiers-16-total)
+- [Controls](#controls)
+- [Getting Started](#getting-started)
+- [Documentation Suite](#-documentation-suite)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
 ---
 
 ## Screenshots
@@ -87,63 +100,86 @@
 Open **`index.html`** in any modern browser. No build step or server required.
 
 ```bash
-git clone https://github.com/Pierreg99/cyber-dash.git
-cd cyber-dash
+# Clone the repository
+git clone https://github.com/Pierreg99/cyberdash.git
+cd cyberdash
 
-# Windows
+# Run directly in browser (Windows)
 start index.html
 
-# macOS / Linux
+# Run directly in browser (macOS / Linux)
 open index.html
+
+# Optional: Run local static server
+npm start
 ```
 
 **Requirements:** Chrome / Firefox / Edge / Safari 15+
 
 ---
 
+## 📚 Documentation Suite
+
+| Document | Description |
+|---|---|
+| **[QUALITY_AUDIT.md](QUALITY_AUDIT.md)** | Full technical audit, 60/120 FPS benchmarks, physics verification, and test results |
+| **[PLAN.md](PLAN.md)** | High-level system architecture, engine decomposition, and technical implementation plan |
+| **[PROGRESS.md](PROGRESS.md)** | Granular milestone tracking across v1.0, v1.5, and v2.0 releases |
+| **[ROADMAP.md](ROADMAP.md)** | Strategic vision and planned features for v2.1, v2.2 (Inferno Tier), and v3.0 |
+| **[CHANGELOG.md](CHANGELOG.md)** | Semantic release notes and historical changes |
+| **[CONTRIBUTING.md](CONTRIBUTING.md)** | Community guidelines, custom level authoring specs, and PR instructions |
+| **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** | Detailed subsystem architecture, game loop lifecycle, and data flow diagrams |
+| **[docs/PHYSICS_ENGINE.md](docs/PHYSICS_ENGINE.md)** | Mathematical specification of kinematics, collision AABB, and freeze slow curves |
+| **[docs/LEVEL_DESIGN_GUIDE.md](docs/LEVEL_DESIGN_GUIDE.md)** | Track authoring guide for all 38 object types, pacing, and BPM rhythm sync |
+| **[docs/API_REFERENCE.md](docs/API_REFERENCE.md)** | Developer reference for Player, Physics, Particles, Camera, and Audio modules |
+| **[docs/AUDIO_SYSTEM.md](docs/AUDIO_SYSTEM.md)** | Web Audio API procedural synthesis, oscillator chains, and rhythm scheduling |
+
+---
+
 ## Project Structure
 
 ```
-cyber-dash/
-├── index.html              # Game shell & UI
-├── css/styles.css          # Core styles, glassmorphism, CRYO theme
+cyberdash/
+├── index.html                  # Game shell & UI
+├── css/styles.css              # Core styles, glassmorphism, CRYO theme
 ├── js/
-│   ├── main.js             # Game loop, CyberDashGame class
+│   ├── main.js                 # Game loop, CyberDashGame orchestrator
 │   ├── engine/
-│   │   ├── physics.js      # 38 object types, freeze mechanic
-│   │   ├── player.js       # 6 forms, freeze crystal overlay
-│   │   ├── particles.js    # Explosions, ice shatter, frost rings
-│   │   └── camera.js       # Parallax, CRYO snow/mist atmosphere
+│   │   ├── physics.js          # 38 object types, collision detection & freeze logic
+│   │   ├── player.js           # 6 forms kinematics & orbital crystal overlay
+│   │   ├── particles.js        # Explosions, ice shatter, frost shockwave rings
+│   │   └── camera.js           # Viewport tracking, screen shake & weather effects
 │   ├── levels/
-│   │   └── level-data.js   # 16 levels + drawLevelMap renderer
+│   │   ├── level-data.js       # 16 official sectors + vector object renderer
+│   │   └── editor.js           # Interactive in-game level builder
 │   ├── ui/
-│   │   └── menu-manager.js # Level select, tier cards, CRYO filter
+│   │   ├── menu-manager.js     # Sector matrix, tier cards, store & garage
+│   │   └── storage.js          # LocalStorage persistence & stats manager
 │   └── audio/
-│       └── sound-engine.js # Procedural audio synthesis
-├── docs/images/            # Banner, screenshots
-├── CHANGELOG.md
-├── ROADMAP.md
-└── LICENSE
+│       └── sound-engine.js     # Web Audio API procedural music & SFX synth
+├── docs/                       # Technical manuals, guides & screenshots
+├── QUALITY_AUDIT.md            # Codebase audit & benchmark report
+├── PLAN.md                     # Architecture & implementation plan
+├── PROGRESS.md                 # Milestone tracker
+├── ROADMAP.md                  # Future roadmap
+├── CHANGELOG.md                # Release changelog
+├── CONTRIBUTING.md             # Contribution guide
+└── LICENSE                     # MIT License
 ```
 
 ---
 
 ## Contributing
 
-1. Fork the repo
-2. Create branch: `git checkout -b feature/my-level`
-3. Commit: `git commit -m 'Add: new level'`
-4. Push: `git push origin feature/my-level`
-5. Open a Pull Request
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
+We welcome community level creators and developers! See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
 
 ---
 
 ## License
 
-MIT License — see [LICENSE](LICENSE) for details.
+This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
 
 ---
 
 <p align="center">Made with neon by <a href="https://github.com/Pierreg99">Pierreg99</a> · 2026</p>
+

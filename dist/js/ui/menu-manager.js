@@ -207,9 +207,10 @@ const filter = this.activeFilter || 'ALL';
 const filtered = allLevels.filter(lvl => {
 if (filter === 'ALL') return true;
 if (filter === 'CUSTOM') return typeof lvl.id !== 'number';
-if (filter === 'EASY') return lvl.tier === 'EASY' || lvl.diff === 'EASY' || lvl.diff === 'NORMAL';
-if (filter === 'HARD') return lvl.tier === 'HARD' || lvl.diff === 'HARD' || lvl.diff === 'HARDER';
-if (filter === 'OMEGA') return lvl.tier === 'OMEGA' || lvl.diff === 'INSANE' || lvl.diff === 'DEMON';
+if (filter === 'EASY') return lvl.tier === 'EASY';
+if (filter === 'HARD') return lvl.tier === 'HARD';
+if (filter === 'OMEGA') return lvl.tier === 'OMEGA';
+if (filter === 'CRYO') return lvl.tier === 'CRYO';
 return lvl.diff === filter;
 });
 if (filtered.length === 0) {
@@ -221,60 +222,73 @@ const originalIndex = allLevels.findIndex(l => l.id === lvl.id);
 const isSelected = originalIndex === this.selectedLevelIndex;
 const bestPct = StorageManager.getBestScore(lvl.id);
 const coins = StorageManager.getCoins(lvl.id);
+const isCompleted = bestPct >= 100;
+const isCryo = lvl.tier === 'CRYO';
+const tierConfig = {
+EASY:   { icon: '🟢', borderCls: 'border-bio/30', glowCls: 'shadow-[0_0_20px_rgba(57,255,20,0.15)]', accentCls: 'text-bio', badgeBg: 'bg-bio/10 border-bio/30 text-bio' },
+HARD:   { icon: '🟣', borderCls: 'border-purple/30', glowCls: 'shadow-[0_0_20px_rgba(176,38,255,0.15)]', accentCls: 'text-purple', badgeBg: 'bg-purple/10 border-purple/30 text-purple' },
+OMEGA:  { icon: '🔴', borderCls: 'border-magenta/30', glowCls: 'shadow-[0_0_20px_rgba(255,0,60,0.15)]', accentCls: 'text-magenta', badgeBg: 'bg-magenta/10 border-magenta/30 text-magenta' },
+CRYO:   { icon: '❄️', borderCls: 'border-[#60c8e8]/40', glowCls: 'shadow-[0_0_20px_rgba(0,212,255,0.2)]', accentCls: 'text-[#a8eeff]', badgeBg: 'bg-[#a8eeff]/10 border-[#60c8e8]/40 text-[#a8eeff]' },
+CUSTOM: { icon: '🛠️', borderCls: 'border-gold/30', glowCls: 'shadow-[0_0_20px_rgba(255,215,0,0.15)]', accentCls: 'text-gold', badgeBg: 'bg-gold/10 border-gold/30 text-gold' },
+};
+const tc = tierConfig[lvl.tier] || tierConfig.EASY;
+const selBorderCls = isSelected
+? `border-cyan shadow-[0_0_28px_rgba(0,240,255,0.4)] scale-[1.02]`
+: `${tc.borderCls} ${tc.glowCls} hover:border-cyan/50`;
 const card = document.createElement('div');
-card.className = `kinetic-glass p-4 rounded-2xl flex flex-col justify-between border transition-all cursor-pointer ${
-isSelected
-? 'border-cyan shadow-[0_0_25px_rgba(0,240,255,0.35)] scale-[1.02]'
-: 'border-white/10 hover:border-cyan/50 hover:bg-cyan/5'
-}`;
-const formBadges = (lvl.forms || ['CUBE'])
-.map(f => `<span class="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-white/5 border border-white/10 text-gray-300">${f}</span>`)
-.join(' ');
+card.className = `kinetic-glass p-3.5 rounded-2xl flex flex-col justify-between border transition-all duration-200 cursor-pointer relative overflow-hidden ${selBorderCls}`;
+const starsMax = lvl.stars || 1;
+const starsEarned = isCompleted ? starsMax : (bestPct > 0 ? Math.min(starsMax - 1, Math.ceil((bestPct / 100) * starsMax)) : 0);
+let starStr = '';
+for (let s = 0; s < starsMax; s++) {
+starStr += s < starsEarned
+? `<span class="text-gold drop-shadow-[0_0_6px_#ffd700]">★</span>`
+: `<span class="text-gray-700">☆</span>`;
+}
 let coinIcons = '';
+const isCryoLevel = lvl.tier === 'CRYO';
 for (let i = 0; i < 3; i++) {
 const has = coins[i];
-coinIcons += `<span class="${has ? 'text-gold drop-shadow-[0_0_6px_#ffd700]' : 'text-gray-700 opacity-40'}">${has ? '◆' : '◇'}</span>`;
+coinIcons += `<span class="${has ? (isCryoLevel ? 'text-[#a8eeff] drop-shadow-[0_0_6px_#00d4ff]' : 'text-gold drop-shadow-[0_0_6px_#ffd700]') : 'text-gray-700 opacity-30'}">${has ? (isCryoLevel ? '❄' : '◆') : (isCryoLevel ? '❅' : '◇')}</span>`;
 }
+const formBadges = (lvl.forms || ['CUBE'])
+.map(f => `<span class="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold bg-white/5 border border-white/10 text-gray-400">${f}</span>`)
+.join('');
+const compBadge = isCompleted
+? `<span class="absolute top-2 right-2 text-[9px] font-mono font-black px-2 py-0.5 rounded-full bg-bio/20 text-bio border border-bio/40">✓ CLEAR</span>`
+: '';
+const cryoBg = isCryo ? 'background: linear-gradient(135deg, rgba(0,25,40,0.6) 0%, rgba(0,15,30,0.4) 100%);' : '';
 card.innerHTML = `
-<div>
+${compBadge}
+<div style="${cryoBg}">
 <div class="flex justify-between items-start mb-2">
-<span class="text-[10px] font-mono text-gray-400 font-bold uppercase tracking-wider">${typeof lvl.id === 'number' ? `TARGET ${lvl.id < 10 ? '0' + lvl.id : lvl.id} 
-<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black border ${
-lvl.diff === 'EASY'
-? 'bg-bio/10 text-bio border-bio/30'
-: lvl.diff === 'NORMAL'
-? 'bg-cyan/10 text-cyan border-cyan/30'
-: lvl.diff === 'HARD'
-? 'bg-purple/10 text-purple border-purple/30'
-: lvl.diff === 'HARDER'
-? 'bg-orange/10 text-orange border-orange/30'
-: lvl.diff === 'INSANE'
-? 'bg-gold/10 text-gold border-gold/30'
-: 'bg-magenta/10 text-magenta border-magenta/30'
-}">${lvl.diff} ${lvl.stars || 1}★</span>
+<div>
+<span class="text-[9px] font-mono text-gray-500 font-bold tracking-wider">${tc.icon} ${typeof lvl.id === 'number' ? `TARGET ${lvl.id < 10 ? '0' + lvl.id : lvl.id}` : 'CUSTOM'}</span>
+<div class="text-[9px] font-mono ${tc.accentCls} font-bold tracking-widest">${lvl.tier || 'SECTOR'} TIER</div>
 </div>
-<h4 class="text-lg font-black tracking-wide uppercase" style="color: ${lvl.color || '#fff'}; text-shadow: 0 0 10px ${lvl.color || '#00f0ff'}66;">
+<span class="px-2 py-0.5 rounded-full text-[9px] font-black border ${tc.badgeBg}">${lvl.diff}</span>
+</div>
+<h4 class="text-base font-black tracking-wide uppercase leading-tight mb-0.5" style="color: ${lvl.color || '#fff'}; text-shadow: 0 0 12px ${lvl.color || '#00f0ff'}55;">
 ${lvl.name}
 </h4>
-<p class="text-[11px] font-mono text-gray-400 line-clamp-1 mt-0.5">${lvl.subtitle || lvl.desc || ''}</p>
-<div class="flex items-center gap-1.5 mt-2.5">
-${formBadges}
+<p class="text-[10px] font-mono text-gray-500 line-clamp-1">${lvl.subtitle || lvl.desc || ''}</p>
+<div class="flex items-center gap-1 mt-1.5 text-sm">${starStr}</div>
+<div class="flex items-center gap-1 mt-1.5 flex-wrap">${formBadges}</div>
 </div>
-</div>
-<div class="mt-4 pt-3 border-t border-white/10">
-<div class="flex justify-between items-center text-xs font-mono mb-1.5">
+<div class="mt-3 pt-2.5 border-t border-white/10">
+<div class="flex justify-between items-center mb-1 text-xs font-mono">
 <div class="flex items-center gap-1 text-sm">${coinIcons}</div>
-<span class="font-bold text-cyan">${bestPct}%</span>
+<span class="font-bold ${tc.accentCls}">${bestPct}%</span>
 </div>
-<div class="bg-panel rounded-full h-1.5 overflow-hidden border border-gray-800 mb-3">
-<div class="h-full rounded-full transition-all duration-300" style="width: ${bestPct}%; background-color: ${lvl.color || '#00f0ff'};"></div>
+<div class="rounded-full h-1.5 overflow-hidden border border-gray-800 mb-2.5" style="background:#0a0a14;">
+<div class="h-full rounded-full transition-all duration-300" style="width: ${bestPct}%; background: linear-gradient(90deg, ${lvl.color || '#00f0ff'}, ${lvl.color || '#00f0ff'}88);${isCompleted ? ' box-shadow: 0 0 8px ' + lvl.color + ';' : ''}"></div>
 </div>
-<div class="flex gap-2">
-<button class="btn-cyber flex-1 py-2 rounded-lg text-xs font-black btn-card-play text-cyan" data-idx="${originalIndex}">
+<div class="flex gap-1.5">
+<button class="btn-cyber flex-1 py-1.5 rounded-lg text-[10px] font-black btn-card-play text-cyan" data-idx="${originalIndex}">
 ▶ PLAY
 </button>
-<button class="btn-cyber btn-gold flex-1 py-2 rounded-lg text-xs font-black btn-card-prac" data-idx="${originalIndex}">
-SIMULATE
+<button class="btn-cyber btn-gold flex-1 py-1.5 rounded-lg text-[10px] font-black btn-card-prac" data-idx="${originalIndex}">
+SIM
 </button>
 </div>
 </div>
@@ -283,6 +297,7 @@ card.onclick = (e) => {
 if (e.target.closest('button')) return;
 this.selectedLevelIndex = originalIndex;
 this.updateLevelSelectUI();
+this.game.soundEngine.playSFX('jump');
 };
 const playBtn = card.querySelector('.btn-card-play');
 if (playBtn) {

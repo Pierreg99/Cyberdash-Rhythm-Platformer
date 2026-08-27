@@ -1,11 +1,10 @@
-/**
- * CYBER DASH // PRODUCTION HTTP SERVER
- * Zero-dependency Node.js static server with MIME types, caching, and CORS.
- */
+import http from 'http';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 8080;
 const PUBLIC_DIR = path.resolve(__dirname);

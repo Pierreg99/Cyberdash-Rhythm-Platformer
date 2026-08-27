@@ -24,11 +24,16 @@ this.form = 'CUBE';
 this.dead = false;
 this.robotBoosting = false;
 this.robotBoostTime = 0;
+this.maxRobotBoost = 20;
 this.accentColor = '#ffd700';
 this.trailType = 'neon';
 this.characterId = 'classic';
 this.trails = [];
 this.dead = false;
+this.frozen = false;
+this.freezeTimer = 0;
+this.isOnIce = false;
+this.frozenCrystalAngle = 0;
 }
 setCustomization(cfg) {
 if (!cfg) return;
@@ -137,13 +142,22 @@ let speedModifier = 1.0;
 if (window.cyberDashTierConfig && typeof window.cyberDashTierConfig.speedModifier === 'number') {
 speedModifier = window.cyberDashTierConfig.speedModifier;
 }
-this.x += this.vx * speedModifier;
+let freezeMod = 1.0;
+if (this.frozen && this.freezeTimer > 0) {
+freezeMod = 0.55 + 0.45 * (1 - this.freezeTimer / 120);
+}
+if (this.isOnIce && this.form === 'CUBE') {
+}
+this.isOnIce = false; 
+this.x += this.vx * speedModifier * freezeMod;
 this.y += this.vy;
+if (this.frozen) this.frozenCrystalAngle += 2;
+const trailColor = this.frozen ? '#88ddff' : this.primaryColor;
 this.trails.push({
 x: this.x,
 y: this.y + this.s / 2,
 a: 1.0,
-color: this.primaryColor,
+color: trailColor,
 accent: this.accentColor
 });
 if (this.trails.length > 28) this.trails.shift();
@@ -349,6 +363,40 @@ ctx.fillRect(this.s * 0.1, this.s * 0.45, this.s * 0.2, Math.random() * 12 + 6);
 }
 }
 ctx.restore();
+if (this.frozen && this.freezeTimer > 0) {
+const alpha = Math.min(1, this.freezeTimer / 60) * 0.8;
+ctx.save();
+ctx.globalAlpha = alpha;
+ctx.translate(sx + this.s / 2, sy + this.s / 2);
+ctx.rotate((this.frozenCrystalAngle * Math.PI) / 180);
+const numShards = 6;
+const shardRadius = this.s * 0.72;
+ctx.strokeStyle = '#a8eeff';
+ctx.shadowBlur = 20;
+ctx.shadowColor = '#00d4ff';
+ctx.lineWidth = 2.5;
+for (let si = 0; si < numShards; si++) {
+const angle = (si / numShards) * Math.PI * 2;
+const x1 = Math.cos(angle) * (shardRadius * 0.4);
+const y1 = Math.sin(angle) * (shardRadius * 0.4);
+const x2 = Math.cos(angle) * shardRadius;
+const y2 = Math.sin(angle) * shardRadius;
+ctx.beginPath();
+ctx.moveTo(x1, y1);
+ctx.lineTo(x2, y2);
+ctx.stroke();
+ctx.fillStyle = '#c8f4ff';
+ctx.beginPath();
+ctx.arc(x2, y2, 3, 0, Math.PI * 2);
+ctx.fill();
+}
+ctx.strokeStyle = 'rgba(180, 240, 255, 0.6)';
+ctx.lineWidth = 1.5;
+ctx.beginPath();
+ctx.arc(0, 0, this.s * 0.55, 0, Math.PI * 2);
+ctx.stroke();
+ctx.restore();
+}
 ctx.restore();
 }
 }
