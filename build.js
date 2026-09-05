@@ -44,11 +44,13 @@ function copyDirRecursive(src, dest) {
             copyDirRecursive(srcPath, destPath);
         } else {
             const ext = path.extname(entry.name).toLowerCase();
+            // Copy JS verbatim — naive comment stripping breaks regex/templates/URLs in ES modules.
+            if (ext === '.js') {
+                fs.copyFileSync(srcPath, destPath);
+                continue;
+            }
             let content = fs.readFileSync(srcPath, 'utf8');
-
             if (ext === '.css') content = minifyCSS(content);
-            else if (ext === '.js') content = minifyJS(content);
-
             fs.writeFileSync(destPath, content);
         }
     }
@@ -81,14 +83,16 @@ function build() {
 
     const distPackage = {
         name: 'cyber-dash-dist',
-        version: '10.0.0',
+        version: '2.0.3',
         private: true,
+        type: 'module',
         scripts: {
             start: 'node server.js'
         }
     };
     fs.writeFileSync(path.join(DIST_DIR, 'package.json'), JSON.stringify(distPackage, null, 2));
 
+    fs.writeFileSync(path.join(DIST_DIR, '.nojekyll'), '');
     console.log('\n✓ BUILD SUCCESSFUL: Production bundle ready in dist/');
     console.log('====================================================\n');
 }
