@@ -13,8 +13,8 @@ export const LEVELS = [
     {
         id: 1,
         tier: "EASY",
-        name: "INITIATION",
-        subtitle: "The Genesis Matrix",
+        name: "CYBER ALLEYWAY",
+        subtitle: "Neon Street Run",
         desc: "Master kinetic jumps, yellow pads, jump orbs, and spacious ship flight.",
         diff: "EASY",
         stars: 1,
@@ -53,8 +53,8 @@ export const LEVELS = [
     {
         id: 2,
         tier: "EASY",
-        name: "GLOW MATRIX",
-        subtitle: "Emerald Neon Sanctuary",
+        name: "CIRCUIT BREAKER",
+        subtitle: "Emerald Pulse Grid",
         desc: "Relaxing rhythm jumps with pink bounce pads and smooth UFO flight.",
         diff: "EASY",
         stars: 1,
@@ -85,8 +85,8 @@ export const LEVELS = [
     {
         id: 3,
         tier: "EASY",
-        name: "CYBER CHILL",
-        subtitle: "Atmospheric Horizon",
+        name: "NEON ROOFS",
+        subtitle: "Skyline Parkour",
         desc: "Gentle cruise introducing wide wave corridors and rhythmic jump pads.",
         diff: "NORMAL",
         stars: 2,
@@ -116,8 +116,8 @@ export const LEVELS = [
     {
         id: 4,
         tier: "EASY",
-        name: "KINETIC SURGE",
-        subtitle: "Sub-Zero Particle Grid",
+        name: "DATA SHARD",
+        subtitle: "Packet Rush",
         desc: "Rhythmic double spikes, UFO aerial hops, and gravity flip pads.",
         diff: "NORMAL",
         stars: 2,
@@ -157,8 +157,8 @@ export const LEVELS = [
     {
         id: 5,
         tier: "HARD",
-        name: "SYNTHWAVE DRIFT",
-        subtitle: "Neon Highway Razor",
+        name: "GRID OVERLOAD",
+        subtitle: "Violet Highway",
         desc: "High-speed Wave diagonal corridors and mini size portals.",
         diff: "HARD",
         stars: 3,
@@ -193,8 +193,8 @@ export const LEVELS = [
     {
         id: 6,
         tier: "HARD",
-        name: "NEON OVERDRIVE",
-        subtitle: "Toxic Reactor Core",
+        name: "MATRIX CORTEX",
+        subtitle: "Toxic Core Sync",
         desc: "Ball mode gravity switches and 3x hyper speed reaction sequences.",
         diff: "HARD",
         stars: 3,
@@ -226,8 +226,8 @@ export const LEVELS = [
     {
         id: 7,
         tier: "HARD",
-        name: "PULSE REACTOR",
-        subtitle: "Electromagnetic Chamber",
+        name: "CHROME PEAK",
+        subtitle: "Electromagnetic Climb",
         desc: "Precision Robot booster jumps and rapid mid-air gravity switches.",
         diff: "HARDER",
         stars: 4,
@@ -257,7 +257,7 @@ export const LEVELS = [
     {
         id: 8,
         tier: "HARD",
-        name: "HYPERDRIVE OUTRUN",
+        name: "SYNTHRUN",
         subtitle: "Turbo Laser Grid",
         desc: "3x Hyper speed rush through sawblade tunnels and mini wave mazes.",
         diff: "HARDER",
@@ -290,8 +290,8 @@ export const LEVELS = [
     {
         id: 9,
         tier: "OMEGA",
-        name: "QUANTUM COLLAPSE",
-        subtitle: "Corrupted Singularity",
+        name: "PLASMA SPIRE",
+        subtitle: "Conquer The Core",
         desc: "Rapid vehicle switching, precision wave angles, and dual gravity arcs.",
         diff: "INSANE",
         stars: 5,
@@ -325,11 +325,11 @@ export const LEVELS = [
     {
         id: 10,
         tier: "OMEGA",
-        name: "ZERO POINT",
+        name: "CHAOS NODE",
         subtitle: "The Apex Nexus",
         desc: "All 6 vehicle forms converge in the ultimate 170 BPM kinetic trial.",
         diff: "DEMON",
-        stars: 6,
+        stars: 5,
         length: 500,
         color: "#ff003c",
         bg: "#050005",
@@ -364,11 +364,11 @@ export const LEVELS = [
     {
         id: 11,
         tier: "OMEGA",
-        name: "VOID HORIZON",
-        subtitle: "Black Hole Event Horizon",
+        name: "VOID REACTOR",
+        subtitle: "Event Horizon Burn",
         desc: "Relentless 4x Ludicrous speed test with black smash orbs and mini wave.",
         diff: "DEMON",
-        stars: 6,
+        stars: 5,
         length: 520,
         color: "#ffd700",
         bg: "#000000",
@@ -396,11 +396,11 @@ export const LEVELS = [
     {
         id: 12,
         tier: "OMEGA",
-        name: "OMEGA NEXUS",
-        subtitle: "Core Meltdown // Apex Boss",
+        name: "QUANTUM CORE",
+        subtitle: "Core Meltdown // Apex",
         desc: "The absolute pinnacle of kinetic reflexes at 180 BPM across all dimensions.",
         diff: "DEMON",
-        stars: 7,
+        stars: 5,
         length: 560,
         color: "#b026ff",
         bg: "#050010",
@@ -474,7 +474,7 @@ export const LEVELS = [
     {
         id: 14,
         tier: "CRYO",
-        name: "FROST MATRIX",
+        name: "GLACIER PATH",
         subtitle: "Blizzard Protocol",
         desc: "Navigate freeze zones and ice spikes in UFO mode through crystalline corridors.",
         diff: "NORMAL",
@@ -511,7 +511,7 @@ export const LEVELS = [
     {
         id: 15,
         tier: "CRYO",
-        name: "ARCTIC PULSE",
+        name: "ICE CACHE",
         subtitle: "Sub-Zero Reactor",
         desc: "High-speed ice wave run with frozen sawblades and cascading freeze orbs.",
         diff: "HARD",
@@ -547,11 +547,11 @@ export const LEVELS = [
     {
         id: 16,
         tier: "CRYO",
-        name: "ABSOLUTE ZERO",
+        name: "CRYO CHAMBER",
         subtitle: "The Eternal Frost // CRYO APEX",
         desc: "The ultimate cryo challenge: all forms, all freeze mechanics, 165 BPM chaos.",
         diff: "DEMON",
-        stars: 7,
+        stars: 5,
         length: 540,
         color: "#ffffff",
         bg: "#000508",
@@ -876,12 +876,31 @@ export function drawLevelMap(ctx, levelData, camX, groundY, levelColor = '#00f0f
 
         // ── ICE BLOCK ─────────────────────────────────────────────────────────
         } else if (type === OBJECT_TYPES.ICE_BLOCK) {
-            const iceGrad = ctx.createLinearGradient(ox, oy, ox + TS, oy + TS);
-            iceGrad.addColorStop(0, '#103852');
-            iceGrad.addColorStop(0.5, '#0a243a');
-            iceGrad.addColorStop(1, '#051624');
-            ctx.fillStyle = iceGrad;
+            // Dark rocky / cyber base (Screenshot 2)
+            const baseGrad = ctx.createLinearGradient(ox, oy, ox, oy + TS);
+            baseGrad.addColorStop(0, '#132033');
+            baseGrad.addColorStop(0.55, '#0a1522');
+            baseGrad.addColorStop(1, '#050d16');
+            ctx.fillStyle = baseGrad;
             ctx.fillRect(ox, oy, TS, TS);
+
+            // Thick translucent ice cap on top
+            const iceCap = ctx.createLinearGradient(ox, oy, ox, oy + TS * 0.55);
+            iceCap.addColorStop(0, 'rgba(210, 245, 255, 0.55)');
+            iceCap.addColorStop(0.35, 'rgba(120, 210, 240, 0.35)');
+            iceCap.addColorStop(1, 'rgba(40, 120, 170, 0.12)');
+            ctx.fillStyle = iceCap;
+            ctx.fillRect(ox + 1, oy + 1, TS - 2, TS * 0.48);
+
+            // Bright neon cyan top edge glow
+            ctx.shadowBlur = 18;
+            ctx.shadowColor = '#00f0ff';
+            ctx.strokeStyle = '#c8f8ff';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(ox + 1, oy + 2);
+            ctx.lineTo(ox + TS - 1, oy + 2);
+            ctx.stroke();
 
             // Crystalline luminous frost border
             ctx.strokeStyle = '#a8eeff';
@@ -890,40 +909,51 @@ export function drawLevelMap(ctx, levelData, camX, groundY, levelColor = '#00f0f
             ctx.shadowColor = '#00d4ff';
             ctx.strokeRect(ox + 1, oy + 1, TS - 2, TS - 2);
 
-            // Detailed Frost Crack Lattice (Image 2 crackle look)
-            ctx.strokeStyle = 'rgba(168, 238, 255, 0.45)';
+            // Detailed Frost Crack Lattice
+            ctx.strokeStyle = 'rgba(200, 245, 255, 0.55)';
             ctx.lineWidth = 1;
             ctx.shadowBlur = 0;
             ctx.beginPath();
-            ctx.moveTo(ox + TS * 0.15, oy);
-            ctx.lineTo(ox + TS * 0.35, oy + TS * 0.35);
-            ctx.lineTo(ox + TS * 0.55, oy + TS * 0.2);
-            ctx.lineTo(ox + TS * 0.85, oy);
-            ctx.moveTo(ox + TS * 0.35, oy + TS * 0.35);
-            ctx.lineTo(ox + TS * 0.5, oy + TS * 0.65);
-            ctx.lineTo(ox + TS * 0.25, oy + TS * 0.85);
-            ctx.lineTo(ox + TS * 0.1, oy + TS);
-            ctx.moveTo(ox + TS * 0.5, oy + TS * 0.65);
-            ctx.lineTo(ox + TS * 0.75, oy + TS * 0.7);
-            ctx.lineTo(ox + TS * 0.9, oy + TS);
-            ctx.moveTo(ox + TS * 0.75, oy + TS * 0.7);
-            ctx.lineTo(ox + TS, oy + TS * 0.45);
+            ctx.moveTo(ox + TS * 0.12, oy + 3);
+            ctx.lineTo(ox + TS * 0.32, oy + TS * 0.32);
+            ctx.lineTo(ox + TS * 0.52, oy + TS * 0.18);
+            ctx.lineTo(ox + TS * 0.88, oy + 3);
+            ctx.moveTo(ox + TS * 0.32, oy + TS * 0.32);
+            ctx.lineTo(ox + TS * 0.48, oy + TS * 0.62);
+            ctx.lineTo(ox + TS * 0.22, oy + TS * 0.88);
+            ctx.lineTo(ox + TS * 0.08, oy + TS - 2);
+            ctx.moveTo(ox + TS * 0.48, oy + TS * 0.62);
+            ctx.lineTo(ox + TS * 0.72, oy + TS * 0.68);
+            ctx.lineTo(ox + TS * 0.92, oy + TS - 2);
+            ctx.moveTo(ox + TS * 0.72, oy + TS * 0.68);
+            ctx.lineTo(ox + TS - 2, oy + TS * 0.42);
             ctx.stroke();
 
-            // Top Snow-Cap Glaze
-            ctx.fillStyle = 'rgba(230, 250, 255, 0.35)';
-            ctx.fillRect(ox + 2, oy + 2, TS - 4, 4);
+            // Soft snow highlight band
+            ctx.fillStyle = 'rgba(245, 252, 255, 0.55)';
+            ctx.fillRect(ox + 3, oy + 3, TS - 6, 5);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+            ctx.fillRect(ox + 4, oy + 8, TS - 8, 2);
 
-            // Hanging icicles on lower edge for aerial blocks
-            ctx.fillStyle = 'rgba(168, 238, 255, 0.5)';
-            ctx.beginPath();
-            ctx.moveTo(ox + 6, oy + TS);
-            ctx.lineTo(ox + 10, oy + TS + 7);
-            ctx.lineTo(ox + 14, oy + TS);
-            ctx.moveTo(ox + 22, oy + TS);
-            ctx.lineTo(ox + 26, oy + TS + 9);
-            ctx.lineTo(ox + 30, oy + TS);
-            ctx.fill();
+            // Longer hanging icicles
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#60c8e8';
+            const iceTips = [
+                [ox + 5, 11], [ox + 14, 16], [ox + 24, 13], [ox + 33, 9]
+            ];
+            for (const [ix, ih] of iceTips) {
+                const ig = ctx.createLinearGradient(ix, oy + TS, ix, oy + TS + ih);
+                ig.addColorStop(0, 'rgba(200, 245, 255, 0.85)');
+                ig.addColorStop(1, 'rgba(80, 180, 220, 0.15)');
+                ctx.fillStyle = ig;
+                ctx.beginPath();
+                ctx.moveTo(ix, oy + TS);
+                ctx.lineTo(ix + 4, oy + TS + ih);
+                ctx.lineTo(ix + 8, oy + TS);
+                ctx.closePath();
+                ctx.fill();
+            }
+            ctx.shadowBlur = 0;
 
         // ── ICE SPIKE ─────────────────────────────────────────────────────────
         } else if (type === OBJECT_TYPES.ICE_SPIKE) {

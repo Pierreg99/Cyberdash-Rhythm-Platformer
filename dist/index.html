@@ -63,21 +63,21 @@
                     </p>
                 </div>
 
-                <!-- Top-Right: Frosted Tier Badge, Score, Combo & Pause -->
-                <div class="flex items-center gap-3">
-                    <div id="freeze-hud-badge" class="hud-freeze-badge hidden flex items-center gap-1.5">
+                <!-- Top-Right: Frosted Tier Badge + Score/Combo (Screenshot 2 layout) & Pause -->
+                <div class="flex items-start gap-3">
+                    <div id="freeze-hud-badge" class="hud-freeze-badge hidden flex items-center gap-1.5 mt-1">
                         <svg class="w-3 h-3 text-[#a8eeff] animate-spin" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14M9 3l3 3 3-3M9 21l3-3 3 3M3 9l3 3-3 3M21 9l-3 3 3 3"/></svg>
                         <span>FROZEN</span>
                     </div>
 
-                    <div class="hud-glass-panel px-4 py-2 rounded-xl flex items-center gap-4 text-xs font-mono font-bold text-white shadow-[0_0_15px_rgba(0,240,255,0.25)]">
-                        <div class="flex items-center gap-1.5 text-[#a8eeff]">
+                    <div class="flex flex-col items-end gap-1">
+                        <div class="hud-glass-panel px-4 py-2 rounded-xl flex items-center gap-2 text-xs font-mono font-black text-[#a8eeff] tracking-widest uppercase">
                             <svg class="w-4 h-4 text-[#a8eeff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14M9 3l3 3 3-3M9 21l3-3 3 3M3 9l3 3-3 3M21 9l-3 3 3 3"/></svg>
                             <span id="hud-tier-label">CRYO TIER</span>
                         </div>
-                        <div class="text-right">
-                            <div class="text-[10px] text-gray-400">SCORE: <span id="hud-score-val" class="text-white font-black">18450</span></div>
-                            <div class="text-[10px] text-bio">COMBO: <span id="hud-combo-val" class="text-bio font-black">14x</span> <span id="attempt-counter" class="text-gray-500 font-normal ml-1">ATTEMPT 1</span></div>
+                        <div class="text-right font-mono leading-tight pr-1">
+                            <div class="text-[11px] text-white/90">SCORE: <span id="hud-score-val" class="text-cyan font-black neon-text-ice">18450</span></div>
+                            <div class="text-[11px] text-bio">COMBO: <span id="hud-combo-val" class="text-bio font-black">14x</span> <span id="attempt-counter" class="text-gray-500 font-normal ml-1 text-[10px]">ATTEMPT 1</span></div>
                         </div>
                     </div>
 
@@ -92,11 +92,11 @@
 
             <!-- Bottom HUD Row: Hearts, Energy Progress & Timeline Icons (Matching Screenshot 2) -->
             <div class="w-full flex items-center justify-between gap-4 pointer-events-auto pb-1">
-                <!-- 3 Cyan Cyber Hearts -->
-                <div class="flex items-center gap-1.5 text-cyan">
-                    <svg class="w-5 h-5 drop-shadow-[0_0_8px_#00f0ff]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <svg class="w-5 h-5 drop-shadow-[0_0_8px_#00f0ff]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    <svg class="w-5 h-5 drop-shadow-[0_0_8px_#00f0ff]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <!-- 3 Cyan Cyber Hearts (2 filled + 1 outline, Screenshot 2) -->
+                <div id="hud-hearts" class="flex items-center gap-1.5 text-cyan">
+                    <svg class="hud-heart filled w-5 h-5 drop-shadow-[0_0_8px_#00f0ff]" viewBox="0 0 24 24"><defs><linearGradient id="heartGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a8eeff"/><stop offset="100%" stop-color="#00f0ff"/></linearGradient></defs><path fill="url(#heartGrad)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="hud-heart filled w-5 h-5 drop-shadow-[0_0_8px_#00f0ff]" viewBox="0 0 24 24"><path fill="url(#heartGrad)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <svg class="hud-heart empty w-5 h-5" fill="none" stroke="#00f0ff" stroke-width="1.6" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" opacity="0.45"/></svg>
                 </div>
 
                 <!-- Progress Energy Meter -->
@@ -106,8 +106,9 @@
 
                 <!-- Interactive Timeline Rail with Milestones -->
                 <div class="flex-1 flex items-center gap-2 max-w-xl text-xs font-mono text-cyan">
-                    <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-                    <div class="flex-1 h-0.5 bg-cyan/30 relative">
+                    <svg class="w-4 h-4 text-cyan drop-shadow-[0_0_6px_#00f0ff]" fill="currentColor" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="9" width="2" height="2" fill="#050510"/><rect x="14" y="9" width="2" height="2" fill="#050510"/><rect x="9" y="14" width="6" height="1.5" fill="#050510"/></svg>
+                    <div id="hud-timeline-rail" class="flex-1 h-0.5 bg-cyan/30 relative">
+                        <div id="hud-timeline-player" class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 left-0 w-3 h-3 rounded-sm bg-cyan shadow-[0_0_8px_#00f0ff] border border-white/70" style="left:0%"></div>
                         <div class="absolute left-1/4 top-1/2 -translate-y-1/2 -translate-x-1/2">
                             <svg class="w-3.5 h-3.5 text-[#a8eeff]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14M9 3l3 3 3-3M9 21l3-3 3 3M3 9l3 3-3 3M21 9l-3 3 3 3"/></svg>
                         </div>
@@ -141,7 +142,7 @@
         <!-- ===================================================================
              MAIN MENU & NAVIGATION LAYER
         =================================================================== -->
-        <div id="menu-layer" class="absolute inset-0 flex flex-col items-center justify-between p-6 md:p-10 bg-obsidian/90 backdrop-blur-md z-20 transition-opacity duration-300">
+        <div id="menu-layer" class="absolute inset-0 flex flex-col items-center justify-between p-6 md:p-10 bg-obsidian/55 backdrop-blur-[2px] z-20 transition-opacity duration-300 sector-matrix-bg">
             <!-- Top App Bar (Android / Cyberpunk HUD) -->
             <div class="w-full flex justify-between items-center px-4 md:px-8 py-3 kinetic-glass border-b border-cyan/20 z-10">
                 <div class="flex items-center gap-3">
@@ -207,7 +208,9 @@
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                         <span>SYSTEM</span>
                     </button>
-                               <!-- =======================================================
+                </div>
+
+                <!-- =======================================================
                      VIEW 1: LEVEL SELECT HUB & SECTOR MATRIX (MATCHING SCREENSHOT 1)
                 ======================================================= -->
                 <div id="panel-levels" class="menu-view-panel w-full max-w-6xl flex flex-col items-center">

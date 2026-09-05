@@ -24,4 +24,4 @@ token.json
 # Temporary files
 scratch/
 *.tmp
-
+_cmp/

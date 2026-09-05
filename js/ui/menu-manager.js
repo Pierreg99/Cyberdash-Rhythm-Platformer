@@ -314,9 +314,9 @@ export class MenuManager {
             };
             const tc = tierConfig[lvl.tier] || tierConfig.EASY;
 
-            // 5 golden stars vector
+            // Completion stars (Screenshot 1): 5/5 gold when cleared, else dim empties / progress
             const starsMax = 5;
-            const starsCount = Math.min(5, Math.max(1, lvl.stars || 1));
+            const starsCount = isCompleted ? 5 : Math.min(5, Math.max(0, Math.round((bestPct / 100) * 5)));
             let starStr = '';
             for (let s = 0; s < starsMax; s++) {
                 starStr += s < starsCount
@@ -325,9 +325,12 @@ export class MenuManager {
             }
 
             const card = document.createElement('div');
-            card.className = `matrix-card ${tc.cardClass} ${isSelected ? 'card-selected' : ''}`;
+            card.className = `matrix-card ${tc.cardClass} ${isCryo ? 'cryo-card-shimmer' : ''} ${isSelected ? 'card-selected' : ''}`;
 
-            const lvlIdFormatted = typeof lvl.id === 'number' ? (lvl.id < 10 ? '0' + lvl.id : lvl.id) : '01';
+            // Per-tier track numbers (Screenshot 1 CRYO/EASY rows use 01-04)
+            const tierPeers = allLevels.filter(l => l.tier === lvl.tier);
+            const perTierIdx = Math.max(1, tierPeers.findIndex(l => l.id === lvl.id) + 1);
+            const lvlIdFormatted = String(perTierIdx).padStart(2, '0');
 
             // Selected action row with PLAY pill button
             const actionRow = isSelected

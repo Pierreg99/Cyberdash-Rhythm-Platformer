@@ -413,12 +413,33 @@ export class CyberDashGame {
 
         const lvlSubEl = document.getElementById('hud-level-subtitle');
         if (lvlSubEl) {
-            const lvlNum = typeof level.id === 'number' ? (level.id < 10 ? '0' + level.id : level.id) : '01';
-            lvlSubEl.innerText = `LEVEL ${lvlNum} - ${level.tier || 'SECTOR'} TIER`;
+            // Screenshot format: "LEVEL 03 - TIER 02" (per-tier index + star tier)
+            const tierOrder = { EASY: [], HARD: [], OMEGA: [], CRYO: [] };
+            for (const L of LEVELS) {
+                if (tierOrder[L.tier]) tierOrder[L.tier].push(L.id);
+            }
+            const tierList = tierOrder[level.tier] || [];
+            const perTierIdx = Math.max(1, tierList.indexOf(level.id) + 1);
+            const lvlNum = String(perTierIdx).padStart(2, '0');
+            const tierNum = String(Math.min(5, Math.max(1, level.stars || 1))).padStart(2, '0');
+            lvlSubEl.innerText = `LEVEL ${lvlNum} - TIER ${tierNum}`;
         }
 
         const tierLblEl = document.getElementById('hud-tier-label');
         if (tierLblEl) tierLblEl.innerText = `${level.tier || 'SECTOR'} TIER`;
+
+        // Ambient frost vignette for CRYO levels (Screenshot 2)
+        const freezeVignetteInit = document.getElementById('freeze-vignette');
+        if (freezeVignetteInit) {
+            if (level.tier === 'CRYO') {
+                freezeVignetteInit.classList.remove('hidden');
+                freezeVignetteInit.classList.add('cryo-ambient');
+                freezeVignetteInit.classList.remove('frozen-active');
+            } else {
+                freezeVignetteInit.classList.add('hidden');
+                freezeVignetteInit.classList.remove('cryo-ambient', 'frozen-active');
+            }
+        }
 
         document.getElementById('btn-editor-return-hud')?.classList.add('hidden');
         const attemptEl = document.getElementById('attempt-counter');
@@ -480,6 +501,11 @@ export class CyberDashGame {
         document.getElementById('hud-layer')?.classList.add('hidden');
         document.getElementById('practice-hud')?.classList.add('hidden');
         document.getElementById('editor-ui-overlay')?.classList.add('hidden');
+        const fv = document.getElementById('freeze-vignette');
+        if (fv) {
+            fv.classList.add('hidden');
+            fv.classList.remove('cryo-ambient', 'frozen-active');
+        }
 
         const menuLayer = document.getElementById('menu-layer');
         if (menuLayer) {
@@ -676,15 +702,24 @@ export class CyberDashGame {
                         () => this.handleDeath()
                     );
 
-                    // ── Freeze HUD Overlay ─────────────────────────────────────────
+                    // ── Freeze / CRYO Frost HUD Overlay ─────────────────────────────
                     const freezeVignette = document.getElementById('freeze-vignette');
                     const freezeBadge = document.getElementById('freeze-hud-badge');
-                    if (this.player.frozen && this.player.freezeTimer > 0) {
-                        if (freezeVignette) freezeVignette.classList.remove('hidden');
-                        if (freezeBadge) freezeBadge.classList.remove('hidden');
-                    } else {
-                        if (freezeVignette) freezeVignette.classList.add('hidden');
-                        if (freezeBadge) freezeBadge.classList.add('hidden');
+                    const isCryoLevel = this.activeLevel && this.activeLevel.tier === 'CRYO';
+                    const isFrozen = this.player.frozen && this.player.freezeTimer > 0;
+                    if (freezeVignette) {
+                        if (isCryoLevel || isFrozen) {
+                            freezeVignette.classList.remove('hidden');
+                            freezeVignette.classList.toggle('cryo-ambient', isCryoLevel);
+                            freezeVignette.classList.toggle('frozen-active', isFrozen);
+                        } else {
+                            freezeVignette.classList.add('hidden');
+                            freezeVignette.classList.remove('cryo-ambient', 'frozen-active');
+                        }
+                    }
+                    if (freezeBadge) {
+                        if (isFrozen) freezeBadge.classList.remove('hidden');
+                        else freezeBadge.classList.add('hidden');
                     }
 
                     // Emit passive frost particles when frozen and running
@@ -715,6 +750,9 @@ export class CyberDashGame {
 
                     const progPct = document.getElementById('progress-pct');
                     if (progPct) progPct.innerText = `${pct}%`;
+
+                    const timelinePlayer = document.getElementById('hud-timeline-player');
+                    if (timelinePlayer) timelinePlayer.style.left = `${pct}%`;
 
                     if (!this.isPractice && typeof this.activeLevel.id === 'number') {
                         StorageManager.setBestScore(this.activeLevel.id, pct);

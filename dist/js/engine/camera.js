@@ -75,15 +75,21 @@ bgGrad.addColorStop(1, '#050508');
 ctx.fillStyle = bgGrad;
 ctx.fillRect(0, 0, this.width, this.height);
 if (isCryo) {
-for (let m = 0; m < 3; m++) {
-const mistY = this.groundY * (0.3 + m * 0.25);
-const mistGrad = ctx.createLinearGradient(0, mistY - 30, 0, mistY + 30);
+for (let m = 0; m < 4; m++) {
+const mistY = this.groundY * (0.22 + m * 0.2);
+const mistGrad = ctx.createLinearGradient(0, mistY - 40, 0, mistY + 40);
 mistGrad.addColorStop(0, 'rgba(0, 212, 255, 0)');
-mistGrad.addColorStop(0.5, `rgba(0, 180, 220, ${0.04 + m * 0.015})`);
+mistGrad.addColorStop(0.5, `rgba(0, 180, 220, ${0.05 + m * 0.02})`);
 mistGrad.addColorStop(1, 'rgba(0, 212, 255, 0)');
 ctx.fillStyle = mistGrad;
-ctx.fillRect(0, mistY - 30, this.width, 60);
+ctx.fillRect(0, mistY - 40, this.width, 80);
 }
+const floorFog = ctx.createLinearGradient(0, this.groundY - 70, 0, this.groundY);
+floorFog.addColorStop(0, 'rgba(140, 220, 255, 0)');
+floorFog.addColorStop(0.55, 'rgba(100, 200, 240, 0.08)');
+floorFog.addColorStop(1, 'rgba(160, 230, 255, 0.16)');
+ctx.fillStyle = floorFog;
+ctx.fillRect(0, this.groundY - 70, this.width, 70);
 }
 for (let s of this.stars) {
 let sx = (s.x - (this.x * s.parallax)) % this.width;
@@ -96,7 +102,7 @@ ctx.fillRect(sx, s.y, s.size, s.size);
 }
 ctx.globalAlpha = 1.0;
 if (isCryo) {
-const snowCount = 24;
+const snowCount = 42;
 for (let sn = 0; sn < snowCount; sn++) {
 const snX = ((sn * 137.5 + this.x * 0.05 + now * 8) % this.width + this.width) % this.width;
 const snY = ((sn * 73.3 + now * 15 * (0.5 + (sn % 3) * 0.3)) % this.groundY + this.groundY) % this.groundY;
@@ -158,8 +164,16 @@ ctx.fillRect(bx, by, b.width, b.height);
 ctx.strokeRect(bx, by, b.width, b.height);
 if (b.windows) {
 ctx.fillStyle = activeLevel.color || '#00f0ff';
-ctx.globalAlpha = 0.5 + audioPulse * 0.5;
+ctx.globalAlpha = 0.55 + audioPulse * 0.45;
 ctx.fillRect(bx + b.width / 2 - 2, by - 4, 4, 4);
+ctx.globalAlpha = 0.35 + audioPulse * 0.25;
+const winColor = isCryo ? '#7adfff' : (activeLevel.color || '#00f0ff');
+ctx.fillStyle = winColor;
+for (let wy = by + 8; wy < by + b.height - 6; wy += 10) {
+for (let wx = bx + 6; wx < bx + b.width - 6; wx += 9) {
+if ((wx + wy) % 3 === 0) ctx.fillRect(wx, wy, 3, 4);
+}
+}
 ctx.globalAlpha = 1.0;
 ctx.fillStyle = buildingFill;
 }
