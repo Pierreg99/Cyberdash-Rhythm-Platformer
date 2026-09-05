@@ -5,6 +5,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [2.0.2] — 2026-09-06 — SHIP-COMPLETE / UI ALIGNMENT
+
+### Fixed
+- **Sector Matrix + CRYO visuals** aligned to reference screenshots (pause hub, level-complete sequence, HUD/victory modal).
+- **VERSION file** synced (was stuck at `2.0.0` while package/UI showed `2.0.1`).
+
+### Changed
+- Version badges → **2.0.2**; ship-complete docs pass for progress-track 100%.
+
+---
+
 ## [2.0.1] — 2026-08-27 — VECTOR ASSET & ENGINE STABILITY PATCH
 
 ### Fixed
