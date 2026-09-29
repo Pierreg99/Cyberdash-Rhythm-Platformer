@@ -1,4 +1,4 @@
-# 📚 CYBER DASH — API & MODULE REFERENCE
+# CYBER DASH — API & MODULE REFERENCE
 
 This document details the public API surface, methods, properties, and events across all core ES modules.
 

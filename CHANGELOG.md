@@ -1,5 +1,19 @@
 # CHANGELOG — CYBER DASH
 
+## [2.0.4] — 2026-09-29
+
+### Mobile / responsive
+- Viewport `viewport-fit=cover`, safe-area insets on menu/HUD, `100dvh` layout, no horizontal overflow
+- Flexible Sector Matrix / top bar / nav tabs (horizontal scroll on small screens)
+- Readable 44px tap targets; canvas scales with visualViewport
+- Coarse-pointer JUMP touch control during play
+
+### Custom icons (no emoji)
+- New `js/ui/icons.js` gameplay SVG set (cube, bits, orbs, cryo, editor objects, pilots)
+- Replaced emoji/generic icons across menus, store, pass, achievements, editor palette, HUD chips
+- Static SVG pack under `docs/images/icons/` for docs/marketing parity
+
+
 All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
@@ -66,7 +80,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Freeze Mechanic** — `player.frozen` state:
   - Player slows to ~55% speed while frozen, gradually recovers
   - Spinning ice crystal overlay renders around player
-  - Blue "❄ FROZEN" HUD badge appears in top-right
+  - Blue "FROZEN" HUD badge appears in top-right
   - Freeze vignette (blue edge glow) covers screen
   - Passive frost ring particles emitted while frozen
 - **Ice Particle Effects** (`particles.js`):
@@ -80,8 +94,8 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - 3-layer icy mist atmosphere
   - Blue-tinted twinkling stars
   - Frost gradient on floor line
-- **CRYO filter button** in Level Select: `❄️ CRYO (4)`
-- **CRYO-themed level cards** with frost shimmer, ice coin icons (❄/❅), icy blue glow
+- **CRYO filter button** in Level Select: `CRYO (4)`
+- **CRYO-themed level cards** with frost shimmer, ice coin icons (/❅), icy blue glow
 - **CSS additions** (`styles.css`):
   - `.kinetic-glass-cryo`, `.btn-cryo`, `.neon-text-ice`
   - `.freeze-vignette`, `.hud-freeze-badge` with pulse animation

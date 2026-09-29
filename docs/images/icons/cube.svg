@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Cyber Cube">
+  <rect width="64" height="64" rx="10" fill="#050508"/>
+  <rect x="10" y="10" width="44" height="44" rx="6" fill="#00f0ff"/>
+  <rect x="22" y="22" width="20" height="20" rx="3" fill="#050508"/>
+  <rect x="27" y="27" width="10" height="10" rx="2" fill="#ffd700"/>
+</svg>

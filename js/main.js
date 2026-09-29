@@ -12,6 +12,7 @@ import { CryoAudioEngine } from './audio/sound-engine.js';
 import { LevelEditor, EDITOR_PALETTE } from './levels/editor.js';
 import { StorageManager } from './ui/storage.js';
 import { MenuManager } from './ui/menu-manager.js';
+import { icon as cdIcon } from './ui/icons.js';
 
 export class CyberDashGame {
     constructor() {
@@ -46,7 +47,10 @@ export class CyberDashGame {
     init() {
         this.resize();
         window.addEventListener('resize', () => this.resize());
-
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => this.resize());
+        }
+        this.bindTouchControls();
         this.bindInputEvents();
         this.setupEditorPaletteUI();
         this.menu.init();
@@ -60,10 +64,52 @@ export class CyberDashGame {
     }
 
     resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        this.groundY = this.canvas.height - 110;
+        const vv = window.visualViewport;
+        const w = Math.floor((vv && vv.width) || window.innerWidth);
+        const h = Math.floor((vv && vv.height) || window.innerHeight);
+        this.canvas.width = w;
+        this.canvas.height = h;
+        this.groundY = this.canvas.height - Math.max(90, Math.round(h * 0.12));
         this.camera.init(this.canvas.width, this.canvas.height, this.groundY);
+        this.updateTouchControls();
+    }
+
+
+    prefersTouchUI() {
+        return window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches;
+    }
+
+    updateTouchControls() {
+        const el = document.getElementById('touch-controls');
+        if (!el) return;
+        const show = this.prefersTouchUI() && (this.mode === 'PLAYING' || this.mode === 'EDITOR_PLAY');
+        el.classList.toggle('hidden', !show);
+        el.setAttribute('aria-hidden', show ? 'false' : 'true');
+    }
+
+    bindTouchControls() {
+        const btn = document.getElementById('touch-jump');
+        if (!btn) return;
+        const down = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            btn.classList.add('is-active');
+            this.input.hold = true;
+            this.input.tap = true;
+            if (this.mode === 'PLAYING' || this.mode === 'EDITOR_PLAY') {
+                StorageManager.incrementStat('totalJumps', 1);
+            }
+        };
+        const up = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            btn.classList.remove('is-active');
+            this.input.hold = false;
+        };
+        btn.addEventListener('pointerdown', down);
+        btn.addEventListener('pointerup', up);
+        btn.addEventListener('pointercancel', up);
+        btn.addEventListener('pointerleave', up);
     }
 
     bindInputEvents() {
@@ -267,7 +313,7 @@ export class CyberDashGame {
                     ? 'bg-cyan/20 border-cyan text-white shadow-[0_0_10px_#00f0ff]'
                     : 'bg-panel/80 border-gray-800 text-gray-400 hover:border-cyan/40'
             }`;
-            btn.innerHTML = `<span>${item.icon}</span> <span>${item.name}</span>`;
+            btn.innerHTML = `${cdIcon(item.icon, { size: 16 })} <span>${item.name}</span>`;
             btn.onclick = () => {
                 this.editor.selectedType = item.type;
                 this.editor.tool = 'place';
@@ -340,6 +386,7 @@ export class CyberDashGame {
 
     openEditor(levelObj = null) {
         this.mode = 'EDITOR';
+        this.updateTouchControls();
         this.editor.initLevel(levelObj);
 
         // Hide Menu & HUD
@@ -363,6 +410,7 @@ export class CyberDashGame {
 
     startEditorTestPlay() {
         this.mode = 'EDITOR_PLAY';
+        this.updateTouchControls();
         document.getElementById('editor-ui-overlay')?.classList.add('hidden');
         document.getElementById('hud-layer')?.classList.remove('hidden');
         document.getElementById('btn-editor-return-hud')?.classList.remove('hidden');
@@ -379,6 +427,7 @@ export class CyberDashGame {
     returnToEditorFromPlay() {
         this.soundEngine.stop();
         this.mode = 'EDITOR';
+        this.updateTouchControls();
         document.getElementById('hud-layer')?.classList.add('hidden');
         document.getElementById('btn-editor-return-hud')?.classList.add('hidden');
         document.getElementById('editor-ui-overlay')?.classList.remove('hidden');
@@ -391,6 +440,7 @@ export class CyberDashGame {
         this.checkpoints = [];
         this.coinsFoundInRun = [false, false, false];
         this.mode = 'PLAYING';
+        this.updateTouchControls();
 
         StorageManager.incrementStat('totalAttempts', 1);
 
@@ -462,6 +512,7 @@ export class CyberDashGame {
     togglePause() {
         if (this.mode === 'PLAYING') {
             this.mode = 'PAUSED';
+            this.updateTouchControls();
             const pauseLayer = document.getElementById('pause-layer');
             if (pauseLayer) {
                 pauseLayer.classList.remove('hidden');
@@ -489,6 +540,7 @@ export class CyberDashGame {
             if (this.soundEngine && this.soundEngine.ctx) this.soundEngine.ctx.suspend();
         } else if (this.mode === 'PAUSED') {
             this.mode = 'PLAYING';
+            this.updateTouchControls();
             document.getElementById('pause-layer')?.classList.add('hidden');
             if (this.soundEngine && this.soundEngine.ctx) this.soundEngine.ctx.resume();
         }
@@ -497,6 +549,7 @@ export class CyberDashGame {
     returnToMenu() {
         if (this.soundEngine) this.soundEngine.stop();
         this.mode = 'MENU';
+        this.updateTouchControls();
         document.getElementById('pause-layer')?.classList.add('hidden');
         document.getElementById('hud-layer')?.classList.add('hidden');
         document.getElementById('practice-hud')?.classList.add('hidden');
@@ -626,6 +679,7 @@ export class CyberDashGame {
     handleLevelComplete() {
         if (this.mode === 'VICTORY') return;
         this.mode = 'VICTORY';
+        this.updateTouchControls();
 
         this.soundEngine.stop();
         this.soundEngine.playSFX('victory');

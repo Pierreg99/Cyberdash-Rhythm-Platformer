@@ -1,4 +1,4 @@
-# 📐 CYBER DASH — LEVEL DESIGN & TRACK AUTHORING GUIDE
+# CYBER DASH — LEVEL DESIGN & TRACK AUTHORING GUIDE
 
 This guide provides creator guidelines for building custom sectors, pacing rhythm tracks, utilizing all 38 object types, and syncing obstacle density with the procedural synth engine.
 
@@ -55,22 +55,22 @@ At standard 1× speed ($6.0\text{ px/frame}$ at $60\text{ FPS} = 360\text{ px/s}
 
 ## 3. Tier Pacing & Difficulty Progression
 
-### 🟢 EASY Tier (1–2 Stars)
+### EASY Tier (1–2 Stars)
 - Simple single-cube jumps.
 - Generous landing platforms (minimum 3–4 tiles wide).
 - Introductory Ship / UFO sections with wide vertical clearance (minimum 4 tiles height).
 
-### 🟣 HARD Tier (3–4 Stars)
+### HARD Tier (3–4 Stars)
 - Introduces rotating sawblades and half-blocks.
 - Wave mode sections with $45^\circ$ sloped corridors.
 - Speed gates (2× and 3×) introduced with rhythm orb chaining.
 
-### 🔴 OMEGA Tier (5–7 Stars)
+### OMEGA Tier (5–7 Stars)
 - Rapid multi-form transitions in single tracks (Cube → Wave → Robot → Ball).
 - 3× and 4× speed sections requiring sub-frame precision.
 - Dual-gravity switches inside mini-portal corridors.
 
-### ❄️ CRYO Tier (2–7 Stars)
+### CRYO Tier (2–7 Stars)
 - Leverages `FREEZE_ZONE` slow fields to alter muscle-memory jump timing.
 - Slippery `ICE_BLOCK` runways requiring adjusted jump takeoff points.
 - `ORB_FREEZE` mechanics allowing extended airtime across broad crystalline hazard chasms.

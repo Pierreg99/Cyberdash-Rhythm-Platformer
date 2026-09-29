@@ -12,3 +12,5 @@ All screenshots here are **live captures** from the running Cyber Dash build at 
 | `icon-512.png` / `icon-192.png` | Cyan cube + gold accent (`#00f0ff` / `#ffd700`) matching player skin |
 
 Do not replace with concept art that diverges from canvas/UI rendering.
+
+| `icons/*.svg` | Custom gameplay UI icons (cube, bits, orbs, cryo, jump) — no emoji |
