@@ -1,11 +1,11 @@
-# 🎮 CYBER DASH — Neon Rhythm Platformer
+# CYBER DASH — Neon Rhythm Platformer
 
 <p align="center">
-  <img src="docs/images/banner.jpg" alt="Cyber Dash Banner" width="100%"/>
+  <img src="docs/images/banner.jpg" alt="Cyber Dash — Sector Matrix (live capture)" width="100%"/>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.0.2-00f0ff?style=for-the-badge" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-2.0.3-00f0ff?style=for-the-badge" alt="Version"/>
   <img src="https://img.shields.io/badge/platform-Browser-ff003c?style=for-the-badge" alt="Platform"/>
   <img src="https://img.shields.io/badge/license-MIT-39ff14?style=for-the-badge" alt="License"/>
   <img src="https://img.shields.io/badge/levels-16-b026ff?style=for-the-badge" alt="Levels"/>
@@ -13,11 +13,13 @@
 </p>
 
 <p align="center">
-  <strong>A high-octane cyberpunk rhythm platformer built in vanilla HTML5 Canvas + JavaScript.</strong><br>
-  Dash through 16 neon-drenched levels across 4 tiers — including the all-new CRYO sector.
+  <strong>Cyberpunk rhythm platformer — vanilla HTML5 Canvas + JavaScript.</strong><br>
+  16 neon sectors across 4 tiers, including the CRYO ice sector.
 </p>
 
-## 📑 Table of Contents
+> Marketing images in `docs/images/` are **live captures** from the running build (1376×768). Palette, HUD, Sector Matrix, and CRYO gameplay match what you get when you open `index.html`.
+
+## Table of Contents
 - [Screenshots](#screenshots)
 - [Features](#features)
 - [Object Types Catalog](#object-types-38-total)
@@ -25,7 +27,7 @@
 - [Level Tiers Matrix](#level-tiers-16-total)
 - [Controls](#controls)
 - [Getting Started](#getting-started)
-- [Documentation Suite](#-documentation-suite)
+- [Documentation Suite](#documentation-suite)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
@@ -36,10 +38,24 @@
 
 <table>
   <tr>
-    <td align="center"><img src="docs/images/level_menu.jpg" width="440"/><br><sub><b>Level Select — Sector Matrix (16 Tracks)</b></sub></td>
+    <td align="center"><img src="docs/images/level_menu.jpg" width="440"/><br><sub><b>Sector Matrix — 16 Tracks (live UI)</b></sub></td>
     <td align="center"><img src="docs/images/cryo_level.jpg" width="440"/><br><sub><b>CRYO GENESIS — Ice Tier Gameplay</b></sub></td>
   </tr>
+  <tr>
+    <td align="center"><img src="docs/images/cover-gameplay.jpg" width="440"/><br><sub><b>CYBER ALLEYWAY — EASY Tier Gameplay</b></sub></td>
+    <td align="center"><img src="docs/images/splash.jpg" width="440"/><br><sub><b>CRYO mid-run — splash / store cover</b></sub></td>
+  </tr>
 </table>
+
+Store / cover / icon assets (same palette as gameplay):
+
+| Asset | Path |
+|---|---|
+| Banner / OG hero | `docs/images/banner.jpg` |
+| Splash | `docs/images/splash.jpg` |
+| Cover (gameplay) | `docs/images/cover-gameplay.jpg` |
+| App icon 512 | `docs/images/icon-512.png` |
+| App icon 192 | `docs/images/icon-192.png` |
 
 ---
 
@@ -47,7 +63,7 @@
 
 ### Core Gameplay
 - **6 Player Forms** — CUBE, SHIP, UFO, WAVE, BALL, ROBOT with unique physics
-- **Tap/Click/Space** to jump, activate orbs, and chain moves
+- **Tap / Click / Space** to jump, activate orbs, and chain moves
 - **Neon-reactive** audio engine with procedural BPM-locked music (120–180 BPM)
 - **Practice Mode** — retry from checkpoints to master hard sections
 - **Custom Level Editor** — build and play your own sectors
@@ -73,7 +89,7 @@
 - **Freeze Vignette** — blue edge glow on screen while frozen
 - **Ice crystal overlay** rotates around player when frozen
 - **Falling snowflakes** and icy mist atmospheric CRYO background
-- **4 CRYO Levels:** CRYO GENESIS, FROST MATRIX, ARCTIC PULSE, ABSOLUTE ZERO
+- **4 CRYO Levels:** CRYO GENESIS, GLACIER PATH, ICE CACHE, CRYO CHAMBER
 
 ### Level Tiers (16 Total)
 | Tier | Count | Difficulty | Theme |
@@ -97,89 +113,69 @@
 
 ## Getting Started
 
-Open **`index.html`** in any modern browser. No build step or server required.
+Open **`index.html`** in any modern browser. No build step required for local play.
 
 ```bash
-# Clone the repository
-git clone https://github.com/Pierreg99/cyberdash.git
-cd cyberdash
+git clone https://github.com/Pierreg99/Cyberdash-Rhythm-Platformer.git
+cd Cyberdash-Rhythm-Platformer
 
-# Run directly in browser (Windows)
-start index.html
-
-# Run directly in browser (macOS / Linux)
-open index.html
-
-# Optional: Run local static server
+# Optional local static server
 npm start
+# → http://127.0.0.1:8080/
 ```
 
 **Requirements:** Chrome / Firefox / Edge / Safari 15+
 
 ---
 
-## 📚 Documentation Suite
+## Documentation Suite
 
 | Document | Description |
 |---|---|
-| **[QUALITY_AUDIT.md](QUALITY_AUDIT.md)** | Full technical audit, 60/120 FPS benchmarks, physics verification, and test results |
-| **[PLAN.md](PLAN.md)** | High-level system architecture, engine decomposition, and technical implementation plan |
-| **[PROGRESS.md](PROGRESS.md)** | Granular milestone tracking across v1.0, v1.5, and v2.0 releases |
-| **[ROADMAP.md](ROADMAP.md)** | Strategic vision and planned features for v2.1, v2.2 (Inferno Tier), and v3.0 |
-| **[CHANGELOG.md](CHANGELOG.md)** | Semantic release notes and historical changes |
-| **[CONTRIBUTING.md](CONTRIBUTING.md)** | Community guidelines, custom level authoring specs, and PR instructions |
-| **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** | Detailed subsystem architecture, game loop lifecycle, and data flow diagrams |
-| **[docs/PHYSICS_ENGINE.md](docs/PHYSICS_ENGINE.md)** | Mathematical specification of kinematics, collision AABB, and freeze slow curves |
-| **[docs/LEVEL_DESIGN_GUIDE.md](docs/LEVEL_DESIGN_GUIDE.md)** | Track authoring guide for all 38 object types, pacing, and BPM rhythm sync |
-| **[docs/API_REFERENCE.md](docs/API_REFERENCE.md)** | Developer reference for Player, Physics, Particles, Camera, and Audio modules |
-| **[docs/AUDIO_SYSTEM.md](docs/AUDIO_SYSTEM.md)** | Web Audio API procedural synthesis, oscillator chains, and rhythm scheduling |
+| **[QUALITY_AUDIT.md](QUALITY_AUDIT.md)** | Technical audit, FPS benchmarks, physics verification |
+| **[PLAN.md](PLAN.md)** | System architecture and implementation plan |
+| **[PROGRESS.md](PROGRESS.md)** | Milestone tracking across releases |
+| **[ROADMAP.md](ROADMAP.md)** | Planned features for v2.1+ / Inferno / v3.0 |
+| **[CHANGELOG.md](CHANGELOG.md)** | Semantic release notes |
+| **[CONTRIBUTING.md](CONTRIBUTING.md)** | Contribution and custom-level guidelines |
+| **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** | Subsystem architecture and game-loop lifecycle |
+| **[docs/PHYSICS_ENGINE.md](docs/PHYSICS_ENGINE.md)** | Kinematics, AABB collision, freeze curves |
+| **[docs/LEVEL_DESIGN_GUIDE.md](docs/LEVEL_DESIGN_GUIDE.md)** | Track authoring for all 38 object types |
+| **[docs/API_REFERENCE.md](docs/API_REFERENCE.md)** | Player, Physics, Particles, Camera, Audio APIs |
+| **[docs/AUDIO_SYSTEM.md](docs/AUDIO_SYSTEM.md)** | Web Audio procedural synthesis |
 
 ---
 
 ## Project Structure
 
 ```
-cyberdash/
+Cyberdash-Rhythm-Platformer/
 ├── index.html                  # Game shell & UI
 ├── css/styles.css              # Core styles, glassmorphism, CRYO theme
 ├── js/
 │   ├── main.js                 # Game loop, CyberDashGame orchestrator
-│   ├── engine/
-│   │   ├── physics.js          # 38 object types, collision detection & freeze logic
-│   │   ├── player.js           # 6 forms kinematics & orbital crystal overlay
-│   │   ├── particles.js        # Explosions, ice shatter, frost shockwave rings
-│   │   └── camera.js           # Viewport tracking, screen shake & weather effects
-│   ├── levels/
-│   │   ├── level-data.js       # 16 official sectors + vector object renderer
-│   │   └── editor.js           # Interactive in-game level builder
-│   ├── ui/
-│   │   ├── menu-manager.js     # Sector matrix, tier cards, store & garage
-│   │   └── storage.js          # LocalStorage persistence & stats manager
-│   └── audio/
-│       └── sound-engine.js     # Web Audio API procedural music & SFX synth
-├── docs/                       # Technical manuals, guides & screenshots
-├── QUALITY_AUDIT.md            # Codebase audit & benchmark report
-├── PLAN.md                     # Architecture & implementation plan
-├── PROGRESS.md                 # Milestone tracker
-├── ROADMAP.md                  # Future roadmap
-├── CHANGELOG.md                # Release changelog
-├── CONTRIBUTING.md             # Contribution guide
-└── LICENSE                     # MIT License
+│   ├── engine/                 # Physics, player, particles, camera
+│   ├── levels/                 # 16 sectors + editor
+│   ├── ui/                     # Sector matrix, store, garage, storage
+│   └── audio/                  # Procedural music & SFX
+├── docs/
+│   └── images/                 # Live marketing screenshots + icons
+├── dist/                       # Pages / production bundle
+└── *.md                        # Audit, plan, progress, roadmap, changelog
 ```
 
 ---
 
 ## Contributing
 
-We welcome community level creators and developers! See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
 ## License
 
-This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).
 
 ---
 
-<p align="center">Made with neon by <a href="https://github.com/Pierreg99">Pierreg99</a> · 2026</p>
-
+<p align="center">Neon by <a href="https://github.com/Pierreg99">Pierreg99</a> · 2026</p>
