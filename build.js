@@ -49,6 +49,12 @@ function copyDirRecursive(src, dest) {
                 fs.copyFileSync(srcPath, destPath);
                 continue;
             }
+            // Binary / non-text assets (images, fonts, etc.) — byte-copy only
+            const BINARY = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.svg', '.woff', '.woff2', '.ttf', '.otf', '.mp3', '.wav', '.bin']);
+            if (BINARY.has(ext) || ext === '.md') {
+                fs.copyFileSync(srcPath, destPath);
+                continue;
+            }
             let content = fs.readFileSync(srcPath, 'utf8');
             if (ext === '.css') content = minifyCSS(content);
             fs.writeFileSync(destPath, content);
@@ -91,6 +97,10 @@ function build() {
         }
     };
     fs.writeFileSync(path.join(DIST_DIR, 'package.json'), JSON.stringify(distPackage, null, 2));
+
+    // 5. Marketing / store parity assets (icons + screenshots for Pages + OG)
+    console.log('⚡ Copying docs/images (icons, splash, screenshots)...');
+    copyDirRecursive(path.join(ROOT_DIR, 'docs', 'images'), path.join(DIST_DIR, 'docs', 'images'));
 
     fs.writeFileSync(path.join(DIST_DIR, '.nojekyll'), '');
     console.log('\n✓ BUILD SUCCESSFUL: Production bundle ready in dist/');

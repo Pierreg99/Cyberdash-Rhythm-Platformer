@@ -5,6 +5,17 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [2.0.3] — 2026-09-29 — VISUAL PARITY SCREENSHOTS
+
+### Changed
+- **Marketing images** (`docs/images/*`) replaced with **live captures** from the running build (1376×768): Sector Matrix hub, CRYO GENESIS gameplay, EASY cover, splash.
+- **Icons** (`icon-512.png`, `icon-192.png`) match player cube palette (`#00f0ff` / `#ffd700`).
+- README embeds now show real UI/HUD/gameplay (no concept-art placeholders); CRYO level names corrected to CRYO GENESIS / GLACIER PATH / ICE CACHE / CRYO CHAMBER.
+- `index.html` / `dist`: favicon + Open Graph meta pointing at live banner; UI version pill → **v2.0.3**.
+- `build.js` copies `docs/images` into `dist` as binary (Pages/OG ready).
+
+---
+
 ## [2.0.2] — 2026-09-06 — SHIP-COMPLETE / UI ALIGNMENT
 
 ### Fixed
