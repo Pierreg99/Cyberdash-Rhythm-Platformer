@@ -160,7 +160,7 @@ export class ParticleSystem {
         // Floating text
         this.floatingTexts.push({
             x, y: y - 20,
-            text: '❄ FROZEN',
+            text: 'FROZEN',
             color: '#88ddff',
             life: 1.0,
             decay: 0.022
@@ -223,7 +223,7 @@ export class ParticleSystem {
     emitIceCrystalCollect(x, y) {
         this.floatingTexts.push({
             x, y: y - 20,
-            text: '❄ +ICE CORE',
+            text: '+ICE CORE',
             color: '#a8eeff',
             life: 1.0,
             decay: 0.02

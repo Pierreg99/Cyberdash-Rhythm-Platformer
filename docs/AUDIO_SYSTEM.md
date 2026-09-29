@@ -1,4 +1,4 @@
-# 🎵 CYBER DASH — PROCEDURAL AUDIO SYSTEM SPECIFICATION
+# CYBER DASH — PROCEDURAL AUDIO SYSTEM SPECIFICATION
 
 CYBER DASH features a 100% procedural sound engine powered by the **Web Audio API**. It generates all music, rhythmic beats, sub-basslines, and sound effects in real time with zero external MP3/WAV download requirements.
 

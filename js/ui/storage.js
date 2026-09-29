@@ -27,16 +27,16 @@ export const DEFAULT_CURRENCY = {
 };
 
 export const CHARACTERS_CATALOG = [
-    { id: 'classic', name: 'CYBER CUBE', type: 'BALANCED', priceBits: 0, priceOrbs: 0, rarity: 'COMMON', desc: 'Standard kinetic core chassis. Agile & responsive.', icon: '⚡' },
-    { id: 'mecha', name: 'MECHA-01 TITAN', type: 'ARMORED', priceBits: 1500, priceOrbs: 0, rarity: 'RARE', desc: 'Reinforced alloy plating with an exposed fusion reactor core.', icon: '🤖' },
-    { id: 'neko', name: 'NEKO CYBER', type: 'AGILITY', priceBits: 2500, priceOrbs: 0, rarity: 'RARE', desc: 'High-frequency acoustic sensors and neon feline HUD visor.', icon: '🐱' },
-    { id: 'reaper', name: 'CYBER REAPER', type: 'DARK VOID', priceBits: 4000, priceOrbs: 0, rarity: 'EPIC', desc: 'Spectral dark skull core that channels antimatter exhaust.', icon: '💀' },
-    { id: 'kitsune', name: 'KITSUNE FOX', type: 'MYSTIC', priceBits: 5000, priceOrbs: 0, rarity: 'EPIC', desc: 'Nine-tailed plasma spirit matrix with dual auroral halos.', icon: '🦊' },
-    { id: 'dragon', name: 'HYPER DRAGON', type: 'PLASMA', priceBits: 7500, priceOrbs: 0, rarity: 'LEGENDARY', desc: 'Ancient cybernetic plasma beast with blazing horn accents.', icon: '🐉' },
-    { id: 'glitch', name: 'GLITCH ENTITY', type: 'ANOMALY', priceBits: 10000, priceOrbs: 0, rarity: 'LEGENDARY', desc: 'Fragmented corrupted code matrix with chromatic tearing.', icon: '👾' },
-    { id: 'valkyrie', name: 'APEX VALKYRIE', type: 'AERO', priceBits: 0, priceOrbs: 35, rarity: 'MYTHIC', desc: 'Supersonic aero-winged interceptor engineered for orbital flight.', icon: '🚀' },
-    { id: 'vortex', name: 'VORTEX PROTO', type: 'ALIEN', priceBits: 0, priceOrbs: 45, rarity: 'MYTHIC', desc: 'Extraterrestrial singularity probe with shifting energy rings.', icon: '🛸' },
-    { id: 'emperor', name: 'CYBER EMPEROR', type: 'OMEGA SOVEREIGN', priceBits: 0, priceOrbs: 60, rarity: 'OMEGA', desc: 'The golden sovereign core ruler of the entire Cyber Universe.', icon: '👑' }
+    { id: 'classic', name: 'CYBER CUBE', type: 'BALANCED', priceBits: 0, priceOrbs: 0, rarity: 'COMMON', desc: 'Standard kinetic core chassis. Agile & responsive.', icon: 'cube' },
+    { id: 'mecha', name: 'MECHA-01 TITAN', type: 'ARMORED', priceBits: 1500, priceOrbs: 0, rarity: 'RARE', desc: 'Reinforced alloy plating with an exposed fusion reactor core.', icon: 'mecha' },
+    { id: 'neko', name: 'NEKO CYBER', type: 'AGILITY', priceBits: 2500, priceOrbs: 0, rarity: 'RARE', desc: 'High-frequency acoustic sensors and neon feline HUD visor.', icon: 'neko' },
+    { id: 'reaper', name: 'CYBER REAPER', type: 'DARK VOID', priceBits: 4000, priceOrbs: 0, rarity: 'EPIC', desc: 'Spectral dark skull core that channels antimatter exhaust.', icon: 'skull' },
+    { id: 'kitsune', name: 'KITSUNE FOX', type: 'MYSTIC', priceBits: 5000, priceOrbs: 0, rarity: 'EPIC', desc: 'Nine-tailed plasma spirit matrix with dual auroral halos.', icon: 'kitsune' },
+    { id: 'dragon', name: 'HYPER DRAGON', type: 'PLASMA', priceBits: 7500, priceOrbs: 0, rarity: 'LEGENDARY', desc: 'Ancient cybernetic plasma beast with blazing horn accents.', icon: 'dragon' },
+    { id: 'glitch', name: 'GLITCH ENTITY', type: 'ANOMALY', priceBits: 10000, priceOrbs: 0, rarity: 'LEGENDARY', desc: 'Fragmented corrupted code matrix with chromatic tearing.', icon: 'glitch' },
+    { id: 'valkyrie', name: 'APEX VALKYRIE', type: 'AERO', priceBits: 0, priceOrbs: 35, rarity: 'MYTHIC', desc: 'Supersonic aero-winged interceptor engineered for orbital flight.', icon: 'valkyrie' },
+    { id: 'vortex', name: 'VORTEX PROTO', type: 'ALIEN', priceBits: 0, priceOrbs: 45, rarity: 'MYTHIC', desc: 'Extraterrestrial singularity probe with shifting energy rings.', icon: 'vortex' },
+    { id: 'emperor', name: 'CYBER EMPEROR', type: 'OMEGA SOVEREIGN', priceBits: 0, priceOrbs: 60, rarity: 'OMEGA', desc: 'The golden sovereign core ruler of the entire Cyber Universe.', icon: 'emperor' }
 ];
 
 export const TRAILS_CATALOG = [
@@ -50,16 +50,16 @@ export const TRAILS_CATALOG = [
 ];
 
 export const PASS_TIERS_REWARDS = [
-    { tier: 1, xpReq: 100, rewardType: 'bits', amount: 500, label: '🪙 500 BITS', icon: '🪙' },
-    { tier: 2, xpReq: 250, rewardType: 'orbs', amount: 10, label: '💎 10 ORBS', icon: '💎' },
-    { tier: 3, xpReq: 450, rewardType: 'character', itemId: 'mecha', label: '🤖 MECHA-01 TITAN', icon: '🤖' },
-    { tier: 4, xpReq: 700, rewardType: 'bits', amount: 1500, label: '🪙 1,500 BITS', icon: '🪙' },
-    { tier: 5, xpReq: 1000, rewardType: 'trail', itemId: 'rainbow', label: '🌈 PRISM RAINBOW TRAIL', icon: '🌈' },
-    { tier: 6, xpReq: 1400, rewardType: 'orbs', amount: 25, label: '💎 25 ORBS', icon: '💎' },
-    { tier: 7, xpReq: 1900, rewardType: 'character', itemId: 'reaper', label: '💀 CYBER REAPER', icon: '💀' },
-    { tier: 8, xpReq: 2500, rewardType: 'bits', amount: 3000, label: '🪙 3,000 BITS', icon: '🪙' },
-    { tier: 9, xpReq: 3200, rewardType: 'trail', itemId: 'void', label: '🌌 DARK VOID TRAIL', icon: '🌌' },
-    { tier: 10, xpReq: 4000, rewardType: 'character', itemId: 'emperor', label: '👑 CYBER EMPEROR (OMEGA)', icon: '👑' }
+    { tier: 1, xpReq: 100, rewardType: 'bits', amount: 500, label: '500 BITS', icon: 'bits' },
+    { tier: 2, xpReq: 250, rewardType: 'orbs', amount: 10, label: '10 ORBS', icon: 'orbs' },
+    { tier: 3, xpReq: 450, rewardType: 'character', itemId: 'mecha', label: 'MECHA-01 TITAN', icon: 'mecha' },
+    { tier: 4, xpReq: 700, rewardType: 'bits', amount: 1500, label: '1,500 BITS', icon: 'bits' },
+    { tier: 5, xpReq: 1000, rewardType: 'trail', itemId: 'rainbow', label: 'PRISM RAINBOW TRAIL', icon: 'rainbow' },
+    { tier: 6, xpReq: 1400, rewardType: 'orbs', amount: 25, label: '25 ORBS', icon: 'orbs' },
+    { tier: 7, xpReq: 1900, rewardType: 'character', itemId: 'reaper', label: 'CYBER REAPER', icon: 'skull' },
+    { tier: 8, xpReq: 2500, rewardType: 'bits', amount: 3000, label: '3,000 BITS', icon: 'bits' },
+    { tier: 9, xpReq: 3200, rewardType: 'trail', itemId: 'void', label: 'DARK VOID TRAIL', icon: 'void' },
+    { tier: 10, xpReq: 4000, rewardType: 'character', itemId: 'emperor', label: 'CYBER EMPEROR (OMEGA)', icon: 'emperor' }
 ];
 
 export const DEFAULT_TIER_CONFIG = {
@@ -107,18 +107,18 @@ export const DEFAULT_STATS = {
 };
 
 export const ACHIEVEMENTS_LIST = [
-    { id: 'first_jump', name: 'INITIALIZATION', desc: 'Perform your first jump.', icon: '⚡' },
-    { id: 'beat_lvl_1', name: 'GRID SURVIVOR', desc: 'Complete Target 01: Initiation.', icon: '🛡️' },
-    { id: 'beat_lvl_5', name: 'SYNTH RUNNER', desc: 'Complete Target 05: Synthwave Drift.', icon: '🌆' },
-    { id: 'demon_slayer', name: 'DEMON SLAYER', desc: 'Conquer Target 10: Zero Point.', icon: '💀' },
-    { id: 'omega_ascension', name: 'OMEGA ASCENDED', desc: 'Complete Target 12: Omega Nexus Core Meltdown.', icon: '👑' },
-    { id: 'coin_hunter_1', name: 'CYBER ARCHIVIST', desc: 'Collect 3 Cyber Cores.', icon: '💎' },
-    { id: 'coin_master', name: 'DATA MASTER', desc: 'Collect 18+ Cyber Cores across all sectors.', icon: '👑' },
-    { id: 'wave_expert', name: 'RAZOR SHARP', desc: 'Travel 500 meters in Wave mode.', icon: '🌊' },
-    { id: 'gravity_master', name: 'ZERO-G', desc: 'Flip gravity 50 times.', icon: '🌀' },
-    { id: 'speed_demon', name: 'LUDICROUS SPEED', desc: 'Survive 4x Ludicrous speed for 5 seconds.', icon: '🚀' },
-    { id: 'store_shopper', name: 'BLACK MARKET DEAL', desc: 'Purchase your first pilot character in the Store.', icon: '🛍️' },
-    { id: 'pass_tier_5', name: 'CYBER PASS CADET', desc: 'Reach Tier 5 in the Cyber Season Pass.', icon: '📜' }
+    { id: 'first_jump', name: 'INITIALIZATION', desc: 'Perform your first jump.', icon: 'bolt' },
+    { id: 'beat_lvl_1', name: 'GRID SURVIVOR', desc: 'Complete Target 01: Initiation.', icon: 'shield' },
+    { id: 'beat_lvl_5', name: 'SYNTH RUNNER', desc: 'Complete Target 05: Synthwave Drift.', icon: 'city' },
+    { id: 'demon_slayer', name: 'DEMON SLAYER', desc: 'Conquer Target 10: Zero Point.', icon: 'skull' },
+    { id: 'omega_ascension', name: 'OMEGA ASCENDED', desc: 'Complete Target 12: Omega Nexus Core Meltdown.', icon: 'crown' },
+    { id: 'coin_hunter_1', name: 'CYBER ARCHIVIST', desc: 'Collect 3 Cyber Cores.', icon: 'orbs' },
+    { id: 'coin_master', name: 'DATA MASTER', desc: 'Collect 18+ Cyber Cores across all sectors.', icon: 'crown' },
+    { id: 'wave_expert', name: 'RAZOR SHARP', desc: 'Travel 500 meters in Wave mode.', icon: 'wave' },
+    { id: 'gravity_master', name: 'ZERO-G', desc: 'Flip gravity 50 times.', icon: 'vortex' },
+    { id: 'speed_demon', name: 'LUDICROUS SPEED', desc: 'Survive 4x Ludicrous speed for 5 seconds.', icon: 'rocket' },
+    { id: 'store_shopper', name: 'BLACK MARKET DEAL', desc: 'Purchase your first pilot character in the Store.', icon: 'shop' },
+    { id: 'pass_tier_5', name: 'CYBER PASS CADET', desc: 'Reach Tier 5 in the Cyber Season Pass.', icon: 'scroll' }
 ];
 
 export class StorageManager {

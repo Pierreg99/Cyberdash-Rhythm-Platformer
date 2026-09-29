@@ -1,4 +1,4 @@
-# 🏛️ CYBER DASH — SYSTEM ARCHITECTURE & DATA FLOW
+# CYBER DASH — SYSTEM ARCHITECTURE & DATA FLOW
 
 This document describes the high-level architecture, module decomposition, rendering pipeline, and data flow of **CYBER DASH**.
 

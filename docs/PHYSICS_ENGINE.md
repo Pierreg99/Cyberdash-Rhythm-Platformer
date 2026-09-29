@@ -1,4 +1,4 @@
-# ⚛️ CYBER DASH — PHYSICS ENGINE & KINEMATICS SPECIFICATION
+# CYBER DASH — PHYSICS ENGINE & KINEMATICS SPECIFICATION
 
 This technical manual details the mathematical formulas, collision resolution algorithms, form kinematics, and environmental modifiers in **CYBER DASH**.
 

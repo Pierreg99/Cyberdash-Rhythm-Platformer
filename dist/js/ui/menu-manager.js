@@ -1,6 +1,7 @@
 import { LEVELS } from '../levels/level-data.js';
 import { StorageManager, ACHIEVEMENTS_LIST, CHARACTERS_CATALOG, TRAILS_CATALOG, PASS_TIERS_REWARDS } from './storage.js';
 import { EDITOR_PALETTE } from '../levels/editor.js';
+import { icon, resolveIcon } from './icons.js';
 
 export class MenuManager {
     constructor(game) {
@@ -196,7 +197,7 @@ export class MenuManager {
 
         const diffBadge = document.getElementById('lvl-diff-badge');
         if (diffBadge) {
-            diffBadge.innerText = `${lvl.diff} (${lvl.stars || 1}★)`;
+            diffBadge.innerHTML = `${lvl.diff} (${lvl.stars || 1}${icon('star', { size: 12, className: 'text-gold inline-block ml-0.5' })})`;
             diffBadge.className = `inline-block mt-1.5 px-3.5 py-1 rounded-full text-xs font-black tracking-widest border ${
                 lvl.diff === 'EASY'
                     ? 'bg-bio/10 text-bio border-bio/40 shadow-[0_0_10px_rgba(57,255,20,0.2)]'
@@ -405,7 +406,7 @@ export class MenuManager {
 
         const faucetLabel = document.getElementById('faucet-label');
         if (faucetLabel) {
-            faucetLabel.innerText = StorageManager.canClaimDailyBonus() ? 'CLAIM 🎁' : 'CLAIMED ✓';
+            faucetLabel.innerHTML = StorageManager.canClaimDailyBonus() ? `CLAIM ${icon('gift', { size: 12 })}` : `CLAIMED ${icon('check', { size: 12, className: 'text-bio' })}`;
         }
     }
 
@@ -420,7 +421,7 @@ export class MenuManager {
                         this.showToast({
                             name: 'DAILY SUPPLY DROP CLAIMED!',
                             desc: `+${bonus.bits} Bits, +${bonus.orbs} Orbs & +${bonus.xp} Pass XP.`,
-                            icon: '🎁'
+                            icon: 'gift'
                         });
                         this.game.soundEngine.playSFX('coin');
                     }
@@ -428,7 +429,7 @@ export class MenuManager {
                     this.showToast({
                         name: 'SUPPLY COOLDOWN ACTIVE',
                         desc: 'Your daily supply drop resets in under 20 hours.',
-                        icon: '⏳'
+                        icon: 'wait'
                     });
                 }
             });
@@ -444,7 +445,7 @@ export class MenuManager {
             featuredBtn.addEventListener('click', () => {
                 const isUnlocked = StorageManager.isItemUnlocked('characters', 'emperor');
                 if (isUnlocked) {
-                    this.showToast({ name: 'ALREADY OWNED', desc: 'Cyber Emperor is already in your Armory.', icon: '👑' });
+                    this.showToast({ name: 'ALREADY OWNED', desc: 'Cyber Emperor is already in your Armory.', icon: 'crown' });
                     return;
                 }
                 if (StorageManager.spendCurrency(0, 50)) {
@@ -452,10 +453,10 @@ export class MenuManager {
                     StorageManager.unlockItem('trails', 'void');
                     this.updateCurrencyUI();
                     this.renderStoreGrid();
-                    this.showToast({ name: 'APEX BUNDLE UNLOCKED!', desc: 'Equipped Cyber Emperor and Dark Void trail.', icon: '👑' });
+                    this.showToast({ name: 'APEX BUNDLE UNLOCKED!', desc: 'Equipped Cyber Emperor and Dark Void trail.', icon: 'crown' });
                     this.game.soundEngine.playSFX('win');
                 } else {
-                    this.showToast({ name: 'INSUFFICIENT ORBS', desc: 'You need 50 Cyber Orbs to unlock this deal.', icon: '⚠️' });
+                    this.showToast({ name: 'INSUFFICIENT ORBS', desc: 'You need 50 Cyber Orbs to unlock this deal.', icon: 'warn' });
                 }
             });
         }
@@ -476,12 +477,12 @@ export class MenuManager {
                 isEquipped ? 'border-cyan shadow-[0_0_20px_rgba(0,240,255,0.3)]' : isUnlocked ? 'border-bio/40' : 'border-white/10 hover:border-gold/50'
             }`;
 
-            const costStr = char.priceOrbs > 0 ? `💎 ${char.priceOrbs} ORBS` : char.priceBits > 0 ? `🪙 ${char.priceBits.toLocaleString()} BITS` : 'FREE';
+            const costStr = char.priceOrbs > 0 ? `${icon('orbs', { size: 14 })} ${char.priceOrbs} ORBS` : char.priceBits > 0 ? `${icon('bits', { size: 14 })} ${char.priceBits.toLocaleString()} BITS` : 'FREE';
 
             card.innerHTML = `
                 <div>
                     <div class="flex justify-between items-start mb-2">
-                        <span class="text-2xl">${char.icon}</span>
+                        <span class="inline-flex">${resolveIcon(char.icon, { size: 28 })}</span>
                         <span class="px-2 py-0.5 rounded-full text-[9px] font-black border ${
                             char.rarity === 'COMMON' ? 'bg-white/10 text-gray-300 border-white/20' :
                             char.rarity === 'RARE' ? 'bg-cyan/10 text-cyan border-cyan/40' :
@@ -525,10 +526,10 @@ export class MenuManager {
                             this.updateCurrencyUI();
                             this.renderStoreGrid();
                             this.updateGaragePreview();
-                            this.showToast({ name: 'PURCHASE SUCCESSFUL', desc: `Unlocked ${char.name}!`, icon: '🎉' });
+                            this.showToast({ name: 'PURCHASE SUCCESSFUL', desc: `Unlocked ${char.name}!`, icon: 'party' });
                             this.game.soundEngine.playSFX('win');
                         } else {
-                            this.showToast({ name: 'INSUFFICIENT FUNDS', desc: 'Earn more Cyber Bits or Orbs to purchase.', icon: '❌' });
+                            this.showToast({ name: 'INSUFFICIENT FUNDS', desc: 'Earn more Cyber Bits or Orbs to purchase.', icon: 'fail' });
                         }
                     }
                 });
@@ -548,12 +549,12 @@ export class MenuManager {
                 isEquipped ? 'border-cyan shadow-[0_0_20px_rgba(0,240,255,0.3)]' : isUnlocked ? 'border-bio/40' : 'border-white/10 hover:border-gold/50'
             }`;
 
-            const costStr = trail.priceOrbs > 0 ? `💎 ${trail.priceOrbs} ORBS` : `🪙 ${trail.priceBits.toLocaleString()} BITS`;
+            const costStr = trail.priceOrbs > 0 ? `${icon('orbs', { size: 14 })} ${trail.priceOrbs} ORBS` : `${icon('bits', { size: 14 })} ${trail.priceBits.toLocaleString()} BITS`;
 
             card.innerHTML = `
                 <div>
                     <div class="flex justify-between items-start mb-2">
-                        <span class="text-xl">⚡</span>
+                        ${icon('bolt', { size: 20, className: 'text-cyan' })}
                         <span class="px-2 py-0.5 rounded-full text-[9px] font-black border bg-purple/10 text-purple border-purple/40">${trail.rarity}</span>
                     </div>
                     <h4 class="text-base font-black uppercase text-white tracking-wide">${trail.name} TRAIL</h4>
@@ -580,7 +581,7 @@ export class MenuManager {
                         this.game.player.setCustomization(this.garageConfig);
                         this.renderStoreGrid();
                         this.updateGaragePreview();
-                        this.showToast({ name: 'TRAIL EQUIPPED', desc: `Equipped ${trail.name}.`, icon: '⚡' });
+                        this.showToast({ name: 'TRAIL EQUIPPED', desc: `Equipped ${trail.name}.`, icon: 'bolt' });
                     } else {
                         if (StorageManager.spendCurrency(trail.priceBits, trail.priceOrbs)) {
                             StorageManager.unlockItem('trails', trail.id);
@@ -590,10 +591,10 @@ export class MenuManager {
                             this.updateCurrencyUI();
                             this.renderStoreGrid();
                             this.updateGaragePreview();
-                            this.showToast({ name: 'TRAIL UNLOCKED', desc: `Unlocked ${trail.name}!`, icon: '✨' });
+                            this.showToast({ name: 'TRAIL UNLOCKED', desc: `Unlocked ${trail.name}!`, icon: 'spark' });
                             this.game.soundEngine.playSFX('win');
                         } else {
-                            this.showToast({ name: 'INSUFFICIENT FUNDS', desc: 'Earn more Cyber Bits or Orbs to purchase.', icon: '❌' });
+                            this.showToast({ name: 'INSUFFICIENT FUNDS', desc: 'Earn more Cyber Bits or Orbs to purchase.', icon: 'fail' });
                         }
                     }
                 });
@@ -649,7 +650,7 @@ export class MenuManager {
                 }`;
 
                 card.innerHTML = `
-                    <div class="text-2xl mb-1">${char.icon}</div>
+                    <div class="mb-1 inline-flex">${resolveIcon(char.icon, { size: 28 })}</div>
                     <div class="text-[11px] font-black text-white truncate">${char.name}</div>
                     <div class="text-[9px] font-mono text-cyan mt-0.5">${isEquipped ? 'EQUIPPED' : isUnlocked ? 'READY' : 'LOCKED'}</div>
                 `;
@@ -744,7 +745,7 @@ export class MenuManager {
                 q.claimed ? 'border-gray-800 opacity-50' : isReady ? 'border-gold shadow-[0_0_15px_rgba(255,215,0,0.3)] bg-gold/5' : 'border-white/10'
             }`;
 
-            const rewardStr = q.rewardOrbs ? `💎 ${q.rewardOrbs} Orbs` : `🪙 ${q.rewardBits} Bits`;
+            const rewardStr = q.rewardOrbs ? `${icon('orbs', { size: 14 })} ${q.rewardOrbs} Orbs` : `${icon('bits', { size: 14 })} ${q.rewardBits} Bits`;
 
             card.innerHTML = `
                 <div class="flex justify-between items-start mb-1.5">
@@ -776,7 +777,7 @@ export class MenuManager {
                         this.updateCurrencyUI();
                         this.renderDailyQuests();
                         this.renderPassTiers();
-                        this.showToast({ name: 'QUEST COMPLETED!', desc: `Claimed ${rewardStr} & +${claimed.rewardXP} Pass XP.`, icon: '🏆' });
+                        this.showToast({ name: 'QUEST COMPLETED!', desc: `Claimed ${rewardStr} & +${claimed.rewardXP} Pass XP.`, icon: 'trophy' });
                         this.game.soundEngine.playSFX('coin');
                     }
                 });
@@ -816,6 +817,7 @@ export class MenuManager {
                     <div class="w-7 h-7 rounded-lg bg-panel border border-cyan/40 flex items-center justify-center text-xs font-black text-cyan">
                         ${t.tier}
                     </div>
+                    <div class="inline-flex items-center">${resolveIcon(t.icon, { size: 18 })}</div>
                     <div>
                         <h4 class="text-xs font-black text-white">${t.label}</h4>
                         <span class="text-[9px] font-mono text-gray-400">${t.xpReq} XP Required</span>
@@ -825,7 +827,7 @@ export class MenuManager {
                 <button class="btn-cyber px-3 py-1 rounded text-[10px] font-black btn-pass-claim ${
                     isClaimed ? 'bg-gray-800 text-gray-500 border-gray-700 cursor-not-allowed' : isUnlocked ? 'text-cyan bg-cyan/20 border-cyan animate-pulse' : 'bg-white/5 text-gray-600 border-white/10 cursor-not-allowed'
                 }">
-                    ${isClaimed ? 'CLAIMED ✓' : isUnlocked ? 'CLAIM REWARD' : 'LOCKED 🔒'}
+                    ${isClaimed ? `CLAIMED ${icon('check', { size: 12 })}` : isUnlocked ? 'CLAIM REWARD' : `LOCKED ${icon('lock', { size: 12 })}`}
                 </button>
             `;
 
@@ -1012,7 +1014,7 @@ export class MenuManager {
                     : 'bg-panel/60 border-gray-800 text-gray-500 opacity-50'
             }`;
             card.innerHTML = `
-                <div class="text-3xl">${item.icon}</div>
+                <div class="inline-flex">${resolveIcon(item.icon, { size: 32 })}</div>
                 <div>
                     <h5 class="text-sm font-black tracking-wide ${isUnlocked ? 'text-white' : 'text-gray-400'}">${item.name}</h5>
                     <p class="text-xs font-mono mt-0.5">${item.desc}</p>
@@ -1053,7 +1055,7 @@ export class MenuManager {
         const toast = document.createElement('div');
         toast.className = 'achievement-toast';
         toast.innerHTML = `
-            <div class="text-3xl">${item.icon}</div>
+            <div class="inline-flex">${resolveIcon(item.icon, { size: 32 })}</div>
             <div>
                 <span class="text-[10px] font-mono tracking-widest text-gold block uppercase font-bold">ACHIEVEMENT UNLOCKED</span>
                 <h4 class="text-sm font-black text-white uppercase">${item.name}</h4>
@@ -1136,7 +1138,7 @@ export class MenuManager {
                 this.showToast({
                     name: 'CYBER OAUTH AUTHORIZED',
                     desc: `Pilot ${name} token verified on Matrix.`,
-                    icon: '🌐'
+                    icon: 'net'
                 });
             };
         }
@@ -1160,7 +1162,7 @@ export class MenuManager {
                 this.showToast({
                     name: 'LEVEL & TROPHY OVERRIDE',
                     desc: 'All 6 Sectors, 18 Cores, and 12 Trophies Approved & Mastered!',
-                    icon: '👑'
+                    icon: 'crown'
                 });
             };
         }
